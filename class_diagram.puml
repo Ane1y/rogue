@@ -1,0 +1,125 @@
+
+@startuml
+
+class App {
+   - {static} Controller controller
+   - {static} Model model
+   - {static} View view
+
+   + {static} void main()
+}
+
+interface Controller {
+   - void loop()
+}
+
+interface Model {}
+
+class GameModel {}
+
+interface View {}
+
+class KeyboardController {
+   - List<Signal> updatableList
+}
+
+enum Signal {
+   UP
+   DOWN
+   LEFT
+   RIGHT
+   BACK
+   SELECT
+}
+
+class DummyView {}
+
+class GameLogic {
+   - State state
+}
+
+class InventoryLogic {
+   - State state
+}
+
+class LevelLogic {
+   - State state
+}
+
+class Judge {
+   ~int make_decision(Unit attacker, Unit defender)
+}
+
+class State {
+   + {static} DEFAULT_PLAYER_HEALTH
+   + {static} DEFAULT_PLAYER_STRENGTH
+   + Focus focus
+   + Unit player
+   + List<Unit> enemies
+   + MapTile[][] map   
+}
+
+class Unit {
+   # int health
+   # int strength
+   # List<Item> stash
+   # Position position
+   # UnitStrategy strategy
+}
+
+class UnitStrategy {
+   ~Action getAction(Unit unit, State state)
+}
+
+interface Item {}
+
+Enum Focus {
+   GAME
+   LEVEL
+   INVENTORY
+}
+
+Enum MapTile {
+   FLOOR
+   WALL
+   DOOR_IN
+   DOOR_OUT
+}
+
+class Delta {
+   - List<UnitChange> unitChanges
+   - List<InventoryChange> inventoryChanges
+
+   + add(UnitChange change)
+   + add(InventoryChange change)
+}
+
+App o-- Controller
+App o-- Model
+App o-- View
+
+Controller <|-- KeyboardController
+KeyboardController .. Signal
+
+View <|-- DummyView
+
+Model <|-- GameModel
+
+GameModel o-- GameLogic
+GameModel o-- LevelLogic
+GameModel o-- InventoryLogic
+
+GameLogic o-- State
+LevelLogic o-- State
+InventoryLogic o-- State
+
+State o-- Unit
+State +-- Focus
+State +-- MapTile
+
+Item --o Unit
+
+UnitStrategy --o Unit
+State ..> Delta
+Judge <.. State
+@enduml
