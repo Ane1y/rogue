@@ -67,3 +67,6 @@
 2.  `Controller`
     - `KeyboardController`: добавление в очередь и обработка полученных сигналов 
 
+## Диаграмма классов
+
+![Screenshot](class_diagram.png)
