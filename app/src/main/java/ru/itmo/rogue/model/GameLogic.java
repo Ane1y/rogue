@@ -1,9 +1,10 @@
 package ru.itmo.rogue.model;
 
-import ru.itmo.rogue.control.Control;
-import ru.itmo.rogue.utils.Updatable;
+import ru.itmo.rogue.control.Signal;
+import ru.itmo.rogue.model.state.Delta;
+import ru.itmo.rogue.model.state.State;
 
-public class GameLogic extends AbstractModel<Control.Signal, State.Delta> {
+public class GameLogic {
 
     private State state;
 
@@ -11,9 +12,8 @@ public class GameLogic extends AbstractModel<Control.Signal, State.Delta> {
         this.state = state;
     }
 
-    @Override
-    public boolean update(Control.Signal data) {
+    public Delta update(Signal data) {
         // TODO: Implement
-        return false;
+        return null;
     }
 }

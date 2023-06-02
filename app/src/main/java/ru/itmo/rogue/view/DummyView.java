@@ -1,10 +1,10 @@
 package ru.itmo.rogue.view;
 
-import ru.itmo.rogue.model.State;
+import ru.itmo.rogue.model.state.Delta;
 
-public class DummyView implements View<State.Delta> {
+public class DummyView implements View<Delta> {
     @Override
-    public boolean update(State.Delta data) {
+    public boolean update(Delta data) {
         System.out.println("Display updated!");
         return true;
     }

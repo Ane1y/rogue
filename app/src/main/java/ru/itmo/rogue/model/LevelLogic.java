@@ -1,9 +1,10 @@
 package ru.itmo.rogue.model;
 
-import ru.itmo.rogue.control.Control;
-import ru.itmo.rogue.utils.Updatable;
+import ru.itmo.rogue.control.Signal;
+import ru.itmo.rogue.model.state.Delta;
+import ru.itmo.rogue.model.state.State;
 
-public class LevelLogic extends AbstractModel<Control.Signal, State.Delta> {
+public class LevelLogic {
 
     private State state;
 
@@ -11,8 +12,7 @@ public class LevelLogic extends AbstractModel<Control.Signal, State.Delta> {
         this.state = state;
     }
 
-    @Override
-    public boolean update(Control.Signal data) {
-        return false;
+    public Delta update(Signal data) {
+        return null;
     }
 }

@@ -1,19 +1,19 @@
 package ru.itmo.rogue;
 
-import ru.itmo.rogue.control.Control;
+import ru.itmo.rogue.control.Signal;
 import ru.itmo.rogue.control.Controller;
 import ru.itmo.rogue.control.KeyboardController;
 import ru.itmo.rogue.model.GameModel;
 import ru.itmo.rogue.model.Model;
-import ru.itmo.rogue.model.State;
+import ru.itmo.rogue.model.state.Delta;
 import ru.itmo.rogue.view.DummyView;
 import ru.itmo.rogue.view.View;
 
 public class App {
 
-    private static Controller<Control.Signal> controller;
-    private static Model<Control.Signal, State.Delta> model;
-    private static View<State.Delta> view;
+    private static final Controller<Signal> controller;
+    private static final Model<Signal, Delta> model;
+    private static final View<Delta> view;
 
     static  {
         controller = new KeyboardController();
