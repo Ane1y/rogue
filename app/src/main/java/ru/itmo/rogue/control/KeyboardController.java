@@ -19,6 +19,7 @@ public class KeyboardController implements Controller {
         while (run) {
             // TODO: PROCESS
             run = model.update(Signal.SELECT);
+            run = false;
         }
         // TODO: Implement
     }
