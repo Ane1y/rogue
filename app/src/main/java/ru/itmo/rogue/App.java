@@ -11,22 +11,18 @@ import ru.itmo.rogue.view.View;
 
 public class App {
 
-    private static final Controller<Signal> controller;
-    private static final Model<Signal, Delta> model;
-    private static final View<Delta> view;
+    private static final Controller controller;
+    private static final Model model;
+    private static final View view;
 
     static  {
-        controller = new KeyboardController();
-        model = new GameModel();
         view = new DummyView(); // TODO: Replace
+        model = new GameModel(view);
+        controller = new KeyboardController(model);
     }
 
     public static void main(String[] args) {
         System.out.println("Entry point");
-
-        // init MVC
-        controller.subscribe(model);
-        model.subscribe(view);
 
         // run
         controller.loop();

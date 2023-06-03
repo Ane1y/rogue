@@ -1,19 +1,19 @@
 package ru.itmo.rogue.model;
 
 import ru.itmo.rogue.control.Signal;
-import ru.itmo.rogue.model.state.Delta;
 import ru.itmo.rogue.model.state.State;
-import ru.itmo.rogue.utils.AbstractSubscribable;
+import ru.itmo.rogue.view.View;
 
-public class GameModel extends AbstractSubscribable<Delta> implements Model<Signal, Delta> {
+public class GameModel implements Model {
 
     private final GameLogic gameLogic;
     private final LevelLogic levelLogic;
     private final InventoryLogic inventoryLogic;
     private final State state;
+    private final View view;
 
-
-    public GameModel() {
+    public GameModel(View view) {
+        this.view = view;
         state = new State();
         gameLogic = new GameLogic(state);
         levelLogic = new LevelLogic(state);
@@ -28,7 +28,6 @@ public class GameModel extends AbstractSubscribable<Delta> implements Model<Sign
             case INVENTORY -> inventoryLogic.update(key);
         };
 
-        updatableList.forEach(u -> u.update(delta));
-        return state.running;
+        return state.running && view.update(delta);
     }
 }

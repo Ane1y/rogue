@@ -1,18 +1,25 @@
 package ru.itmo.rogue.control;
 
 
-import ru.itmo.rogue.utils.AbstractSubscribable;
-import ru.itmo.rogue.utils.Updatable;
+import ru.itmo.rogue.model.Model;
 
-import java.util.ArrayList;
-import java.util.List;
+public class KeyboardController implements Controller {
 
-public class KeyboardController extends AbstractSubscribable<Signal> implements Controller<Signal> {
+    private final Model model;
+
+    public KeyboardController(Model model) {
+        this.model = model;
+    }
 
     // TODO: Implement
 
     @Override
     public void loop() {
+        boolean run = true;
+        while (run) {
+            // TODO: PROCESS
+            run = model.update(Signal.SELECT);
+        }
         // TODO: Implement
     }
 }
