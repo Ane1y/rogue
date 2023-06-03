@@ -11,9 +11,9 @@ public class Unit {
     protected int strength;
     protected List<Item> stash;
     protected Position position;
-    protected UnitStrategy strategy;
+    protected Strategy strategy;
 
-    public Unit(int maxHealth, int strength, Position position, UnitStrategy strategy) {
+    public Unit(int maxHealth, int strength, Position position, Strategy strategy) {
         this.maxHealth = maxHealth;
         this.health = maxHealth;
         this.strength = strength;
@@ -81,7 +81,7 @@ public class Unit {
         return position;
     }
 
-    public UnitStrategy getStrategy() {
+    public Strategy getStrategy() {
         return strategy;
     }
 }

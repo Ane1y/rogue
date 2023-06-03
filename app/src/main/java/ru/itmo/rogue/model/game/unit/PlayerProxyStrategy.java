@@ -5,7 +5,7 @@ import ru.itmo.rogue.model.state.State;
 import java.util.ArrayDeque;
 import java.util.Queue;
 
-public class PlayerProxyStrategy implements UnitStrategy {
+public class PlayerProxyStrategy implements Strategy {
 
     public void queueAction(Action action) {
         queue.add(action);
