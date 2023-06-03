@@ -9,13 +9,17 @@ public class Unit {
     protected int maxHealth;
     protected int health;
     protected int strength;
+    protected int experience;
+    protected int level;
     protected List<Item> stash;
     protected Position position;
     protected Strategy strategy;
 
-    public Unit(int maxHealth, int strength, Position position, Strategy strategy) {
+    public Unit(int maxHealth, int strength, int experience, int level, Position position, Strategy strategy) {
         this.maxHealth = maxHealth;
         this.health = maxHealth;
+        this.experience = experience;
+        this.level = level;
         this.strength = strength;
         this.position = position;
         this.strategy = strategy;
@@ -25,10 +29,6 @@ public class Unit {
         return strategy.getAction(this, state);
     }
 
-    // TODO:
-    //  Important: State.Delta is from outer package,
-    //             I don't think it's good,
-    //             Maybe change package structure?
     /**
      * @param deltaX horizontal move
      * @param deltaY vertical move
@@ -61,12 +61,21 @@ public class Unit {
     public int getMaxHealth() {
         return maxHealth;
     }
+
     public int getHealth() {
         return health;
     }
 
     public int getStrength() {
         return strength;
+    }
+
+    public int getExperience() {
+        return experience;
+    }
+
+    public int getLevel() {
+        return level;
     }
 
     public int getHorizontalPos() {
