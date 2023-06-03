@@ -5,27 +5,27 @@ import java.util.List;
 import java.util.Objects;
 
 public class Delta {
-    private final List<UnitChange> unitChanges = new ArrayList<>();
-    private final List<InventoryChange> inventoryChanges = new ArrayList<>();
+    private final List<UnitUpdate> unitUpdates = new ArrayList<>();
+    private final List<UnitPositionUpdate> inventoryChanges = new ArrayList<>();
 
-    public void add(UnitChange unitChange) {
-        this.unitChanges.add(unitChange);
+    public void add(UnitUpdate unitUpdate) {
+        this.unitUpdates.add(unitUpdate);
     }
 
-    public void add(InventoryChange inventoryChange) {
+    public void add(UnitPositionUpdate inventoryChange) {
         this.inventoryChanges.add(inventoryChange);
     }
 
     public void append(Delta that) {
-        unitChanges.addAll(that.unitChanges);
+        unitUpdates.addAll(that.unitUpdates);
         inventoryChanges.addAll(that.inventoryChanges);
     }
 
-    public List<UnitChange> getUnitChanges() {
-        return this.unitChanges;
+    public List<UnitUpdate> getUnitChanges() {
+        return this.unitUpdates;
     }
 
-    public List<InventoryChange> getInventoryChanges() {
+    public List<UnitPositionUpdate> getInventoryChanges() {
         return this.inventoryChanges;
     }
 
@@ -34,11 +34,11 @@ public class Delta {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Delta delta = (Delta) o;
-        return Objects.equals(unitChanges, delta.unitChanges) && Objects.equals(inventoryChanges, delta.inventoryChanges);
+        return Objects.equals(unitUpdates, delta.unitUpdates) && Objects.equals(inventoryChanges, delta.inventoryChanges);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(unitChanges, inventoryChanges);
+        return Objects.hash(unitUpdates, inventoryChanges);
     }
 }

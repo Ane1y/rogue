@@ -1,9 +1,6 @@
 package ru.itmo.rogue.model.state;
 
-import ru.itmo.rogue.model.game.unit.Action;
-import ru.itmo.rogue.model.game.unit.PlayerProxyStrategy;
-import ru.itmo.rogue.model.game.unit.Unit;
-import ru.itmo.rogue.model.game.unit.UnitStrategy;
+import ru.itmo.rogue.model.game.unit.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +10,7 @@ public class State {
     public static int DEFAULT_PLAYER_STRENGTH = 1;
     public Focus focus = Focus.GAME;
     public Unit player;
-    public List<Unit> enemies = new ArrayList<>();;
+    public List<Unit> enemies = new ArrayList<>();
     public boolean running = true;
 
     public MapTile[][] map;
@@ -28,9 +25,9 @@ public class State {
         }
 
     public State(/* Maybe add parameters... */) {
-        player = new Unit(DEFAULT_PLAYER_HEALTH,
+        player = new Unit(DEFAULT_PLAYER_HEALTH, // should use UnitFactory
                 DEFAULT_PLAYER_STRENGTH,
-                new Unit.Position(),
+                new Position(),
                 new PlayerProxyStrategy());
         // TODO: We need to decide on default player parameters
     }

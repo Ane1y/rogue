@@ -84,30 +84,4 @@ public class Unit {
     public UnitStrategy getStrategy() {
         return strategy;
     }
-
-    public static class Position {
-        public Position() {
-            this(0, 0);
-        }
-
-        public Position(int x, int y) {
-            set(x, y);
-        }
-
-        public void set(int x, int y) {
-            this.x = x;
-            this.y = y;
-        }
-
-        public int getX() {
-            return x;
-        }
-
-        public int getY() {
-            return y;
-        }
-
-        protected int x;
-        protected int y;
-    }
 }
