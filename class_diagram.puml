@@ -55,6 +55,10 @@ class Judge {
    ~int make_decision(Unit attacker, Unit defender)
 }
 
+class EnemyGenerator {}
+class ItemGenerator {}
+class LevelGenerator {}
+
 class State {
    + {static} DEFAULT_PLAYER_HEALTH
    + {static} DEFAULT_PLAYER_STRENGTH
@@ -107,8 +111,6 @@ App o-- Model
 App o-- View
 
 Controller <|-- KeyboardController
-KeyboardController .. Signal
-GameModel .. Signal
 
 View <|-- LanternaView
 
@@ -119,6 +121,9 @@ GameModel o-- LevelLogic
 GameModel o-- InventoryLogic
 
 GameLogic o-- State
+GameLogic o-- EnemyGenerator
+GameLogic o-- ItemGenerator
+GameLogic o-- LevelGenerator  
 
 LevelLogic o-- State
 LevelLogic o-- Judge
@@ -132,6 +137,8 @@ State +-- MapTile
 Unit o-- Item
 Unit o-- UnitStrategy
 
-GameModel .. Delta
-LanternaView .. Delta
+GameModel -- Delta
+LanternaView -- Delta
+KeyboardController -- Signal
+GameModel -- Signal
 @enduml
