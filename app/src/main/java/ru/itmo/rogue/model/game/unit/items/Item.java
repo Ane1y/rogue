@@ -8,4 +8,6 @@ public interface Item {
     // TODO: Define
     public void apply(Unit unit, State state);
 
+    public String getName();
+
 }
