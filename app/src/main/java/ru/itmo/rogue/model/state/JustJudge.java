@@ -1,6 +1,5 @@
 package ru.itmo.rogue.model.state;
 
-import com.sun.nio.file.SensitivityWatchEventModifier;
 import ru.itmo.rogue.model.game.unit.Action;
 import ru.itmo.rogue.model.game.unit.Unit;
 
@@ -17,18 +16,18 @@ public class JustJudge implements Judge {
 
     @Override
     public UnitUpdate actionResult(Unit unit, Action action, State state) {
-        if (state.levelMap.free(action.dest())) {
+        if (state.levelMap.isFree(action.dest())) {
             var standingUnit = state.getUnitOnPosition(action.dest());
             if (standingUnit == null) {
                 var oldPos = unit.getPosition().copy();
                 // no one there
                 unit.moveTo(action.dest());
                 return new UnitPositionUpdate(unit, oldPos);
-            } else if (standingUnit.dead()) {
-                var lyingUnit = standingUnit; // извините
+            } else if (standingUnit.isDead()) {
+                var lyingUnit = standingUnit; // izvite
                 unit.getStash().addAll(lyingUnit.getStash());
                 lyingUnit.getStash().clear();
-                state.enemies.remove(lyingUnit);
+                state.units.remove(lyingUnit);
             } else {
                 return fight(unit, standingUnit);
             }

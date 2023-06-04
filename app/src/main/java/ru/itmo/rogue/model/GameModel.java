@@ -16,13 +16,12 @@ public class GameModel implements Model {
         this.view = view;
         state = new State();
         gameLogic = new GameLogic(state);
-        levelLogic = new LevelLogic(state);
+        levelLogic = new LevelLogic(gameLogic, state);
         inventoryLogic = new InventoryLogic(state);
     }
 
     @Override
     public boolean update(Signal key) {
-        // todo:фокусы
         if (key == Signal.BACK) {
             state.changeFocus();
         }
