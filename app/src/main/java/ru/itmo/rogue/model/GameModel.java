@@ -22,6 +22,11 @@ public class GameModel implements Model {
 
     @Override
     public boolean update(Signal key) {
+        // todo:фокусы
+        if (key == Signal.BACK) {
+            state.changeFocus();
+        }
+
         var delta = switch (state.focus) {
             case GAME -> gameLogic.update(key);
             case LEVEL -> levelLogic.update(key);
