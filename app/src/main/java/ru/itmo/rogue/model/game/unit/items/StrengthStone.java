@@ -16,6 +16,7 @@ public class StrengthStone implements Item {
     public void apply(Unit unit, State state) {
         unit.changeStrength(change);
     }
+
     @Override
     public String getName() {
         return name;

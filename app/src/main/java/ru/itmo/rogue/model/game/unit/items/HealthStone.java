@@ -4,8 +4,8 @@ import ru.itmo.rogue.model.game.unit.Unit;
 import ru.itmo.rogue.model.state.State;
 
 public class HealthStone implements Item {
-    private int change = 1;
     private final String name = "HealthStone";
+    private int change = 1;
 
     public HealthStone(int addition) {
         this.change = addition;

@@ -3,7 +3,7 @@ package ru.itmo.rogue.model.game.unit.items;
 import ru.itmo.rogue.model.game.unit.Unit;
 import ru.itmo.rogue.model.state.State;
 
-public class PoisonStone implements Item{
+public class PoisonStone implements Item {
     private final String name = "PoisonStone";
 
 
