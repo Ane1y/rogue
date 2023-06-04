@@ -28,6 +28,8 @@ public class GameModel implements Model {
             case INVENTORY -> inventoryLogic.update(key);
         };
 
+        // TODO: create test delta
+
         return state.running && view.update(delta);
     }
 }
