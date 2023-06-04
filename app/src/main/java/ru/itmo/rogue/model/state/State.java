@@ -9,7 +9,8 @@ import java.util.List;
 public class State {
     public Focus focus = Focus.GAME;
     public final Unit player = UnitFactory.getPlayerUnit();
-    public final List<Unit> enemies = new ArrayList<>();
+    // player is the first
+    public final List<Unit> units = new ArrayList<>();
 
 
     public boolean running = true;
@@ -24,7 +25,7 @@ public class State {
         if (player.getPosition().equals(position)) {
             return player;
         }
-        return enemies.stream()
+        return units.stream()
                 .filter(e -> e.getPosition().equals(position))
                 .findFirst().orElse(null);
     }

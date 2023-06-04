@@ -13,18 +13,6 @@ public class GameLogic {
     }
 
     public Delta update(Signal cmd) {
-        // action of player
-        switch (cmd) {
-            case UP, DOWN, LEFT, RIGHT -> UnitFactory
-                    .getPlayerProxyStrategy()
-                    .queueAction(cmd);
-        }
-
-        // action of enemies
-        for (var enemy : state.enemies) {
-            var action = enemy.getAction(state);
-
-        }
         return null;
     }
 }
