@@ -38,7 +38,7 @@ public class State {
         focus = (focus == Focus.LEVEL) ? Focus.INVENTORY : Focus.LEVEL;
     }
 
-    public List<Unit> getEnemies(){
-        return enemies;
+    public List<Unit> getUnits(){
+        return units;
     }
 }
