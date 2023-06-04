@@ -8,6 +8,7 @@ public class Delta {
     private final List<UnitUpdate> unitUpdates = new ArrayList<>();
     private final List<UnitPositionUpdate> inventoryChanges = new ArrayList<>();
 
+    private Map map = null;
     public void add(UnitUpdate unitUpdate) {
         this.unitUpdates.add(unitUpdate);
     }
@@ -16,6 +17,13 @@ public class Delta {
         this.inventoryChanges.add(inventoryChange);
     }
 
+    public void setMap(Map map) {
+        this.map = map;
+    }
+
+    public Map getMap() {
+        return map;
+    }
     public void append(Delta that) {
         unitUpdates.addAll(that.unitUpdates);
         inventoryChanges.addAll(that.inventoryChanges);
