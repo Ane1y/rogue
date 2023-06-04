@@ -4,7 +4,7 @@ import ru.itmo.rogue.model.game.unit.Unit;
 import ru.itmo.rogue.model.state.State;
 
 public class PoisonStone implements Item {
-    private final String name = "PoisonStone";
+    private final String name = " PoisonStone ";
 
 
     @Override

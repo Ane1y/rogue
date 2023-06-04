@@ -4,7 +4,7 @@ import ru.itmo.rogue.model.game.unit.Unit;
 import ru.itmo.rogue.model.state.State;
 
 public class StrengthStone implements Item {
-    private final String name = "BombStone";
+    private final String name = " StrengthStone ";
 
     private int change = 1;
 
