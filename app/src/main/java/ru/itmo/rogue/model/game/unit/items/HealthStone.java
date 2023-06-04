@@ -5,6 +5,7 @@ import ru.itmo.rogue.model.state.State;
 
 public class HealthStone implements Item {
     private int change = 1;
+    private final String name = "HealthStone";
 
     public HealthStone(int addition) {
         this.change = addition;
@@ -13,6 +14,11 @@ public class HealthStone implements Item {
     @Override
     public void apply(Unit unit, State state) {
         unit.changeHealth(change);
+    }
+
+    @Override
+    public String getName() {
+        return name;
     }
 
 }
