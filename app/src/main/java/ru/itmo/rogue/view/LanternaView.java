@@ -2,9 +2,6 @@ package ru.itmo.rogue.view;
 
 import com.googlecode.lanterna.TerminalPosition;
 import com.googlecode.lanterna.TerminalSize;
-import com.googlecode.lanterna.TextCharacter;
-import com.googlecode.lanterna.TextColor;
-import com.googlecode.lanterna.graphics.AbstractTextGraphics;
 import com.googlecode.lanterna.graphics.TextGraphics;
 import com.googlecode.lanterna.screen.Screen;
 import com.googlecode.lanterna.screen.VirtualScreen;
@@ -17,8 +14,10 @@ public class LanternaView implements View {
     private final static int MIN_SCREEN_COLUMN = 80;
     private final static int MAX_SCREEN_ROW = 24;
 
-    private VirtualScreen screen;
-    private Delta delta;
+    private final VirtualScreen screen;
+    private Delta lastDelta;
+    private TerminalSize lastTerminalSize;
+
     public LanternaView(VirtualScreen screen) {
         this.screen = screen;
 //        screen.setMinimumSize(new TerminalSize(100, 50));
@@ -31,22 +30,32 @@ public class LanternaView implements View {
     }
     @Override
     public boolean update(Delta delta) {
-        this.delta = delta;
+        this.lastDelta = delta;
         // TODO: move to the creation of screen (should not be executed at every update)???
-        // TODO: запоминать предыдущее расширение. Если отличается --- полный апдейт, если нет --- частичный
-        drawWindowBorders();
+
+        screen.doResizeIfNecessary(); // Actualize size data
+        var terminalSize = screen.getTerminalSize();
+        var updateType = terminalSize.equals(lastTerminalSize) ? Screen.RefreshType.DELTA : Screen.RefreshType.COMPLETE;
+        lastTerminalSize = terminalSize;
+
+        drawWindowBorders(terminalSize);
         drawPlains();
+
+        // Refresh after everything
+        try {
+            screen.refresh(updateType);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
         System.out.println("Display updated!");
         return true;
     }
 
-    private void drawWindowBorders() {
-        screen.doResizeIfNecessary(); // Actualize size
-        // Border for window
-        TerminalSize termSize = screen.getTerminalSize();
+    private void drawWindowBorders(TerminalSize terminalSize) {
         TerminalSize borderSize = new TerminalSize(
-                termSize.getColumns() - 2,
-                termSize.getRows() - 2);
+                terminalSize.getColumns() - 3,
+                terminalSize.getRows() - 3);
         drawSquare(new TerminalPosition(1, 1), borderSize, doubled);
 
         // Examples:
@@ -60,38 +69,23 @@ public class LanternaView implements View {
         drawSquare(pos2, size, bold);
         drawSquare(pos3, size, dash);
         drawSquare(pos4, size, doubled);
-
-        try {
-            screen.refresh(Screen.RefreshType.COMPLETE);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     private void drawPlains() {
-
     }
 
     private void checkBorders() {
-            // TODO: draw warning
+        // TODO: draw warning
         TextGraphics graphics = screen.newTextGraphics();
         graphics.drawLine(new TerminalPosition(2, 2), new TerminalPosition(5,5), '*');
-        try {
-            screen.refresh();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private enum SquareType {
-        NORMAL, BOLD
     }
 
     record SquareChars(char horizontal, char vertical, char[] corners) {
         public SquareChars(int horizontal, int vertical, int[] corners){
             this(getUnicode(horizontal), getUnicode(vertical), getUnicode(corners));
         }
-        /*  1 h h h 2
+        /*
+         *  1 h h h 2
          *  v       v
          *  v       v
          *  v       v
@@ -107,7 +101,7 @@ public class LanternaView implements View {
     static SquareChars dash = new SquareChars(
             0x2505,
             0x2506,
-            new int[]{0x250C, 0x2510, 0x2514, 0x2518});
+            new int[]{0x250D, 0x2511, 0x2515, 0x2519});
 
     static SquareChars bold = new SquareChars(
             0x2501,
