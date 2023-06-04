@@ -12,7 +12,7 @@ public class JustJudge implements Judge {
      * @return if (>0) returned health loss by the defender, else returned negated health loss by the attacker
      */
     private UnitUpdate fight(Unit attacker, Unit defender) {
-        return defender.health(attacker.getStrength());
+        return defender.changeHealth(attacker.getStrength());
     }
 
     @Override
