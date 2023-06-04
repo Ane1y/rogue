@@ -53,7 +53,7 @@ public class Map {
         return map.length;
     }
 
-    public boolean free(Position pos) {
+    public boolean isFree(Position pos) {
         return getTile(pos.getX(), pos.getY()) == MapTile.FLOOR;
     }
 

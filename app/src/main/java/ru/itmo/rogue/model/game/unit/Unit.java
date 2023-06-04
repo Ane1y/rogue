@@ -1,6 +1,5 @@
 package ru.itmo.rogue.model.game.unit;
 
-import ru.itmo.rogue.model.state.Delta;
 import ru.itmo.rogue.model.state.State;
 import ru.itmo.rogue.model.state.UnitUpdate;
 
@@ -62,7 +61,7 @@ public class Unit {
         return new UnitUpdate(this);
     }
 
-    public boolean dead() {
+    public boolean isDead() {
         return health == 0 && !stash.isEmpty();
     }
 
