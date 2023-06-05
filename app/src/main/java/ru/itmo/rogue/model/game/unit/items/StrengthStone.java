@@ -4,6 +4,8 @@ import ru.itmo.rogue.model.game.unit.Unit;
 import ru.itmo.rogue.model.state.State;
 
 public class StrengthStone implements Item {
+    private final String name = "Strength Potion";
+
     private int change = 1;
 
     public StrengthStone(int addition) {
@@ -13,5 +15,10 @@ public class StrengthStone implements Item {
     @Override
     public void apply(Unit unit, State state) {
         unit.changeStrength(change);
+    }
+
+    @Override
+    public String getName() {
+        return name;
     }
 }
