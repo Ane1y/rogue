@@ -40,4 +40,8 @@ public class State {
     public List<Unit> getEnemies(){
         return enemies;
     }
+
+    public Unit getPlayer(){
+        return player;
+    }
 }
