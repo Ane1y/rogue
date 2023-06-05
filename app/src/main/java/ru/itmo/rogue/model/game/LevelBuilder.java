@@ -1,9 +1,11 @@
 package ru.itmo.rogue.model.game;
 
+import ru.itmo.rogue.model.game.unit.Position;
 import ru.itmo.rogue.model.state.Map;
 import ru.itmo.rogue.model.state.State;
 
 import java.util.Arrays;
+import java.util.Random;
 
 public class LevelBuilder {
 
@@ -65,7 +67,8 @@ public class LevelBuilder {
             map.setTile(0, height / 2, Map.MapTile.DOOR_IN);
         }
 
-
+        map.setTile(generateDoor(map), Map.MapTile.DOOR_OUT_NORMAL);
+        map.setTile(generateDoor(map), Map.MapTile.DOOR_OUT_HARD);
 
         return map;
     }
@@ -81,4 +84,17 @@ public class LevelBuilder {
     private int exits = 1;
     private int complexity = 1;
     private EntrySide entrySide = EntrySide.WEST;
+
+    // generates door and checks if the player can reach ot from entrance
+    private Position generateDoor(Map map) {
+        Position doorPos = getRandomPosition();
+        while(map.checkDistance(doorPos, map.getEntrance()) == -1) {
+            doorPos = getRandomPosition();
+        }
+        return doorPos;
+    }
+    private Position getRandomPosition() {
+        Random rand = new Random();
+        return new Position(rand.nextInt(height), rand.nextInt(width));
+    }
 }

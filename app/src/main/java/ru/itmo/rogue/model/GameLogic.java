@@ -17,6 +17,7 @@ public class GameLogic {
     public Delta update(Signal cmd) {
         var delta = new Delta();
         int complexity = state.player.getLevel();
+
         // map generation
         var levelBuilder = new LevelBuilder();
         levelBuilder.complexity(complexity);
@@ -38,7 +39,4 @@ public class GameLogic {
         return delta;
     }
 
-    private void constructNewState() {
-
-    }
 }

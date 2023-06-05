@@ -36,6 +36,7 @@ public class Map {
             map[i][0] = MapTile.WALL;
             map[i][w + 1] = MapTile.WALL;
         }
+
     }
 
     public MapTile getTile(int x, int y) {
@@ -54,6 +55,9 @@ public class Map {
         if (tile == MapTile.DOOR_IN) {
             entrance = new Position(x, y);
         }
+    }
+    public void setTile(Position pos, MapTile tile) {
+        setTile(pos.getX(), pos.getY(), tile);
     }
 
     public Position getEntrance() {
