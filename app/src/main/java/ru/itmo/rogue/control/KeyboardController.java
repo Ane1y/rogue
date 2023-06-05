@@ -55,6 +55,9 @@ public class KeyboardController implements Controller {
         try {
             while (run) {
                 KeyStroke stroke = pressedKey();
+                if (stroke == null) {
+                    continue;
+                }
                 Signal signal = getSignal(stroke);
                 if(signal == null) {
                     continue;
