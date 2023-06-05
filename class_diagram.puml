@@ -37,9 +37,9 @@ class LanternaView {}
 
 class GameLogic {
    - State state
-   - EnemyGenerator enGen
-   - ItemGenerator itemGen
-   - LevelGenerator lvlGen
+   - UnitFactory unitFactory
+   - ItemFactory itemFactory
+   - LevelBuilder levelBuilder
 }
 
 class InventoryLogic {
@@ -51,21 +51,29 @@ class LevelLogic {
    - Judge judge
 }
 
-class Judge {
-   ~int make_decision(Unit attacker, Unit defender)
+interface Judge {
+   + UnitUpdate actionResult(Unit, Action, State)
 }
 
-class EnemyGenerator {}
-class ItemGenerator {}
-class LevelGenerator {}
+class JustJudge {
+
+}
+
+Judge <|-- JustJudge
+
+class UnitFactory {}
+class ItemFactory {}
+class LevelBuilder {}
 
 class State {
-   + {static} DEFAULT_PLAYER_HEALTH
-   + {static} DEFAULT_PLAYER_STRENGTH
    + Focus focus
    + Unit player
    + List<Unit> enemies
-   + MapTile[][] map   
+   + Map map
+}
+
+class Map {
+
 }
 
 class Unit {
@@ -96,15 +104,26 @@ Enum MapTile {
 }
 
 class Delta {
-   - List<UnitChange> unitChanges
+   - List<UnitUpdate> unitChanges
    - List<InventoryChange> inventoryChanges
-   + UnitChange uChange
+   + UnitUpdate uChange
    + InventoryChange iChange
    + UnitHealthChange uhChange
 
    + add(UnitChange change)
    + add(InventoryChange change)
 }
+
+class UnitUpdate {
+   + Unit getUnit()
+}
+
+class UnitPositionUpadte {
+   + Position getOldPosition()
+}
+
+Delta o-- UnitUpdate
+UnitUpdate <|-- UnitPositionUpadte
 
 App o-- Controller
 App o-- Model
@@ -121,9 +140,9 @@ GameModel o-- LevelLogic
 GameModel o-- InventoryLogic
 
 GameLogic o-- State
-GameLogic o-- EnemyGenerator
-GameLogic o-- ItemGenerator
-GameLogic o-- LevelGenerator  
+GameLogic o-- UnitFactory
+GameLogic o-- ItemFactory
+GameLogic o-- LevelBuilder
 
 LevelLogic o-- State
 LevelLogic o-- Judge
@@ -132,7 +151,8 @@ InventoryLogic o-- State
 
 State o-- Unit
 State +-- Focus
-State +-- MapTile
+State *-- Map
+Map +-- MapTile
 
 Unit o-- Item
 Unit o-- UnitStrategy
