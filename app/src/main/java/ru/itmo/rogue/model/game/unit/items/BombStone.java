@@ -11,7 +11,7 @@ public class BombStone implements Item{
     }
     @Override
     public void apply(Unit unit, State state) {
-        for(Unit enemy: state.getEnemies()){
+        for(Unit enemy: state.getUnits()){
             enemy.changeHealth(change);
         }
     }

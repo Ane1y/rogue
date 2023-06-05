@@ -65,6 +65,8 @@ public class LevelBuilder {
             map.setTile(0, height / 2, Map.MapTile.DOOR_IN);
         }
 
+
+
         return map;
     }
 
