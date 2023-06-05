@@ -1,6 +1,7 @@
 package ru.itmo.rogue.model;
 
 import ru.itmo.rogue.control.Signal;
+import ru.itmo.rogue.model.state.Delta;
 import ru.itmo.rogue.model.state.State;
 import ru.itmo.rogue.view.View;
 
@@ -28,7 +29,7 @@ public class GameModel implements Model {
             case INVENTORY -> inventoryLogic.update(key);
         };
 
-        // TODO: create test delta
+        delta = new Delta();
 
         return state.running && view.update(delta);
     }
