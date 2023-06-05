@@ -2,6 +2,7 @@ package ru.itmo.rogue.view;
 
 import com.googlecode.lanterna.TerminalPosition;
 import com.googlecode.lanterna.TerminalSize;
+import com.googlecode.lanterna.TextColor;
 import com.googlecode.lanterna.graphics.TextGraphics;
 import com.googlecode.lanterna.screen.Screen;
 import com.googlecode.lanterna.screen.VirtualScreen;
@@ -17,6 +18,7 @@ public class LanternaView implements View {
     private final static int MAX_SCREEN_ROW = 24;
     private final static double PLAYGROUND_COEF = 0.7;
     private final static double INVENTORY_COEF = 0.3;
+    private final static double STATS_COEF = 0.15;
 
     private final VirtualScreen screen;
     private Delta lastDelta;
@@ -37,11 +39,6 @@ public class LanternaView implements View {
         // TODO: move to the creation of screen (should not be executed at every update)???
 
         screen.doResizeIfNecessary(); // Actualize size data
-        try {
-            screen.refresh();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
         var curSize = screen.getTerminalSize();
         var minSize = screen.getMinimumSize();
         var terminalSize = curSize.getColumns() > minSize.getColumns() && curSize.getRows() > minSize.getRows() ? curSize : minSize;
@@ -99,8 +96,13 @@ public class LanternaView implements View {
         // draw inventory
         var invBorders = lastDelta.getFocus() == State.Focus.GAME ? simple : bold;
         TerminalSize inventory = new TerminalSize((int)(terminalSize.getColumns() * LanternaView.INVENTORY_COEF) - 6,
-                terminalSize.getRows() - 5);
+                terminalSize.getRows() - (int)(terminalSize.getRows() * STATS_COEF) - 6);
         drawSquare(new TerminalPosition(playground.getColumns() + 3, 2), inventory, invBorders);
+
+        // draw statistics
+        TerminalSize stats = new TerminalSize((int)(terminalSize.getColumns() * LanternaView.INVENTORY_COEF) - 6,
+                (int)(terminalSize.getRows() * STATS_COEF));
+        drawSquare(new TerminalPosition(playground.getColumns() + 3, playground.getRows() - (int)(playground.getRows() * STATS_COEF) + 1), stats, simple);
     }
 
     private void checkBorders() {
