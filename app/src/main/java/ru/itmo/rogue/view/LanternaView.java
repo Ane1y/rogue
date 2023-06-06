@@ -13,9 +13,6 @@ import java.io.IOException;
 import java.util.Comparator;
 
 public class LanternaView implements View {
-
-    private final static int MIN_SCREEN_COLUMN = 80;
-    private final static int MAX_SCREEN_ROW = 24;
     private final static double PLAYGROUND_COEF = 0.7;
     private final static double INVENTORY_COEF = 0.3;
     private final static double STATS_COEF = 0.15;
@@ -26,7 +23,7 @@ public class LanternaView implements View {
 
     public LanternaView(VirtualScreen screen) {
         this.screen = screen;
-        this.screen.setMinimumSize(new TerminalSize(80, 24));
+        this.screen.setMinimumSize(new TerminalSize(100, 30));
         try {
             this.screen.startScreen();
         } catch (IOException e) {
@@ -36,8 +33,6 @@ public class LanternaView implements View {
     @Override
     public boolean update(Delta delta) {
         this.lastDelta = delta;
-        // TODO: move to the creation of screen (should not be executed at every update)???
-
         screen.doResizeIfNecessary(); // Actualize size data
         var curSize = screen.getTerminalSize();
         var minSize = screen.getMinimumSize();
@@ -46,8 +41,8 @@ public class LanternaView implements View {
         lastTerminalSize = terminalSize;
 
         screen.clear();
-        drawWindowBorders(terminalSize);
-        drawPlains(terminalSize);
+//        drawWindowBorders(terminalSize);
+        drawPlains(screen.getMinimumSize());
 
         // Refresh after everything
         try {
@@ -88,13 +83,13 @@ public class LanternaView implements View {
 
     private void drawPlains(TerminalSize terminalSize) {
         // draw playground
-        var playBorders = lastDelta.getFocus() == State.Focus.GAME ? bold : simple;
+        var playBorders = lastDelta.getFocus().equals(State.Focus.LEVEL) ? doubled : simple;
         TerminalSize playground = new TerminalSize((int)(terminalSize.getColumns() * LanternaView.PLAYGROUND_COEF),
                 terminalSize.getRows() - 5);
         drawSquare(new TerminalPosition(2, 2), playground, playBorders);
 
         // draw inventory
-        var invBorders = lastDelta.getFocus() == State.Focus.GAME ? simple : bold;
+        var invBorders = lastDelta.getFocus().equals(State.Focus.LEVEL) ? simple : doubled;
         TerminalSize inventory = new TerminalSize((int)(terminalSize.getColumns() * LanternaView.INVENTORY_COEF) - 6,
                 terminalSize.getRows() - (int)(terminalSize.getRows() * STATS_COEF) - 6);
         drawSquare(new TerminalPosition(playground.getColumns() + 3, 2), inventory, invBorders);
