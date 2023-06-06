@@ -16,12 +16,15 @@ public class Map {
         DOOR_OUT_TREASURE_ROOM
     }
 
+
+
+    private final int numberOfEnemies;
     private final MapTile[][] map;
     private Position entrance = new Position();
 
-    public Map(int width, int height) {
+    public Map(int width, int height, int numberOfEnemies) {
         this.map = new Map.MapTile[width + 2][height + 2];
-
+        this.numberOfEnemies = numberOfEnemies;
         for (int i = 0; i < getHeight(); i++) {
             Arrays.fill(map[i], MapTile.FLOOR);
         }
@@ -67,12 +70,14 @@ public class Map {
     public int getWidth() {
         return map.length;
     }
-
+    public int getNumberOfEnemies() {
+        return numberOfEnemies;
+    }
     public boolean isFree(Position pos) {
         return getTile(pos.getX(), pos.getY()) == MapTile.FLOOR;
     }
 
-    public boolean isDoorOut(Position pos) {
+    public boolean isExit(Position pos) {
         var curTileType = getTile(pos);
         return curTileType == MapTile.DOOR_OUT_HARD ||
                 curTileType == MapTile.DOOR_OUT_NORMAL ||
@@ -96,7 +101,7 @@ public class Map {
 
     private record QueueNode(Position pos, int dist) {}
 
-    private boolean isCellValid(Position pos) {
+    private boolean isTileExists(Position pos) {
         return ((pos.getY() >= 0) && (pos.getY() < getHeight())
                 && (pos.getX() >= 0) && (pos.getX() < getWidth()));
     }
@@ -118,11 +123,11 @@ public class Map {
             if (point.equals(to)) {
                 return u.dist;
             }
-            for (var delta : Movement.shifts) {
+            for (var delta : Movement.defaults) {
                 Position dp = point.shift(delta);
                 int dy = dp.getY();
                 int dx = dp.getX();
-                if (isCellValid(dp) && isFree(dp) && !visited[dx][dy]) {
+                if (isTileExists(dp) && isFree(dp) && !visited[dx][dy]) {
                     visited[dx][dy] = true;
                     q.add(new QueueNode(dp,u.dist + 1));
                 }

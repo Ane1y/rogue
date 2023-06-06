@@ -13,7 +13,6 @@ public class State {
     public final List<Unit> units = new ArrayList<>();
     public boolean running = true;
     public Judge rdj = new JustJudge();
-    public Map.MapTile doorOut = Map.MapTile.DOOR_IN;
     public Map levelMap;
 
     public enum Focus {
@@ -29,6 +28,9 @@ public class State {
                 .findFirst().orElse(null);
     }
 
+    public Map.MapTile getPlayerTile() {
+        return levelMap.getTile(player.getPosition());
+    }
 
     public void changeFocus() {
         if (focus == Focus.GAME) {

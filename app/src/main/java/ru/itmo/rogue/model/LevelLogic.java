@@ -15,8 +15,7 @@ public class LevelLogic {
 
     public Delta update(Signal cmd) {
         var curPos = state.player.getPosition();
-        if (state.levelMap.isDoorOut(curPos)) {
-            state.doorOut = state.levelMap.getTile(curPos);
+        if (state.levelMap.isExit(curPos)) {
             return gameLogic.update(cmd);
         }
         // action of player

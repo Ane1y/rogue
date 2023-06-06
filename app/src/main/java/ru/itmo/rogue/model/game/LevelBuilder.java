@@ -62,8 +62,9 @@ public class LevelBuilder {
         }
         assert exits != 0;
         assert complexity >= 0;
+        numberOfEnemies = numberOfEnemies(complexity);
 
-        var map = new Map(width, height);
+        var map = new Map(width, height, numberOfEnemies);
 
         if (entrySide == EntrySide.EAST) { // Placeholder options // TODO: Replace with actual
             map.setTile(width + 1, height / 2, Map.MapTile.DOOR_IN);
@@ -74,7 +75,6 @@ public class LevelBuilder {
         map.setTile(generateDoor(map), Map.MapTile.DOOR_OUT_NORMAL);
         map.setTile(generateDoor(map), Map.MapTile.DOOR_OUT_HARD);
 
-        numberOfEnemies = (int)Math.log(complexity);
 
         return map;
     }
@@ -82,8 +82,11 @@ public class LevelBuilder {
         return numberOfEnemies;
     }
 
+    public static int numberOfEnemies(int complexity) {
+        return (int)Math.log(complexity);
+    }
     private Map buildFromDisk() {
-        return new Map(width, height); // TODO: Replace with actual loading
+        return new Map(width, height, numberOfEnemies); // TODO: Replace with actual loading
     }
 
     // generates door and checks if the player can reach ot from entrance
