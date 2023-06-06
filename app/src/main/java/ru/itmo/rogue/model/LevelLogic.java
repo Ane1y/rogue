@@ -3,7 +3,6 @@ package ru.itmo.rogue.model;
 import ru.itmo.rogue.control.Signal;
 import ru.itmo.rogue.model.game.UnitFactory;
 import ru.itmo.rogue.model.state.Delta;
-import ru.itmo.rogue.model.state.Map;
 import ru.itmo.rogue.model.state.State;
 
 public class LevelLogic {
@@ -15,8 +14,8 @@ public class LevelLogic {
     }
 
     public Delta update(Signal cmd) {
-
-        if (state.levelMap.getTile(state.player.getPosition()) == Map.MapTile.DOOR_OUT) {
+        var curPos = state.player.getPosition();
+        if (state.levelMap.isExit(curPos)) {
             return gameLogic.update(cmd);
         }
         // action of player

@@ -11,27 +11,27 @@ public class JustJudge implements Judge {
      * @return if (>0) returned health loss by the defender, else returned negated health loss by the attacker
      */
     private UnitUpdate fight(Unit attacker, Unit defender) {
-        return defender.changeHealth(attacker.getStrength());
+        return defender.changeHealth(-attacker.getStrength());
     }
 
     @Override
     public UnitUpdate actionResult(Unit unit, Action action, State state) {
-        if (state.levelMap.isFree(action.dest())) {
-            var standingUnit = state.getUnitOnPosition(action.dest());
-            if (standingUnit == null) {
-                var oldPos = unit.getPosition().copy();
-                // no one there
-                unit.moveTo(action.dest());
-                return new UnitPositionUpdate(unit, oldPos);
-            } else if (standingUnit.isDead()) {
-                var lyingUnit = standingUnit; // izvite
-                unit.getStash().addAll(lyingUnit.getStash());
-                lyingUnit.getStash().clear();
-                state.units.remove(lyingUnit);
-            } else {
-                return fight(unit, standingUnit);
-            }
+        if (!state.levelMap.isFloor(action.dest())) {
+            return null;
         }
-        return null;
+
+        var targetUnit = state.getUnitOnPosition(action.dest());
+        if (targetUnit == null) {
+            var oldPos = unit.getPosition();
+            unit.moveTo(action.dest());
+            return new UnitPositionUpdate(unit, oldPos);
+        } else if (targetUnit.isDead()) {
+            unit.getStash().addAll(targetUnit.getStash());
+            targetUnit.getStash().clear();
+            state.units.remove(targetUnit);
+            return null;
+        } else {
+            return fight(unit, targetUnit);
+        }
     }
 }
