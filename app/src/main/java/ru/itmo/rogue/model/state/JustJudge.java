@@ -24,7 +24,7 @@ public class JustJudge implements Judge {
                 unit.moveTo(action.dest());
                 return new UnitPositionUpdate(unit, oldPos);
             } else if (standingUnit.isDead()) {
-                var lyingUnit = standingUnit; // izvite
+                var lyingUnit = standingUnit; // izvinite
                 unit.getStash().addAll(lyingUnit.getStash());
                 lyingUnit.getStash().clear();
                 state.units.remove(lyingUnit);
