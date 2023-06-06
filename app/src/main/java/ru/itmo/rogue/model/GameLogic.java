@@ -14,6 +14,16 @@ public class GameLogic {
         this.state = state;
     }
 
+    public Delta newMap() {
+        state.levelMap = new LevelBuilder()
+                .complexity(1)
+                .build();
+
+        var delta = new Delta();
+        delta.setMap(state.levelMap);
+        return delta;
+    }
+
     public Delta update(Signal cmd) {
         var delta = new Delta();
         int playerLevel = state.player.getLevel();

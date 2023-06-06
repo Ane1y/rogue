@@ -6,6 +6,7 @@ import com.googlecode.lanterna.TextCharacter;
 import com.googlecode.lanterna.TextColor;
 import com.googlecode.lanterna.screen.Screen;
 import com.googlecode.lanterna.screen.VirtualScreen;
+import ru.itmo.rogue.model.game.unit.Position;
 import ru.itmo.rogue.model.state.Delta;
 import ru.itmo.rogue.model.state.Map;
 import ru.itmo.rogue.model.state.State;
@@ -42,10 +43,12 @@ public class LanternaView implements View {
             drawPlains(screen.getMinimumSize(), delta);
         }
 
-        if (delta.getMap() != null || lastMap == null) {
+        if (delta.getMap() != null /* || lastMap == null*/) {   // || lastMap... приведёт к попытке обновления когда
+                                                                // мапы нет в дельте и lastMap == null
+                                                                // что приводит к NullPointerException
             screen.clear();
             // TODO: null delta??
-            drawPlains(screen.getMinimumSize(), delta);
+            // drawPlains(screen.getMinimumSize(), delta); // not needed
             drawMap(delta.getMap());
         }
 
@@ -61,6 +64,10 @@ public class LanternaView implements View {
     }
 
     private void drawPlains(TerminalSize terminalSize, Delta delta) {
+        if (delta.getFocus() == null) {
+            return; // Focus wasn't changed
+        }
+
         // draw playground
         var playBorders = delta.getFocus().equals(State.Focus.LEVEL) ? doubled : simple;
         TerminalSize playground = new TerminalSize((int)(terminalSize.getColumns() * LanternaView.PLAYGROUND_COEF),
@@ -80,6 +87,10 @@ public class LanternaView implements View {
     }
 
     private void drawMap(Map curMap) {
+        if (curMap == null) {
+            return; // No map to draw
+        }
+
         if (lastMap == null)
             lastMap = curMap;
 
@@ -88,7 +99,7 @@ public class LanternaView implements View {
 
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
-                var tileType = curMap.getTile(i, j);
+                var tileType = curMap.getTile(new Position(i, j));
                 var tile = mapObjects.get(tileType);
                 screen.setCharacter(i + 2, j + 2, new TextCharacter(tile.tile).withForegroundColor(tile.color));
             }

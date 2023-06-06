@@ -19,6 +19,7 @@ public class GameModel implements Model {
         gameLogic = new GameLogic(state);
         levelLogic = new LevelLogic(gameLogic, state);
         inventoryLogic = new InventoryLogic(state);
+        this.view.update(gameLogic.newMap());
     }
 
     @Override
@@ -38,11 +39,6 @@ public class GameModel implements Model {
 
         if (delta == null) { // TODO: Remove when NotNull guarantee is in place
             delta = new Delta();
-        }
-
-        if (delta == null) {
-            delta = new Delta();
-            delta.setFocus(state.focus);
         }
 
         return state.running && view.update(delta);
