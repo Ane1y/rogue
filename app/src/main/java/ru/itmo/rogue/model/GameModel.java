@@ -17,12 +17,16 @@ public class GameModel implements Model {
         this.view = view;
         state = new State();
         gameLogic = new GameLogic(state);
-        levelLogic = new LevelLogic(state);
+        levelLogic = new LevelLogic(gameLogic, state);
         inventoryLogic = new InventoryLogic(state);
     }
 
     @Override
     public boolean update(Signal key) {
+        if (key == Signal.BACK) {
+            state.changeFocus();
+        }
+
         var delta = switch (state.focus) {
             case GAME -> gameLogic.update(key);
             case LEVEL -> levelLogic.update(key);

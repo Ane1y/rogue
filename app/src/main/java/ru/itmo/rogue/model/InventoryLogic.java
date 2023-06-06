@@ -1,7 +1,7 @@
 package ru.itmo.rogue.model;
 
 import ru.itmo.rogue.control.Signal;
-import ru.itmo.rogue.model.game.unit.Item;
+import ru.itmo.rogue.model.game.unit.items.Item;
 import ru.itmo.rogue.model.state.Delta;
 import ru.itmo.rogue.model.state.State;
 

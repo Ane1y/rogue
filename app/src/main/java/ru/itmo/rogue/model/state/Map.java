@@ -28,6 +28,9 @@ public class Map {
         assert y >= 0 && y < getHeight();
         return map[x][y];
     }
+    public MapTile getTile(Position pos) {
+        return getTile(pos.getX(), pos.getY());
+    }
 
     public void setTile(int x, int y, MapTile tile) {
         assert x >= 0 && x < getWidth();
@@ -48,6 +51,10 @@ public class Map {
 
     public int getWidth() {
         return map.length;
+    }
+
+    public boolean isFree(Position pos) {
+        return getTile(pos.getX(), pos.getY()) == MapTile.FLOOR;
     }
 
     private final MapTile[][] map;

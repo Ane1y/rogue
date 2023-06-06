@@ -6,6 +6,10 @@ import ru.itmo.rogue.model.game.unit.Unit;
 import java.util.Objects;
 
 public class UnitPositionUpdate extends UnitUpdate {
+    public UnitPositionUpdate(Unit unit, Position position) {
+        super(unit);
+        this.oldPosition = position;
+    }
 
     public Position getOldPosition() {
         return oldPosition;
@@ -30,10 +34,6 @@ public class UnitPositionUpdate extends UnitUpdate {
         return that instanceof UnitPositionUpdate;
     }
 
-    public UnitPositionUpdate(Unit unit, Position position) {
-        super(unit);
-        this.oldPosition = position;
-    }
 
     private final Position oldPosition;
 }

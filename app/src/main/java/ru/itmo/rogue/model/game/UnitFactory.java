@@ -24,7 +24,13 @@ public class UnitFactory {
                 0,
                 1,
                 new Position(),
-                new PlayerProxyStrategy());
+                playerProxyStrategy);
     }
+
+    public static PlayerProxyStrategy getPlayerProxyStrategy() {
+        return playerProxyStrategy;
+    }
+
+    private static final PlayerProxyStrategy playerProxyStrategy = new PlayerProxyStrategy();
 
 }
