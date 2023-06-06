@@ -31,9 +31,7 @@ public class LanternaView implements View {
     public boolean update(Delta delta) {
         this.lastDelta = delta;
         screen.doResizeIfNecessary(); // Actualize size data
-        var curSize = screen.getTerminalSize();
-        var minSize = screen.getMinimumSize();
-        var terminalSize = curSize.getColumns() > minSize.getColumns() && curSize.getRows() > minSize.getRows() ? curSize : minSize;
+        var terminalSize = screen.getTerminalSize();
         var updateType = terminalSize.equals(lastTerminalSize) ? Screen.RefreshType.DELTA : Screen.RefreshType.COMPLETE;
         lastTerminalSize = terminalSize;
 
