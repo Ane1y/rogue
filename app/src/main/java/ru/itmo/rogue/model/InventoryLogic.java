@@ -12,7 +12,7 @@ public class InventoryLogic {
 
     private State state = new State();
     private List<Item> playerStash = new ArrayList<>();
-    private int focusedItem = -1;
+    private int focusedItem = 0;
 
     public InventoryLogic(State state) {
         this.state = state;
