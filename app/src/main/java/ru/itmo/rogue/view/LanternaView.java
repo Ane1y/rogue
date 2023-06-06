@@ -2,15 +2,11 @@ package ru.itmo.rogue.view;
 
 import com.googlecode.lanterna.TerminalPosition;
 import com.googlecode.lanterna.TerminalSize;
-import com.googlecode.lanterna.TextColor;
-import com.googlecode.lanterna.graphics.TextGraphics;
 import com.googlecode.lanterna.screen.Screen;
 import com.googlecode.lanterna.screen.VirtualScreen;
 import ru.itmo.rogue.model.state.Delta;
 import ru.itmo.rogue.model.state.State;
-
 import java.io.IOException;
-import java.util.Comparator;
 
 public class LanternaView implements View {
     private final static double PLAYGROUND_COEF = 0.7;
@@ -20,6 +16,7 @@ public class LanternaView implements View {
     private final VirtualScreen screen;
     private Delta lastDelta;
     private TerminalSize lastTerminalSize;
+    private State.Focus focus = null;
 
     public LanternaView(VirtualScreen screen) {
         this.screen = screen;
@@ -41,8 +38,12 @@ public class LanternaView implements View {
         lastTerminalSize = terminalSize;
 
         screen.clear();
-//        drawWindowBorders(terminalSize);
-        drawPlains(screen.getMinimumSize());  // for the resizable fields --- pass terminalSize
+
+        if (!delta.getFocus().equals(this.focus)) {
+            // for the resizable fields --- pass terminalSize as argument
+            drawPlains(screen.getMinimumSize());
+            this.focus = delta.getFocus();
+        }
 
         // Refresh after everything
         try {
@@ -53,25 +54,6 @@ public class LanternaView implements View {
 
         System.out.println("Display updated!");
         return true;
-    }
-
-    private void drawWindowBorders(TerminalSize terminalSize) {
-        TerminalSize borderSize = new TerminalSize(
-                terminalSize.getColumns() - 3,
-                terminalSize.getRows() - 3);
-        drawSquare(new TerminalPosition(1, 1), borderSize, doubled);
-
-        // Examples:
-//        var size = new TerminalSize(5, 5);
-//        var pos1 = new TerminalPosition(2, 2);
-//        var pos2 = new TerminalPosition(8, 2);
-//        var pos3 = new TerminalPosition(2, 8);
-//        var pos4 = new TerminalPosition(8, 8);
-//
-//        drawSquare(pos1, size, simple);
-//        drawSquare(pos2, size, bold);
-//        drawSquare(pos3, size, dash);
-//        drawSquare(pos4, size, doubled);
     }
 
     private void drawPlains(TerminalSize terminalSize) {
