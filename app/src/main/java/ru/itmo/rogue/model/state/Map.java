@@ -1,5 +1,6 @@
 package ru.itmo.rogue.model.state;
 
+import ru.itmo.rogue.model.game.unit.Movement;
 import ru.itmo.rogue.model.game.unit.Position;
 
 import java.util.*;
@@ -16,25 +17,20 @@ public class Map {
     }
 
     private final MapTile[][] map;
-    private final int width;
-    private final int height;
     private Position entrance = new Position();
 
-    public Map(int w, int h) {
+    public Map(int width, int height) {
+        this.map = new Map.MapTile[width + 2][height + 2];
 
-        this.height = h + 2;
-        this.width = w + 2;
-        this.map = new Map.MapTile[height][width];
-
-        for (int i = 0; i < width; i++) {
+        for (int i = 0; i < getHeight(); i++) {
             Arrays.fill(map[i], MapTile.FLOOR);
         }
         Arrays.fill(map[0], MapTile.WALL);
-        Arrays.fill(map[h + 1], MapTile.WALL);
+        Arrays.fill(map[width + 1], MapTile.WALL);
 
-        for (int i = 0; i < h + 2; i++) {
+        for (int i = 0; i < height + 2; i++) {
             map[i][0] = MapTile.WALL;
-            map[i][w + 1] = MapTile.WALL;
+            map[i][height + 1] = MapTile.WALL;
         }
 
     }
@@ -98,38 +94,37 @@ public class Map {
 
 
 
-    private record queueNode(Position pos, int dist) {}
+    private record QueueNode(Position pos, int dist) {}
 
-    private boolean isCellValid(int row, int col) {
-        return ((row >= 0) && (row < height) && (col >= 0) && (col < width));
+    private boolean isCellValid(Position pos) {
+        return ((pos.getY() >= 0) && (pos.getY() < getHeight())
+                && (pos.getX() >= 0) && (pos.getX() < getWidth()));
     }
 
     // returns -1 if path was not found, distance otherwise
-    public int checkDistance(Position from, Position to) {
+    public int getDistance(Position from, Position to) {
         // These arrays show the 4 possible movement from a cell
-        int[] rowNum = {-1, 0, 0, 1};
-        int[] colNum = {0, -1, 1, 0};
-
-        boolean[][] visited = new boolean[height][width];
+        boolean[][] visited = new boolean[getWidth()][getHeight()];
 
         visited[from.getX()][from.getY()] = true;
-        Deque<queueNode> q = new LinkedList<>();
+        Deque<QueueNode> q = new ArrayDeque<>();
 
-        queueNode s = new queueNode(from, 0);
+        QueueNode s = new QueueNode(from, 0);
         q.add(s);
 
         while (!q.isEmpty()) {
-            queueNode u = q.poll();
+            QueueNode u = q.poll();
             Position point = u.pos;
-            if (point.getX() == to.getX() && point.getY() == to.getY())
+            if (point.equals(to)) {
                 return u.dist;
-            for (int i = 0; i < 4; i++) {
-                int row = point.getX() + rowNum[i];
-                int col = point.getY() + colNum[i];
-
-                if (isCellValid(row, col) && map[row][col] == MapTile.FLOOR && !visited[row][col]) {
-                    visited[row][col] = true;
-                    q.add(new queueNode(new Position(row, col),u.dist + 1 ));
+            }
+            for (var delta : Movement.shifts) {
+                Position dp = point.shift(delta);
+                int dy = dp.getY();
+                int dx = dp.getX();
+                if (isCellValid(dp) && isFree(dp) && !visited[dx][dy]) {
+                    visited[dx][dy] = true;
+                    q.add(new QueueNode(dp,u.dist + 1));
                 }
             }
         }

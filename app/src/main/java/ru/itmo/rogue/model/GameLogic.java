@@ -17,26 +17,35 @@ public class GameLogic {
     public Delta update(Signal cmd) {
         var delta = new Delta();
         int complexity = state.player.getLevel();
+        switch (state.doorOut) {
+            case DOOR_OUT_HARD -> complexity = (int)Math.floor(complexity * 1.5);
+            case DOOR_OUT_TREASURE_ROOM -> complexity = 0;
+        }
 
-        // map generation
-        var levelBuilder = new LevelBuilder();
-        levelBuilder.complexity(complexity);
-        state.levelMap = levelBuilder.build();
+        var levelBuilder = new LevelBuilder()
+                .complexity(complexity);
+        levelBuilder.build();
         delta.setMap(state.levelMap);
 
         // unit generation
         state.units.add(state.player);
 
         var unitFactory = new UnitFactory(complexity);
-        var numberOfEnemies = (int)Math.log(state.player.getLevel());
-        for (int i = 0; i < numberOfEnemies; i++) {
+        for (int i = 0; i < levelBuilder.getNumberOfEnemies(); i++) {
             var newMonster = unitFactory.getUnit();
             state.units.add(newMonster);
             delta.add(new UnitUpdate(newMonster));
         }
 
+        if (complexity == 0) {
+            //todo:generate treasures??
+        }
         state.focus = State.Focus.LEVEL;
         return delta;
+    }
+
+    private int numberOfUnit(int complexity) {
+        return (int)Math.log(complexity);
     }
 
 }

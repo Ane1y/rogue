@@ -7,7 +7,6 @@ import ru.itmo.rogue.model.game.unit.Unit;
 public class UnitFactory {
     public static int DEFAULT_PLAYER_HEALTH = 3;
     public static int DEFAULT_PLAYER_STRENGTH = 1;
-
     public int complexity;
     public UnitFactory(int complexity) {
         this.complexity = complexity;

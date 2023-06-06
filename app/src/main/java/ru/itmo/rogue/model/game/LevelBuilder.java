@@ -2,15 +2,19 @@ package ru.itmo.rogue.model.game;
 
 import ru.itmo.rogue.model.game.unit.Position;
 import ru.itmo.rogue.model.state.Map;
-import ru.itmo.rogue.model.state.State;
 
-import java.util.Arrays;
 import java.util.Random;
 
 public class LevelBuilder {
-
     // TODO: Implement
 
+    private String filename;
+    private int width = 16;
+    private int height = 12;
+    private int exits = 1;
+    private int complexity = 1;
+    private EntrySide entrySide = EntrySide.WEST;
+    private int numberOfEnemies = 0;
     public LevelBuilder loadFromDisk(String filename) {
         this.filename = filename;
         return this;
@@ -70,25 +74,22 @@ public class LevelBuilder {
         map.setTile(generateDoor(map), Map.MapTile.DOOR_OUT_NORMAL);
         map.setTile(generateDoor(map), Map.MapTile.DOOR_OUT_HARD);
 
+        numberOfEnemies = (int)Math.log(complexity);
+
         return map;
+    }
+    public int getNumberOfEnemies() {
+        return numberOfEnemies;
     }
 
     private Map buildFromDisk() {
         return new Map(width, height); // TODO: Replace with actual loading
     }
 
-    private String filename;
-
-    private int width = 16;
-    private int height = 12;
-    private int exits = 1;
-    private int complexity = 1;
-    private EntrySide entrySide = EntrySide.WEST;
-
     // generates door and checks if the player can reach ot from entrance
     private Position generateDoor(Map map) {
         Position doorPos = getRandomPosition();
-        while(map.checkDistance(doorPos, map.getEntrance()) == -1) {
+        while(map.getDistance(doorPos, map.getEntrance()) == -1) {
             doorPos = getRandomPosition();
         }
         return doorPos;

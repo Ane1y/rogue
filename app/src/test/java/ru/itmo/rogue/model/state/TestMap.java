@@ -8,8 +8,8 @@ public class TestMap {
 
     @Test
     void testCheckDistance() {
-        Map map = new Map(10, 20);
-        Assertions.assertEquals(15, map.checkDistance(new Position(1, 1), new Position(9, 8)));
+        Map map = new Map(20, 10);
+        Assertions.assertEquals(15, map.getDistance(new Position(1, 1), new Position(9, 8)));
 
     }
 }

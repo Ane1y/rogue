@@ -11,10 +11,9 @@ public class State {
     public final Unit player = UnitFactory.getPlayerUnit();
     // player is the first
     public final List<Unit> units = new ArrayList<>();
-
-
     public boolean running = true;
     public Judge rdj = new JustJudge();
+    public Map.MapTile doorOut = Map.MapTile.DOOR_IN;
     public Map levelMap;
 
     public enum Focus {
