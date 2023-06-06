@@ -1,7 +1,6 @@
 package ru.itmo.rogue.model.game.unit;
 
 import ru.itmo.rogue.control.Signal;
-import ru.itmo.rogue.model.state.Map;
 import ru.itmo.rogue.model.state.State;
 
 import java.util.ArrayDeque;
@@ -9,27 +8,30 @@ import java.util.Queue;
 
 public class PlayerProxyStrategy implements Strategy {
 
+    /**
+     * Queues
+     * @param signal
+     */
     public void queueAction(Signal signal) {
         queue.add(signal);
     }
 
     @Override
     public Action getAction(Unit unit, State state) {
-        if (queue.isEmpty()) {
-            return null; // TODO: Return neutral action
-        }
-
         var signal = queue.poll();
-
-        Position change = new Position();
-        switch (signal) {
-            case UP -> change.set(0, 1);
-            case DOWN -> change.set(0, -1);
-            case LEFT -> change.set(-1, 0);
-            case RIGHT -> change.set(1, 0);
+        if (signal == null) {
+            return new Action(unit.position);
         }
 
-        return new Action(state.player.move(change));
+        Movement movement = switch (signal) {
+            case UP ->  Movement.UP;
+            case DOWN -> Movement.DOWN;
+            case LEFT -> Movement.LEFT;
+            case RIGHT -> Movement.RIGHT;
+            default -> Movement.NONE; // Neutral action
+        };
+
+        return new Action(unit.position.move(movement));
     }
 
     private final Queue<Signal> queue = new ArrayDeque<>();

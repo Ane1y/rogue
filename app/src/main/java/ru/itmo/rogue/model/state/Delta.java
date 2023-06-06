@@ -5,8 +5,7 @@ import java.util.List;
 import java.util.Objects;
 
 public class Delta {
-
-    private State.Focus focus; // TODO: setters getters
+    private State.Focus focus;
     private final List<UnitUpdate> unitUpdates = new ArrayList<>();
     private final List<UnitPositionUpdate> inventoryChanges = new ArrayList<>();
     // not null only at the new level

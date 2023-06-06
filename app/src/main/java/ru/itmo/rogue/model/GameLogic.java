@@ -16,36 +16,50 @@ public class GameLogic {
 
     public Delta update(Signal cmd) {
         var delta = new Delta();
-        int complexity = state.player.getLevel();
-        switch (state.doorOut) {
-            case DOOR_OUT_HARD -> complexity = (int)Math.floor(complexity * 1.5);
-            case DOOR_OUT_TREASURE_ROOM -> complexity = 0;
+        int playerLevel = state.player.getLevel();
+
+        int difficulty = switch (state.levelMap.getTile(state.player.getPosition())) {
+            case DOOR_OUT_HARD -> hardDifficulty(playerLevel);
+            case DOOR_OUT_NORMAL -> playerLevel;
+            case DOOR_OUT_TREASURE_ROOM -> 0;
+            default -> -1;
+        };
+
+        if (difficulty == -1) {
+            return delta;
         }
 
-        var levelBuilder = new LevelBuilder()
-                .complexity(complexity);
-        levelBuilder.build();
+        var levelBuilder = new LevelBuilder();
+        state.levelMap = levelBuilder
+                .complexity(playerLevel)
+                .build();
         delta.setMap(state.levelMap);
 
-        // unit generation
-        state.units.add(state.player);
 
-        var unitFactory = new UnitFactory(complexity);
-        for (int i = 0; i < levelBuilder.getNumberOfEnemies(); i++) {
-            var newMonster = unitFactory.getUnit();
-            state.units.add(newMonster);
-            delta.add(new UnitUpdate(newMonster));
+        // Generate Units
+        state.units.clear();
+        state.units.add(state.player); // Add player -- must be first in list
+        state.player.moveTo(state.levelMap.getEntrance());
+        delta.add(new UnitUpdate(state.player));
+
+        var unitFactory = new UnitFactory(difficulty);
+        for (int i = 0; i < state.levelMap.getInitialEnemyNubmer(); i++) {
+            var enemy = unitFactory.getUnit();
+            if (enemy == null) { // TODO: Remove when NotNull guarantee is in place
+                continue;
+            }
+            state.units.add(enemy);
+            delta.add(new UnitUpdate(enemy));
         }
 
-        if (complexity == 0) {
-            //todo:generate treasures??
-        }
         state.focus = State.Focus.LEVEL;
+        delta.setFocus(state.focus);
         return delta;
     }
 
-    private int numberOfUnit(int complexity) {
-        return (int)Math.log(complexity);
+    private int hardDifficulty(int difficulty) {
+        return (int)Math.floor(difficulty * 1.5);
     }
+
 
 }

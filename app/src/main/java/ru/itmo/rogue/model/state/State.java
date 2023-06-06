@@ -6,19 +6,24 @@ import ru.itmo.rogue.model.game.unit.*;
 import java.util.ArrayList;
 import java.util.List;
 
+
 public class State {
     public Focus focus = Focus.GAME;
     public final Unit player = UnitFactory.getPlayerUnit();
-    // player is the first
-    public final List<Unit> units = new ArrayList<>();
+    public final List<Unit> units = new ArrayList<>(); // player must be first
     public boolean running = true;
     public Judge rdj = new JustJudge();
-    public Map.MapTile doorOut = Map.MapTile.DOOR_IN;
     public Map levelMap;
 
     public enum Focus {
         GAME, LEVEL, INVENTORY
     }
+
+    /**
+     * Returns unit placed on position
+     * @param position position to check
+     * @return unit if it placed, null if there's no unit on position
+     */
 
     public Unit getUnitOnPosition(Position position) {
         if (player.getPosition().equals(position)) {
@@ -29,8 +34,7 @@ public class State {
                 .findFirst().orElse(null);
     }
 
-
-    public void changeFocus() {
+    public void toggleFocus() {
         if (focus == Focus.GAME) {
             return;
         }
@@ -39,5 +43,9 @@ public class State {
 
     public List<Unit> getUnits(){
         return units;
+    }
+
+    public Unit getPlayer(){
+        return player;
     }
 }

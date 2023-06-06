@@ -23,15 +23,22 @@ public class GameModel implements Model {
 
     @Override
     public boolean update(Signal key) {
-        if (key == Signal.BACK) {
-            state.changeFocus();
+        Delta delta;
+        if (key.equals(Signal.BACK)) {
+            state.toggleFocus();
+            delta = new Delta();
+            delta.setFocus(state.focus);
+        } else {
+            delta = switch (state.focus) {
+                case GAME -> gameLogic.update(key);
+                case LEVEL -> levelLogic.update(key);
+                case INVENTORY -> inventoryLogic.update(key);
+            };
         }
 
-        var delta = switch (state.focus) {
-            case GAME -> gameLogic.update(key);
-            case LEVEL -> levelLogic.update(key);
-            case INVENTORY -> inventoryLogic.update(key);
-        };
+        if (delta == null) { // TODO: Remove when NotNull guarantee is in place
+            delta = new Delta();
+        }
 
         if (delta == null) {
             delta = new Delta();
