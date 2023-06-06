@@ -8,6 +8,7 @@ import ru.itmo.rogue.control.Controller;
 import ru.itmo.rogue.control.KeyboardController;
 import ru.itmo.rogue.model.GameModel;
 import ru.itmo.rogue.model.Model;
+import ru.itmo.rogue.model.game.LevelBuilder;
 import ru.itmo.rogue.model.state.Delta;
 import ru.itmo.rogue.view.LanternaView;
 import ru.itmo.rogue.view.View;
@@ -32,7 +33,10 @@ public class App {
     }
 
     void loop() {
-        view.update(new Delta());
+//        Delta delta = new Delta();
+//        var lvl = new LevelBuilder();
+//        delta.setMap(lvl.build());
+        view.update(new Delta());  // TODO: pass initial map
         controller.loop();
         try {
             screen.stopScreen();

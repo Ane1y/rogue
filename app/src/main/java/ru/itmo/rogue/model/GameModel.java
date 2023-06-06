@@ -33,7 +33,10 @@ public class GameModel implements Model {
             case INVENTORY -> inventoryLogic.update(key);
         };
 
-        delta = new Delta();
+        if (delta == null) {
+            delta = new Delta();
+            delta.setFocus(state.focus);
+        }
 
         return state.running && view.update(delta);
     }

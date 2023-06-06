@@ -2,11 +2,15 @@ package ru.itmo.rogue.view;
 
 import com.googlecode.lanterna.TerminalPosition;
 import com.googlecode.lanterna.TerminalSize;
+import com.googlecode.lanterna.TextCharacter;
+import com.googlecode.lanterna.TextColor;
 import com.googlecode.lanterna.screen.Screen;
 import com.googlecode.lanterna.screen.VirtualScreen;
 import ru.itmo.rogue.model.state.Delta;
+import ru.itmo.rogue.model.state.Map;
 import ru.itmo.rogue.model.state.State;
 import java.io.IOException;
+import java.util.HashMap;
 
 public class LanternaView implements View {
     private final static double PLAYGROUND_COEF = 0.7;
@@ -14,9 +18,8 @@ public class LanternaView implements View {
     private final static double STATS_COEF = 0.15;
 
     private final VirtualScreen screen;
-    private Delta lastDelta;
     private TerminalSize lastTerminalSize;
-    private State.Focus focus = null;
+    private Map lastMap;    // TODO: default background
 
     public LanternaView(VirtualScreen screen) {
         this.screen = screen;
@@ -29,18 +32,21 @@ public class LanternaView implements View {
     }
     @Override
     public boolean update(Delta delta) {
-        this.lastDelta = delta;
         screen.doResizeIfNecessary(); // Actualize size data
         var terminalSize = screen.getTerminalSize();
         var updateType = terminalSize.equals(lastTerminalSize) ? Screen.RefreshType.DELTA : Screen.RefreshType.COMPLETE;
         lastTerminalSize = terminalSize;
 
-        screen.clear();
-
-        if (!delta.getFocus().equals(this.focus)) {
+        if (delta.getFocus() != null) {
             // for the resizable fields --- pass terminalSize as argument
-            drawPlains(screen.getMinimumSize());
-            this.focus = delta.getFocus();
+            drawPlains(screen.getMinimumSize(), delta);
+        }
+
+        if (delta.getMap() != null || lastMap == null) {
+            screen.clear();
+            // TODO: null delta??
+            drawPlains(screen.getMinimumSize(), delta);
+            drawMap(delta.getMap());
         }
 
         // Refresh after everything
@@ -54,15 +60,15 @@ public class LanternaView implements View {
         return true;
     }
 
-    private void drawPlains(TerminalSize terminalSize) {
+    private void drawPlains(TerminalSize terminalSize, Delta delta) {
         // draw playground
-        var playBorders = lastDelta.getFocus().equals(State.Focus.LEVEL) ? doubled : simple;
+        var playBorders = delta.getFocus().equals(State.Focus.LEVEL) ? doubled : simple;
         TerminalSize playground = new TerminalSize((int)(terminalSize.getColumns() * LanternaView.PLAYGROUND_COEF),
                 terminalSize.getRows() - 5);
         drawSquare(new TerminalPosition(2, 2), playground, playBorders);
 
         // draw inventory
-        var invBorders = lastDelta.getFocus().equals(State.Focus.LEVEL) ? simple : doubled;
+        var invBorders = delta.getFocus().equals(State.Focus.LEVEL) ? simple : doubled;
         TerminalSize inventory = new TerminalSize((int)(terminalSize.getColumns() * LanternaView.INVENTORY_COEF) - 6,
                 terminalSize.getRows() - (int)(terminalSize.getRows() * STATS_COEF) - 6);
         drawSquare(new TerminalPosition(playground.getColumns() + 3, 2), inventory, invBorders);
@@ -72,6 +78,43 @@ public class LanternaView implements View {
                 (int)(terminalSize.getRows() * STATS_COEF));
         drawSquare(new TerminalPosition(playground.getColumns() + 3, playground.getRows() - (int)(playground.getRows() * STATS_COEF) + 1), stats, simple);
     }
+
+    private void drawMap(Map curMap) {
+        if (lastMap == null)
+            lastMap = curMap;
+
+        var width = curMap.getWidth();
+        var height = curMap.getHeight();
+
+        for (int i = 0; i < width; i++) {
+            for (int j = 0; j < height; j++) {
+                var tileType = curMap.getTile(i, j);
+                var tile = mapObjects.get(tileType);
+                screen.setCharacter(i + 2, j + 2, new TextCharacter(tile.tile).withForegroundColor(tile.color));
+            }
+        }
+    }
+
+    record MapChars(char tile, TextColor color) {
+        public MapChars(int tile, TextColor color) {
+            this(getUnicode(tile), color);
+        }
+    }
+    private static final HashMap<Map.MapTile, MapChars> mapObjects = new HashMap<>() {{
+        put(Map.MapTile.FLOOR, floor);
+        put(Map.MapTile.WALL, wall);
+        put(Map.MapTile.DOOR_IN, doorIn);
+        put(Map.MapTile.DOOR_OUT_NORMAL, doorOutNormal);
+        put(Map.MapTile.DOOR_OUT_HARD, doorOurHard);
+        put(Map.MapTile.DOOR_OUT_TREASURE_ROOM, doorOutTreasure);
+    }};
+
+    static MapChars floor = new MapChars(0x08, TextColor.ANSI.DEFAULT);  // TODO: check shapes and colors
+    static MapChars wall = new MapChars(0x2500, TextColor.ANSI.WHITE);
+    static MapChars doorIn = new MapChars(0x2500, TextColor.ANSI.WHITE);
+    static MapChars doorOutNormal = new MapChars(0x2500, TextColor.ANSI.GREEN);
+    static MapChars doorOurHard = new MapChars(0x2500, TextColor.ANSI.RED);
+    static MapChars doorOutTreasure = new MapChars(0x2500, TextColor.ANSI.YELLOW);
 
     record SquareChars(char horizontal, char vertical, char[] corners) {
         public SquareChars(int horizontal, int vertical, int[] corners){

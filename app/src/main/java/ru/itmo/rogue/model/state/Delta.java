@@ -5,7 +5,8 @@ import java.util.List;
 import java.util.Objects;
 
 public class Delta {
-    private final State.Focus focus = State.Focus.LEVEL;
+
+    private State.Focus focus; // TODO: setters getters
     private final List<UnitUpdate> unitUpdates = new ArrayList<>();
     private final List<UnitPositionUpdate> inventoryChanges = new ArrayList<>();
     // not null only at the new level
@@ -40,6 +41,10 @@ public class Delta {
 
     public State.Focus getFocus() {
         return focus;
+    }
+
+    public void setFocus(State.Focus focus) {
+        this.focus = focus;
     }
 
     @Override
