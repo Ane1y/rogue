@@ -23,7 +23,7 @@ public class LanternaView implements View {
 
     public LanternaView(VirtualScreen screen) {
         this.screen = screen;
-        this.screen.setMinimumSize(new TerminalSize(100, 30));
+        this.screen.setMinimumSize(new TerminalSize(130, 40));
         try {
             this.screen.startScreen();
         } catch (IOException e) {
@@ -42,7 +42,7 @@ public class LanternaView implements View {
 
         screen.clear();
 //        drawWindowBorders(terminalSize);
-        drawPlains(screen.getMinimumSize());
+        drawPlains(screen.getMinimumSize());  // for the resizable fields --- pass terminalSize
 
         // Refresh after everything
         try {
@@ -56,17 +56,10 @@ public class LanternaView implements View {
     }
 
     private void drawWindowBorders(TerminalSize terminalSize) {
-        // resisable
         TerminalSize borderSize = new TerminalSize(
                 terminalSize.getColumns() - 3,
                 terminalSize.getRows() - 3);
         drawSquare(new TerminalPosition(1, 1), borderSize, doubled);
-
-        // unresisable
-//        TerminalSize borderSize = new TerminalSize(
-//                130 - 3,
-//                40 - 3);
-//        drawSquare(new TerminalPosition(1, 1), borderSize, doubled);
 
         // Examples:
 //        var size = new TerminalSize(5, 5);
@@ -98,12 +91,6 @@ public class LanternaView implements View {
         TerminalSize stats = new TerminalSize((int)(terminalSize.getColumns() * LanternaView.INVENTORY_COEF) - 6,
                 (int)(terminalSize.getRows() * STATS_COEF));
         drawSquare(new TerminalPosition(playground.getColumns() + 3, playground.getRows() - (int)(playground.getRows() * STATS_COEF) + 1), stats, simple);
-    }
-
-    private void checkBorders() {
-        // TODO: draw warning
-        TextGraphics graphics = screen.newTextGraphics();
-        graphics.drawLine(new TerminalPosition(2, 2), new TerminalPosition(5,5), '*');
     }
 
     record SquareChars(char horizontal, char vertical, char[] corners) {
