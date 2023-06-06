@@ -46,8 +46,8 @@ public class Map {
     public Map(int width, int height, int initialEnemyNubmer) {
         this.map = new Map.MapTile[width + 2][height + 2];
         this.initialEnemyNubmer = initialEnemyNubmer;
-        for (int i = 0; i < getHeight(); i++) {
-            Arrays.fill(map[i], MapTile.FLOOR);
+        for (var column: map) {
+            Arrays.fill(column, MapTile.FLOOR);
         }
         Arrays.fill(map[0], MapTile.WALL);
         Arrays.fill(map[width + 1], MapTile.WALL);
@@ -68,7 +68,7 @@ public class Map {
     }
 
     /**
-     * Sets tile on position `pos` to tile
+     * Sets tile on position `position` to tile
      */
     public void setTile(Position pos, MapTile tile) {
         assertValidPosition(pos);
@@ -107,7 +107,7 @@ public class Map {
     }
 
     /**
-     * @return true if tile on position `pos` represents floor,
+     * @return true if tile on position `position` represents floor,
      */
     public boolean isFloor(Position pos) {
         return isFloor(getTile(pos));
@@ -115,7 +115,7 @@ public class Map {
 
 
     /**
-     * @return true if tile on position `pos` represents exit door,
+     * @return true if tile on position `position` represents exit door,
      */
     public boolean isExit(Position pos) {
         return isExit(getTile(pos));
@@ -123,7 +123,7 @@ public class Map {
 
 
     /**
-     * @return true if tile on position `pos` represents entrance,
+     * @return true if tile on position `position` represents entrance,
      */
     public boolean isEntrance(Position pos) {
         return isEntrance(getTile(pos));
@@ -132,7 +132,7 @@ public class Map {
 
 
     /**
-     * @return true if tile on position `pos` represents wall,
+     * @return true if tile on position `position` represents wall,
      */
     public boolean isWall(Position pos) {
         return isWall(getTile(pos));
@@ -147,27 +147,31 @@ public class Map {
     // returns -1 if path was not found, distance otherwise
     public int getDistance(Position from, Position to) {
         // These arrays show the 4 possible movement from a cell
-        boolean[][] visited = new boolean[getWidth()][getHeight()];
-
-        visited[from.getX()][from.getY()] = true;
-        Deque<QueuedPosition> q = new ArrayDeque<>();
-
+        Set<Position> visited = new HashSet<>();
+        Deque<QueuedPosition> queue = new ArrayDeque<>();
         QueuedPosition s = new QueuedPosition(from, 0);
-        q.add(s);
 
-        while (!q.isEmpty()) {
-            QueuedPosition u = q.poll();
-            Position point = u.pos;
-            if (point.equals(to)) {
-                return u.dist;
+        queue.add(s);
+
+        while (!queue.isEmpty()) {
+            QueuedPosition queuedPosition = queue.poll();
+
+            Position pos = queuedPosition.position;
+            int distance = queuedPosition.distance;
+            if (visited.contains(pos)) {
+                continue;
             }
+
+            visited.add(pos);
+
+            if (pos.equals(to)) {
+                return distance;
+            }
+
             for (var delta : Movement.defaults) {
-                Position dp = point.move(delta);
-                int dy = dp.getY();
-                int dx = dp.getX();
-                if (doesTileExist(dp) && isFloor(dp) && !visited[dx][dy]) {
-                    visited[dx][dy] = true;
-                    q.add(new QueuedPosition(dp,u.dist + 1));
+                Position dp = pos.move(delta);
+                if (positionIsInbound(dp) && isFloor(dp) && !visited.contains(dp)) {
+                    queue.add(new QueuedPosition(dp,distance + 1));
                 }
             }
         }
@@ -194,10 +198,10 @@ public class Map {
         assert pos.getY() >= 0 && pos.getY() < getHeight();
     }
 
-    private boolean doesTileExist(Position pos) {
+    private boolean positionIsInbound(Position pos) {
         return ((pos.getY() >= 0) && (pos.getY() < getHeight()) &&
                 (pos.getX() >= 0) && (pos.getX() < getWidth()));
     }
 
-    private record QueuedPosition(Position pos, int dist) {}
+    private record QueuedPosition(Position position, int distance) {}
 }
