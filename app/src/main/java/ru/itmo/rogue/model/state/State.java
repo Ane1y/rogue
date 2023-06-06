@@ -41,4 +41,8 @@ public class State {
     public List<Unit> getUnits(){
         return units;
     }
+
+    public Unit getPlayer(){
+        return player;
+    }
 }

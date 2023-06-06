@@ -26,6 +26,9 @@ public class Position {
         this.x = x;
         this.y = y;
     }
+    public double distance(Position other){
+        return Math.sqrt(Math.pow(other.x - this.x,2) + Math.pow(other.y - this.y,2));
+    }
 
     public Position copy() {
         return new Position(x, y);
