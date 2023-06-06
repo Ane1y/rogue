@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Objects;
 
 public class Delta {
-    private final State.Focus focus = State.Focus.LEVEL;
+    private State.Focus focus;
     private final List<UnitUpdate> unitUpdates = new ArrayList<>();
     private final List<UnitPositionUpdate> inventoryChanges = new ArrayList<>();
     // not null only at the new level
@@ -28,6 +28,10 @@ public class Delta {
     public void append(Delta that) {
         unitUpdates.addAll(that.unitUpdates);
         inventoryChanges.addAll(that.inventoryChanges);
+    }
+
+    public void setFocus(State.Focus focus) {
+        this.focus = focus;
     }
 
     public List<UnitUpdate> getUnitChanges() {

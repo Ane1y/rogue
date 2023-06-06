@@ -30,7 +30,8 @@ public class GameLogic {
         state.units.clear();
         // unit generation
         state.units.add(state.player);
-
+        state.player.moveTo(state.levelMap.getEntrance());
+        delta.add(new UnitUpdate(state.player));
         var unitFactory = new UnitFactory(complexity);
         for (int i = 0; i < state.levelMap.getNumberOfEnemies(); i++) {
             var newMonster = unitFactory.getUnit();
@@ -39,8 +40,7 @@ public class GameLogic {
         }
 
         state.focus = State.Focus.LEVEL;
-
-        state.player.moveTo(state.levelMap.getEntrance());
+        delta.setFocus(state.focus);
         return delta;
     }
 
