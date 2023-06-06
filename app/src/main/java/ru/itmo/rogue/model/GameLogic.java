@@ -44,8 +44,5 @@ public class GameLogic {
         return delta;
     }
 
-    private int numberOfUnit(int complexity) {
-        return (int)Math.log(complexity);
-    }
 
 }
