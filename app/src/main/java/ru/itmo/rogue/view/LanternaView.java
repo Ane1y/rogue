@@ -4,6 +4,7 @@ import com.googlecode.lanterna.TerminalPosition;
 import com.googlecode.lanterna.TerminalSize;
 import com.googlecode.lanterna.TextCharacter;
 import com.googlecode.lanterna.TextColor;
+import com.googlecode.lanterna.graphics.TextGraphics;
 import com.googlecode.lanterna.screen.Screen;
 import com.googlecode.lanterna.screen.VirtualScreen;
 import ru.itmo.rogue.model.game.unit.Position;
@@ -31,6 +32,7 @@ public class LanternaView implements View {
             throw new RuntimeException(e);
         }
     }
+
     @Override
     public boolean update(Delta delta) {
         screen.doResizeIfNecessary(); // Actualize size data
@@ -46,9 +48,7 @@ public class LanternaView implements View {
         if (delta.getMap() != null /* || lastMap == null*/) {   // || lastMap... приведёт к попытке обновления когда
                                                                 // мапы нет в дельте и lastMap == null
                                                                 // что приводит к NullPointerException
-            screen.clear();
-            // TODO: null delta??
-            // drawPlains(screen.getMinimumSize(), delta); // not needed
+//            screen.clear(); // TODO: clear only playground field
             drawMap(delta.getMap());
         }
 
@@ -97,11 +97,12 @@ public class LanternaView implements View {
         var width = curMap.getWidth();
         var height = curMap.getHeight();
 
+        var graphics = screen.newTextGraphics();
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
                 var tileType = curMap.getTile(new Position(i, j));
                 var tile = mapObjects.get(tileType);
-                screen.setCharacter(i + 2, j + 2, new TextCharacter(tile.tile).withForegroundColor(tile.color));
+                graphics.setCharacter(i + 2, j + 2,  new TextCharacter(tile.tile).withForegroundColor(tile.color));
             }
         }
     }
@@ -111,6 +112,14 @@ public class LanternaView implements View {
             this(getUnicode(tile), color);
         }
     }
+
+    static MapChars floor = new MapChars(' ', TextColor.ANSI.BLUE);  // TODO: check shapes and colors
+    static MapChars wall = new MapChars(0x2500, TextColor.ANSI.WHITE);
+    static MapChars doorIn = new MapChars(0x2500, TextColor.ANSI.WHITE);
+    static MapChars doorOutNormal = new MapChars(0x2500, TextColor.ANSI.GREEN);
+    static MapChars doorOurHard = new MapChars(0x2500, TextColor.ANSI.RED);
+    static MapChars doorOutTreasure = new MapChars(0x2500, TextColor.ANSI.YELLOW);
+
     private static final HashMap<Map.MapTile, MapChars> mapObjects = new HashMap<>() {{
         put(Map.MapTile.FLOOR, floor);
         put(Map.MapTile.WALL, wall);
@@ -119,13 +128,6 @@ public class LanternaView implements View {
         put(Map.MapTile.DOOR_OUT_HARD, doorOurHard);
         put(Map.MapTile.DOOR_OUT_TREASURE_ROOM, doorOutTreasure);
     }};
-
-    static MapChars floor = new MapChars(0x08, TextColor.ANSI.DEFAULT);  // TODO: check shapes and colors
-    static MapChars wall = new MapChars(0x2500, TextColor.ANSI.WHITE);
-    static MapChars doorIn = new MapChars(0x2500, TextColor.ANSI.WHITE);
-    static MapChars doorOutNormal = new MapChars(0x2500, TextColor.ANSI.GREEN);
-    static MapChars doorOurHard = new MapChars(0x2500, TextColor.ANSI.RED);
-    static MapChars doorOutTreasure = new MapChars(0x2500, TextColor.ANSI.YELLOW);
 
     record SquareChars(char horizontal, char vertical, char[] corners) {
         public SquareChars(int horizontal, int vertical, int[] corners){

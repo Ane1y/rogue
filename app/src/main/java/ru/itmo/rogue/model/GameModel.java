@@ -19,7 +19,12 @@ public class GameModel implements Model {
         gameLogic = new GameLogic(state);
         levelLogic = new LevelLogic(gameLogic, state);
         inventoryLogic = new InventoryLogic(state);
-        this.view.update(gameLogic.newMap());
+
+        var delta = gameLogic.newMap();
+        state.focus = State.Focus.LEVEL;
+        delta.setFocus(state.focus);
+
+        this.view.update(delta);
     }
 
     @Override
