@@ -129,8 +129,6 @@ public class Map {
         return isEntrance(getTile(pos));
     }
 
-
-
     /**
      * @return true if tile on position `position` represents wall,
      */
@@ -150,7 +148,7 @@ public class Map {
         Set<Position> visited = new HashSet<>();
         Deque<QueuedPosition> queue = new ArrayDeque<>();
         QueuedPosition s = new QueuedPosition(from, 0);
-
+        //TODO: add the accessible coords to the list (floors and walls separately)
         queue.add(s);
 
         while (!queue.isEmpty()) {
