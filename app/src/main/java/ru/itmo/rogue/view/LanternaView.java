@@ -45,10 +45,8 @@ public class LanternaView implements View {
             drawPlains(screen.getMinimumSize(), delta);
         }
 
-        if (delta.getMap() != null /* || lastMap == null*/) {   // || lastMap... приведёт к попытке обновления когда
-                                                                // мапы нет в дельте и lastMap == null
-                                                                // что приводит к NullPointerException
-//            screen.clear(); // TODO: clear only playground field
+        if (delta.getMap() != null || lastMap == null) {
+            clearPlayground(screen.getMinimumSize());
             drawMap(delta.getMap());
         }
 
@@ -86,10 +84,22 @@ public class LanternaView implements View {
         drawSquare(new TerminalPosition(playground.getColumns() + 3, playground.getRows() - (int)(playground.getRows() * STATS_COEF) + 1), stats, simple);
     }
 
-    private void drawMap(Map curMap) {
-        if (curMap == null) {
-            return; // No map to draw
+    private void clearPlayground(TerminalSize terminalSize) {
+        TerminalSize playground = new TerminalSize((int)(terminalSize.getColumns() * LanternaView.PLAYGROUND_COEF) - 1,
+                terminalSize.getRows() - 6);
+
+        var graphics = screen.newTextGraphics();
+        for (int i = 3; i < playground.getColumns(); i++) {
+            for (int j = 3; j < playground.getRows(); j++) {
+                graphics.setCharacter(i, j, TextCharacter.DEFAULT_CHARACTER);
+            }
         }
+    }
+
+    private void drawMap(Map curMap) {
+//        if (curMap == null) {
+//            return; // No map to draw
+//        }
 
         if (lastMap == null)
             lastMap = curMap;
@@ -101,8 +111,8 @@ public class LanternaView implements View {
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
                 var tileType = curMap.getTile(new Position(i, j));
-                var tile = mapObjects.get(tileType);
-                graphics.setCharacter(i + 2, j + 2,  new TextCharacter(tile.tile).withForegroundColor(tile.color));
+                var tileObject = mapObjects.get(tileType);
+                graphics.setCharacter(i + 4, j + 3, new TextCharacter(tileObject.tile).withForegroundColor(tileObject.color));
             }
         }
     }
@@ -113,12 +123,12 @@ public class LanternaView implements View {
         }
     }
 
-    static MapChars floor = new MapChars(' ', TextColor.ANSI.BLUE);  // TODO: check shapes and colors
-    static MapChars wall = new MapChars(0x2500, TextColor.ANSI.WHITE);
-    static MapChars doorIn = new MapChars(0x2500, TextColor.ANSI.WHITE);
-    static MapChars doorOutNormal = new MapChars(0x2500, TextColor.ANSI.GREEN);
-    static MapChars doorOurHard = new MapChars(0x2500, TextColor.ANSI.RED);
-    static MapChars doorOutTreasure = new MapChars(0x2500, TextColor.ANSI.YELLOW);
+    static MapChars floor = new MapChars(' ', TextColor.ANSI.DEFAULT);  // TODO: check shapes and colors
+    static MapChars wall = new MapChars(0x2588, TextColor.ANSI.WHITE);
+    static MapChars doorIn = new MapChars(0x2588, TextColor.ANSI.WHITE);
+    static MapChars doorOutNormal = new MapChars(0x2588, TextColor.ANSI.GREEN);
+    static MapChars doorOurHard = new MapChars(0x2588, TextColor.ANSI.RED);
+    static MapChars doorOutTreasure = new MapChars(0x2588, TextColor.ANSI.YELLOW);
 
     private static final HashMap<Map.MapTile, MapChars> mapObjects = new HashMap<>() {{
         put(Map.MapTile.FLOOR, floor);
