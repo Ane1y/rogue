@@ -12,7 +12,7 @@ public class Delta {
     private Map map = null;
 
     public void add(UnitUpdate unitUpdate) {
-        if (unitUpdate == null) {
+        if (unitUpdates == null) {
             unitUpdates = new ArrayList<>();
         }
         unitUpdates.add(unitUpdate);
