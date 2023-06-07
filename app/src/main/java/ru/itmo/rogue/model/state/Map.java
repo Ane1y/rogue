@@ -115,7 +115,7 @@ public class Map {
      * @return true if tile on position `position` represents floor,
      */
     public boolean isFloor(Position pos) {
-        return isFloor(getTile(pos));
+        return positionIsInbound(pos) && isFloor(getTile(pos));
     }
 
 
@@ -123,7 +123,7 @@ public class Map {
      * @return true if tile on position `position` represents exit door,
      */
     public boolean isExit(Position pos) {
-        return isExit(getTile(pos));
+        return positionIsInbound(pos) && isExit(getTile(pos));
     }
 
 
@@ -131,14 +131,14 @@ public class Map {
      * @return true if tile on position `position` represents entrance,
      */
     public boolean isEntrance(Position pos) {
-        return isEntrance(getTile(pos));
+        return positionIsInbound(pos) && isEntrance(getTile(pos));
     }
 
     /**
      * @return true if tile on position `position` represents wall,
      */
     public boolean isWall(Position pos) {
-        return isWall(getTile(pos));
+        return positionIsInbound(pos) && isWall(getTile(pos));
     }
 
     /**

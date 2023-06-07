@@ -13,6 +13,12 @@ public class GameModel implements Model {
     private final State state;
     private final View view;
 
+    /**
+     * Creates Model instance
+     * @param view associated view that will be updated whenever the model is updated
+     *             (including constructor)
+     * @throws RuntimeException originating from View::update(Delta)
+     */
     public GameModel(View view) {
         this.view = view;
         state = new State();
@@ -20,7 +26,7 @@ public class GameModel implements Model {
         levelLogic = new LevelLogic(gameLogic, state);
         inventoryLogic = new InventoryLogic(state);
 
-        var delta = gameLogic.newMap();
+        var delta = gameLogic.defaultMap();
         state.focus = State.Focus.LEVEL;
         delta.setFocus(state.focus);
 

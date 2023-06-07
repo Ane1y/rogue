@@ -14,18 +14,15 @@ public class GameLogic {
         this.state = state;
     }
 
-    public Delta newMap() {
-        state.levelMap = new LevelBuilder()
-                .complexity(1)
-                .build();
-
-        var delta = new Delta();
-        delta.setMap(state.levelMap);
-        return delta;
+    /**
+     * Generates default map and updates state accordingly
+     * @return Delta corresponding to changes
+     */
+    public Delta defaultMap() {
+        return update(0);
     }
 
-    public Delta update(Signal cmd) {
-        var delta = new Delta();
+    public Delta update(Signal ignored) {
         int playerLevel = state.player.getLevel();
 
         int difficulty = switch (state.levelMap.getTile(state.player.getPosition())) {
@@ -35,13 +32,19 @@ public class GameLogic {
             default -> -1;
         };
 
+        return update(difficulty);
+    }
+
+    private Delta update(int difficulty) {
+        var delta = new Delta();
+
         if (difficulty == -1) {
             return delta;
         }
 
         var levelBuilder = new LevelBuilder();
         state.levelMap = levelBuilder
-                .complexity(playerLevel)
+                .complexity(difficulty)
                 .build();
         delta.setMap(state.levelMap);
 
@@ -49,7 +52,7 @@ public class GameLogic {
         // Generate Units
         state.units.clear();
         state.units.add(state.player); // Add player -- must be first in list
-        state.player.moveTo(state.levelMap.getEntrance());
+        state.player.moveTo(state.levelMap.getEntrance()); // Move player to the entrance
         delta.add(new UnitUpdate(state.player));
 
         var unitFactory = new UnitFactory(difficulty);
