@@ -148,6 +148,7 @@ public class Map {
      * @param from starting position
      * @param to destination
      * @return amount of steps that should be made to reach `to` from `from`, returns -1 if `to` is unreachable
+     * @throws IllegalArgumentException if one of provided positions is out of bounds
      */
     // returns -1 if path was not found, distance otherwise
     public int getDistance(Position from, Position to) {
