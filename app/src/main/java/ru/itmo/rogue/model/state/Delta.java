@@ -6,17 +6,24 @@ import java.util.Objects;
 
 public class Delta {
     private State.Focus focus;
-    private final List<UnitUpdate> unitUpdates = new ArrayList<>();
-    private final List<UnitPositionUpdate> inventoryChanges = new ArrayList<>();
+    private List<UnitUpdate> unitUpdates;
+    private List<UnitPositionUpdate> inventoryChanges;
     // not null only at the new level
     private Map map = null;
 
     public void add(UnitUpdate unitUpdate) {
-        this.unitUpdates.add(unitUpdate);
+        if (unitUpdate == null) {
+            unitUpdates = new ArrayList<>();
+        }
+        unitUpdates.add(unitUpdate);
     }
 
     public void add(UnitPositionUpdate inventoryChange) {
-        this.inventoryChanges.add(inventoryChange);
+        if (inventoryChanges == null) {
+            inventoryChanges = new ArrayList<>();
+        }
+
+        inventoryChanges.add(inventoryChange);
     }
 
     public void setMap(Map map) {
@@ -36,16 +43,27 @@ public class Delta {
             this.map = that.map;
         }
 
-        unitUpdates.addAll(that.unitUpdates);
-        inventoryChanges.addAll(that.inventoryChanges);
+        if (that.unitUpdates != null) {
+            unitUpdates.addAll(that.unitUpdates);
+        }
+
+        if (that.inventoryChanges != null) {
+            inventoryChanges.addAll(that.inventoryChanges);
+        }
     }
 
     public List<UnitUpdate> getUnitChanges() {
-        return this.unitUpdates;
+        if (unitUpdates == null) {
+            return List.of();
+        }
+        return unitUpdates;
     }
 
     public List<UnitPositionUpdate> getInventoryChanges() {
-        return this.inventoryChanges;
+        if (inventoryChanges == null) {
+            return List.of();
+        }
+        return inventoryChanges;
     }
 
     public State.Focus getFocus() {
