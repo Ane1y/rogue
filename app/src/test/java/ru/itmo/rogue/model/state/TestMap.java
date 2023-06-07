@@ -9,7 +9,7 @@ public class TestMap {
 
     @Test
     public void testCheckDistance() {
-        Map map = new Map(20, 10, 0);
+        Map map = new Map(20, 10);
 
         var start = new Position(1, 1);
 
@@ -28,7 +28,7 @@ public class TestMap {
 
     @Test
     public void testUnreachable() {
-        Map map = new Map(10, 10, 0);
+        Map map = new Map(10, 10);
 
         var start = new Position(1, 1);
 

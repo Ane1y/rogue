@@ -37,6 +37,11 @@ public class Map {
         return tile.equals(MapTile.WALL);
     }
 
+    public Map(int width, int height) {
+        this(width, height, 0);
+    }
+
+
     /**
      * Produces map with free space of size width * height surrounded by wall
      * @param width width of free space
@@ -52,7 +57,7 @@ public class Map {
         Arrays.fill(map[0], MapTile.WALL);
         Arrays.fill(map[width + 1], MapTile.WALL);
 
-        for (int i = 0; i < height + 2; i++) {
+        for (int i = 0; i < width + 2; i++) {
             map[i][0] = MapTile.WALL;
             map[i][height + 1] = MapTile.WALL;
         }
