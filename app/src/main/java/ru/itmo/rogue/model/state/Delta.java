@@ -10,6 +10,7 @@ public class Delta {
     private final List<UnitPositionUpdate> inventoryChanges = new ArrayList<>();
     // not null only at the new level
     private Map map = null;
+
     public void add(UnitUpdate unitUpdate) {
         this.unitUpdates.add(unitUpdate);
     }
@@ -25,7 +26,16 @@ public class Delta {
     public Map getMap() {
         return map;
     }
+
     public void append(Delta that) {
+        if (that.focus != null) {
+            this.focus = that.focus;
+        }
+
+        if (that.map != null) {
+            this.map = that.map;
+        }
+
         unitUpdates.addAll(that.unitUpdates);
         inventoryChanges.addAll(that.inventoryChanges);
     }
@@ -51,7 +61,10 @@ public class Delta {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Delta delta = (Delta) o;
-        return Objects.equals(unitUpdates, delta.unitUpdates) && Objects.equals(inventoryChanges, delta.inventoryChanges);
+        return Objects.equals(focus, delta.focus) &&
+                Objects.equals(map, delta.map) &&
+                Objects.equals(unitUpdates, delta.unitUpdates) &&
+                Objects.equals(inventoryChanges, delta.inventoryChanges);
     }
 
     @Override

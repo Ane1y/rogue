@@ -16,7 +16,7 @@ public class JustJudge implements Judge {
 
     @Override
     public UnitUpdate actionResult(Unit unit, Action action, State state) {
-        if (!state.levelMap.isFloor(action.dest())) {
+        if (!state.getLevelMap().isFloor(action.dest())) {
             return null;
         }
 
@@ -26,9 +26,10 @@ public class JustJudge implements Judge {
             unit.moveTo(action.dest());
             return new UnitPositionUpdate(unit, oldPos);
         } else if (targetUnit.isDead()) {
+            // TODO: Move this functionality from Judge
             unit.getStash().addAll(targetUnit.getStash());
             targetUnit.getStash().clear();
-            state.units.remove(targetUnit);
+            state.getUnits().remove(targetUnit);
             return null;
         } else {
             return fight(unit, targetUnit);

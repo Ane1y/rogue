@@ -6,7 +6,7 @@ import ru.itmo.rogue.model.state.Delta;
 import ru.itmo.rogue.model.state.State;
 
 public class LevelLogic {
-    private State state;
+    private final State state;
     private final GameLogic gameLogic;
     public LevelLogic(GameLogic gameLogic, State state) {
         this.gameLogic = gameLogic;
@@ -14,8 +14,8 @@ public class LevelLogic {
     }
 
     public Delta update(Signal cmd) {
-        var curPos = state.player.getPosition();
-        if (state.levelMap.isExit(curPos)) {
+        var curPos = state.getPlayer().getPosition();
+        if (state.getLevelMap().isExit(curPos)) {
             return gameLogic.update(cmd);
         }
         // action of player
@@ -26,9 +26,9 @@ public class LevelLogic {
         }
         var delta = new Delta();
         // action of enemies
-        for (var enemy : state.units) {
-            var action = enemy.getAction(state);
-            var unitUpdate = state.rdj.actionResult(enemy, action,state);
+        for (var unit : state.getUnits()) {
+            var action = unit.getAction(state);
+            var unitUpdate = state.getJudge().actionResult(unit, action,state);
             delta.add(unitUpdate);
         }
         return delta;

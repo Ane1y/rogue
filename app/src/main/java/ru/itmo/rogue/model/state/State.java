@@ -8,15 +8,27 @@ import java.util.List;
 
 
 public class State {
-    public Focus focus = Focus.GAME;
-    public final Unit player = UnitFactory.getPlayerUnit();
-    public final List<Unit> units = new ArrayList<>(); // player must be first
-    public boolean running = true;
-    public Judge rdj = new JustJudge();
-    public Map levelMap;
+    private Focus focus = Focus.LEVEL;
+    private final Unit player = UnitFactory.getPlayerUnit();
+    private final List<Unit> units = new ArrayList<>(); // player must be first
+    private final Judge rdj = new JustJudge();
+    private Map levelMap;
+    private boolean running = true;
 
     public enum Focus {
-        GAME, LEVEL, INVENTORY
+        LEVEL, INVENTORY
+    }
+
+    public Focus getFocus() {
+        return focus;
+    }
+
+    public Unit getPlayer() {
+        return player;
+    }
+
+    public List<Unit> getUnits(){
+        return units;
     }
 
     /**
@@ -24,7 +36,6 @@ public class State {
      * @param position position to check
      * @return unit if it placed, null if there's no unit on position
      */
-
     public Unit getUnitOnPosition(Position position) {
         if (player.getPosition().equals(position)) {
             return player;
@@ -34,18 +45,63 @@ public class State {
                 .findFirst().orElse(null);
     }
 
-    public void toggleFocus() {
-        if (focus == Focus.GAME) {
-            return;
-        }
+    public Judge getJudge() {
+        return rdj;
+    }
+
+    public Map getLevelMap() {
+        return levelMap;
+    }
+
+    public boolean running() {
+        return running;
+    }
+
+    public void stop() {
+        running = false;
+    }
+
+    // Setters that produce Delta
+
+    public Delta setFocus(Focus newFocus) {
+        var delta = new Delta();
+        focus = newFocus;
+        delta.setFocus(focus);
+        return delta;
+    }
+
+    /**
+     * Toggles focus
+     * @return Delta with new Focus
+     */
+    public Delta toggleFocus() {
+        var delta = new Delta();
         focus = (focus == Focus.LEVEL) ? Focus.INVENTORY : Focus.LEVEL;
+        delta.setFocus(focus);
+        return delta;
     }
 
-    public List<Unit> getUnits(){
-        return units;
+    public Delta addUnit(Unit unit) {
+        var delta = new Delta();
+        delta.add(new UnitUpdate(unit));
+        units.add(unit);
+        return delta;
     }
 
-    public Unit getPlayer(){
-        return player;
+    /**
+     * Sets map, creates corresponding delta that includes new player position
+     * @param newMap
+     * @return
+     */
+    public Delta setMap(Map newMap) {
+        levelMap = newMap;
+        units.clear();
+        units.add(player);
+        player.moveTo(levelMap.getEntrance()); // Move player to an entrance
+
+        var delta = new Delta();
+        delta.setMap(newMap);
+        delta.add(new UnitUpdate(player));
+        return delta;
     }
 }

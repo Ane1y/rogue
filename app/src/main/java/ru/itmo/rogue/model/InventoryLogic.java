@@ -16,7 +16,7 @@ public class InventoryLogic {
 
     public InventoryLogic(State state) {
         this.state = state;
-        this.playerStash = state.player.getStash();
+        this.playerStash = state.getPlayer().getStash();
     }
 
     public Delta update(Signal data) {

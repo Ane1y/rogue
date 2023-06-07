@@ -27,8 +27,7 @@ public class GameModel implements Model {
         inventoryLogic = new InventoryLogic(state);
 
         var delta = gameLogic.defaultMap();
-        state.focus = State.Focus.LEVEL;
-        delta.setFocus(state.focus);
+        delta.append(state.setFocus(State.Focus.LEVEL));
 
         this.view.update(delta);
     }
@@ -37,12 +36,9 @@ public class GameModel implements Model {
     public boolean update(Signal key) {
         Delta delta;
         if (key.equals(Signal.BACK)) {
-            state.toggleFocus();
-            delta = new Delta();
-            delta.setFocus(state.focus);
+            delta = state.toggleFocus();
         } else {
-            delta = switch (state.focus) {
-                case GAME -> gameLogic.update(key);
+            delta = switch (state.getFocus()) {
                 case LEVEL -> levelLogic.update(key);
                 case INVENTORY -> inventoryLogic.update(key);
             };
@@ -52,6 +48,6 @@ public class GameModel implements Model {
             delta = new Delta();
         }
 
-        return state.running && view.update(delta);
+        return state.running() && view.update(delta);
     }
 }
