@@ -143,38 +143,41 @@ public class Map {
 
     /**
      * Computes walking distance between 2 positions using BFS
+     * All tiles are valid targets for destinations,
+     *  But they can be reachable only if they are in contact with richable floor
      * @param from starting position
      * @param to destination
      * @return amount of steps that should be made to reach `to` from `from`, returns -1 if `to` is unreachable
      */
     // returns -1 if path was not found, distance otherwise
     public int getDistance(Position from, Position to) {
-        // These arrays show the 4 possible movement from a cell
-        Set<Position> visited = new HashSet<>();
-        Deque<QueuedPosition> queue = new ArrayDeque<>();
-        QueuedPosition s = new QueuedPosition(from, 0);
-        //TODO: add the accessible coords to the list (floors and walls separately)
-        queue.add(s);
+        if (!positionIsInbound(from) || !positionIsInbound(to)) {
+            throw new IllegalArgumentException("Given coordinate is out of bound");
+        }
+
+        Set<Position> enqueued = new HashSet<>();
+        Queue<QueuedPosition> queue = new ArrayDeque<>();
+
+        queue.add(new QueuedPosition(from, 0));
+        enqueued.add(from);
 
         while (!queue.isEmpty()) {
-            QueuedPosition queuedPosition = queue.poll();
+            var currentPosition = queue.poll();
 
-            Position pos = queuedPosition.position;
-            int distance = queuedPosition.distance;
-            if (visited.contains(pos)) {
-                continue;
+            if (currentPosition.position.equals(to)) {
+                return currentPosition.distance;
             }
 
-            visited.add(pos);
-
-            if (pos.equals(to)) {
-                return distance;
+            if (!isFloor(currentPosition.position)) {
+                continue; // We can step anywhere only from floor
             }
 
-            for (var delta : Movement.defaults) {
-                Position dp = pos.move(delta);
-                if (positionIsInbound(dp) && isFloor(dp) && !visited.contains(dp)) {
-                    queue.add(new QueuedPosition(dp,distance + 1));
+            for (var movement : Movement.defaults) {
+                var newPosition = currentPosition.position.move(movement);
+
+                if (positionIsInbound(newPosition) && !enqueued.contains(newPosition)) {
+                    enqueued.add(newPosition);
+                    queue.add(new QueuedPosition(newPosition, currentPosition.distance + 1));
                 }
             }
         }

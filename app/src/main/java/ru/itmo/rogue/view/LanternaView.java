@@ -125,7 +125,7 @@ public class LanternaView implements View {
 
     static MapChars floor = new MapChars(' ', TextColor.ANSI.DEFAULT);  // TODO: check shapes and colors
     static MapChars wall = new MapChars(0x2588, TextColor.ANSI.WHITE);
-    static MapChars doorIn = new MapChars(0x2588, TextColor.ANSI.WHITE);
+    static MapChars doorIn = new MapChars(0x2591, TextColor.ANSI.WHITE);
     static MapChars doorOutNormal = new MapChars(0x2588, TextColor.ANSI.GREEN);
     static MapChars doorOurHard = new MapChars(0x2588, TextColor.ANSI.RED);
     static MapChars doorOutTreasure = new MapChars(0x2588, TextColor.ANSI.YELLOW);

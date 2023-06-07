@@ -140,6 +140,6 @@ public class LevelBuilder {
     }
     private Position getRandomPosition() {
         Random rand = new Random();
-        return new Position(rand.nextInt(height), rand.nextInt(width));
+        return new Position(rand.nextInt(width), rand.nextInt(height));
     }
 }
