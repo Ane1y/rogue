@@ -23,8 +23,8 @@ public class GameModel implements Model {
         this.view = view;
         state = new State();
         gameLogic = new GameLogic(state);
-        levelLogic = new LevelLogic(gameLogic, state);
-        inventoryLogic = new InventoryLogic(state);
+        inventoryLogic = new InventoryLogic(state, state.getPlayer());
+        levelLogic = new LevelLogic(gameLogic, inventoryLogic, state);
 
         var delta = gameLogic.defaultMap();
         delta.append(state.setFocus(State.Focus.LEVEL));

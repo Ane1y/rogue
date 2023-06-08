@@ -7,7 +7,7 @@ import java.util.Objects;
 public class Delta {
     private State.Focus focus;
     private List<UnitUpdate> unitUpdates;
-    private List<UnitPositionUpdate> inventoryChanges;
+    private List<InventoryFocusUpdate> inventoryChanges;
     // not null only at the new level
     private Map map = null;
 
@@ -18,7 +18,7 @@ public class Delta {
         unitUpdates.add(unitUpdate);
     }
 
-    public void add(UnitPositionUpdate inventoryChange) {
+    public void add(InventoryFocusUpdate inventoryChange) {
         if (inventoryChanges == null) {
             inventoryChanges = new ArrayList<>();
         }
@@ -59,7 +59,7 @@ public class Delta {
         return unitUpdates;
     }
 
-    public List<UnitPositionUpdate> getInventoryChanges() {
+    public List<InventoryFocusUpdate> getInventoryChanges() {
         if (inventoryChanges == null) {
             return List.of();
         }

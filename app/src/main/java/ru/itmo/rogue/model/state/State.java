@@ -11,7 +11,7 @@ public class State {
     private Focus focus = Focus.LEVEL;
     private final Unit player = UnitFactory.getPlayerUnit();
     private final List<Unit> units = new ArrayList<>(); // player must be first
-    private final Judge rdj = new JustJudge();
+    private final AbstractJudge rdj = new JustJudge();
     private Map levelMap;
     private boolean running = true;
 
@@ -45,7 +45,7 @@ public class State {
                 .findFirst().orElse(null);
     }
 
-    public Judge getJudge() {
+    public AbstractJudge getJudge() {
         return rdj;
     }
 
