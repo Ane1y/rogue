@@ -32,7 +32,19 @@ public class InventoryLogic {
                 }
             }
             case SELECT -> {
-                // TODO: Use item
+                var stash = trackedUnit.getStash();
+                var item = stash.get(focusedItem);
+                item.apply(trackedUnit, state); // TODO: Item application should produce delta
+                stash.remove(focusedItem);
+
+                // Include information for list update
+                for (int i = focusedItem; i < stash.size(); i++) {
+                    delta.add(new InventoryItemUpdate(i, stash.get(i).getName()));
+                }
+
+                if (focusedItem >= stash.size()) {
+                    focusedItem = stash.size() - 1;
+                }
             }
         }
 
