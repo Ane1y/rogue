@@ -28,8 +28,8 @@ public record Movement(int x, int y) {
 
 
     static public final Movement NONE  = new Movement();
-    static public final Movement UP    = new Movement(0, +1);
-    static public final Movement DOWN  = new Movement(0, -1);
+    static public final Movement UP    = new Movement(0, -1);
+    static public final Movement DOWN  = new Movement(0, +1);
     static public final Movement LEFT  = new Movement(-1, 0);
     static public final Movement RIGHT = new Movement(+1, 0);
 
