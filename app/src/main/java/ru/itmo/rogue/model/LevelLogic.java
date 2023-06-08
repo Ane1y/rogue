@@ -19,10 +19,6 @@ public class LevelLogic {
     }
 
     public Delta update(Signal cmd) {
-        var curPos = state.getPlayer().getPosition();
-        if (state.getLevelMap().isExit(curPos)) {
-            return gameLogic.update(cmd);
-        }
         // action of player
         switch (cmd) {
             case UP, DOWN, LEFT, RIGHT -> UnitFactory
@@ -53,10 +49,18 @@ public class LevelLogic {
                  case MOVE_AND_COLLECT -> {
                      var source = state.getUnitOnPosition(action.dest());
                      delta.append(inventoryLogic.transferItems(source, unit));
+                     state.getUnits().remove(source);
+                     var oldPos = unit.getPosition();
+                     unit.moveTo(action.dest());
+                     delta.add(new UnitPositionUpdate(unit, oldPos));
                  }
              }
-
         }
+        var playerPosition = state.getPlayer().getPosition();
+        if (state.getLevelMap().isExit(playerPosition)) {
+            return gameLogic.update(cmd); // Return Map update instead of unit updates
+        }
+
         return delta;
     }
 }
