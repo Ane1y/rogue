@@ -4,13 +4,15 @@ import com.googlecode.lanterna.TerminalPosition;
 import com.googlecode.lanterna.TerminalSize;
 import com.googlecode.lanterna.TextCharacter;
 import com.googlecode.lanterna.TextColor;
-import com.googlecode.lanterna.graphics.TextGraphics;
 import com.googlecode.lanterna.screen.Screen;
 import com.googlecode.lanterna.screen.VirtualScreen;
 import ru.itmo.rogue.model.game.unit.Position;
+import ru.itmo.rogue.model.game.unit.Unit;
 import ru.itmo.rogue.model.state.Delta;
 import ru.itmo.rogue.model.state.Map;
 import ru.itmo.rogue.model.state.State;
+import ru.itmo.rogue.model.state.UnitUpdate;
+
 import java.io.IOException;
 import java.util.HashMap;
 
@@ -21,7 +23,8 @@ public class LanternaView implements View {
 
     private final VirtualScreen screen;
     private TerminalSize lastTerminalSize;
-    private Map lastMap;    // TODO: default background
+    private Map background;
+    private Position curPlayerPos;
 
     public LanternaView(VirtualScreen screen) {
         this.screen = screen;
@@ -45,9 +48,13 @@ public class LanternaView implements View {
             drawPlains(screen.getMinimumSize(), delta);
         }
 
-        if (delta.getMap() != null || lastMap == null) {
+        if (delta.getMap() != null) {
             clearPlayground(screen.getMinimumSize());
             drawMap(delta.getMap());
+        }
+
+        if (delta.getUnitChanges() != null && !delta.getUnitChanges().isEmpty()) {
+            drawPlayer(delta.getUnitChanges().get(0));
         }
 
         // Refresh after everything
@@ -97,12 +104,7 @@ public class LanternaView implements View {
     }
 
     private void drawMap(Map curMap) {
-//        if (curMap == null) {
-//            return; // No map to draw
-//        }
-
-        if (lastMap == null)
-            lastMap = curMap;
+        background = curMap;
 
         var width = curMap.getWidth();
         var height = curMap.getHeight();
@@ -111,10 +113,28 @@ public class LanternaView implements View {
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
                 var tileType = curMap.getTile(new Position(i, j));
+
+                if (tileType == Map.MapTile.DOOR_IN)                    // TODO: change for map.getEntrance()
+                    curPlayerPos = new Position(i + 4, j + 3);
+
                 var tileObject = mapObjects.get(tileType);
                 graphics.setCharacter(i + 4, j + 3, new TextCharacter(tileObject.tile).withForegroundColor(tileObject.color));
             }
         }
+    }
+
+    private void drawPlayer(UnitUpdate playerUpd) {
+        Unit player = playerUpd.getUnit();
+        var newPos = player.getPosition();
+
+        var graphics = screen.newTextGraphics();
+        var prevTile = background.getTile(new Position(curPlayerPos.x() - 4, curPlayerPos.y() - 3));
+        var prevTileObject = mapObjects.get(prevTile);
+
+        graphics.setCharacter(curPlayerPos.x(), curPlayerPos.y(),
+                new TextCharacter(prevTileObject.tile).withForegroundColor(prevTileObject.color));
+        graphics.setCharacter(newPos.x() + 4, newPos.getY() + 3, '@');            // TODO: put real char
+        curPlayerPos = new Position(newPos.x() + 4, newPos.getY() + 3);
     }
 
     record MapChars(char tile, TextColor color) {
