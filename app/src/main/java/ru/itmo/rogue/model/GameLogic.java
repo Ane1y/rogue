@@ -43,6 +43,8 @@ public class GameLogic {
         var levelBuilder = new LevelBuilder();
         var levelMap = levelBuilder
                 .complexity(difficulty)
+                .width(87)
+                .height(32)
                 .build();
 
         var delta = state.setMap(levelMap);

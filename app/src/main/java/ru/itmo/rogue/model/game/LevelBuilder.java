@@ -99,15 +99,9 @@ public class LevelBuilder {
         assert exits > 0;
         assert complexity >= 0;
 
-        var map = new Map(width, height, this.getNumberOfEnemies());
+        var map = generateMap();
 
-        if (entrySide == EntrySide.EAST) { // Placeholder options // TODO: Replace with actual
-            var eastPos = new Position(width + 1, height / 2);
-            map.setTile(eastPos, Map.MapTile.DOOR_IN);
-        } else {
-            var westPos = new Position(0, height / 2);
-            map.setTile(westPos, Map.MapTile.DOOR_IN);
-        }
+        map.setTile(generateEntrance(), Map.MapTile.DOOR_IN);
 
         map.setTile(generateDoor(map), Map.MapTile.DOOR_OUT_NORMAL);
         map.setTile(generateDoor(map), Map.MapTile.DOOR_OUT_HARD);
@@ -130,6 +124,24 @@ public class LevelBuilder {
         return new Map(width, height, numberOfEnemies(complexity)); // TODO: Replace with actual loading
     }
 
+    private Map generateMap() {
+        Map map = new Map(width, height, this.getNumberOfEnemies());
+
+        return map;
+    }
+    private void splitMap(Map map) {
+
+    }
+
+    private record Rectangle(Position leftUpperCcorner,
+                             Position rightBottomCorner) {}
+//    private Rectangle generateSubRoom() {
+//        return new Rectangle();
+//    }
+    private Position generateEntrance() {
+        return (entrySide == EntrySide.EAST) ? new Position(width + 1, height / 2)
+        : new Position(0, height / 2);
+    }
     // generates door and checks if the player can reach ot from entrance
     private Position generateDoor(Map map) {
         Position doorPos = getRandomPosition();
