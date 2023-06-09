@@ -18,7 +18,11 @@ public class Unit {
     protected Position position;
     protected Strategy strategy;
 
-    public Unit(int maxHealth, int strength, int experience, int level, Position position, Strategy strategy) {
+    private char aliveChar;
+    private char deadChar;
+
+
+    public Unit(int maxHealth, int strength, int experience, int level, Position position, Strategy strategy, char aliveChar , char deadChar ) {
         this.maxHealth = maxHealth;
         this.health = maxHealth;
         this.experience = experience;
@@ -26,6 +30,8 @@ public class Unit {
         this.strength = strength;
         this.position = position;
         this.strategy = strategy;
+        this.aliveChar = aliveChar;
+        this.deadChar = deadChar;
     }
 
     public Action getAction(State state) {
