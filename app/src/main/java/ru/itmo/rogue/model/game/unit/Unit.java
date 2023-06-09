@@ -3,10 +3,12 @@ package ru.itmo.rogue.model.game.unit;
 
 import ru.itmo.rogue.model.game.unit.items.Item;
 import ru.itmo.rogue.model.state.State;
+import ru.itmo.rogue.model.state.UnitPositionUpdate;
 import ru.itmo.rogue.model.state.UnitUpdate;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class Unit {
     protected int maxHealth;
@@ -32,12 +34,16 @@ public class Unit {
         return strategy.getAction(this, state);
     }
 
-    public void moveTo(Position pos) {
+    public UnitPositionUpdate moveTo(Position pos) {
+        Position oldPos = position;
         position = pos;
+        return new UnitPositionUpdate(this, oldPos);
     }
 
-    public void move(Movement movement) {
+    public UnitPositionUpdate move(Movement movement) {
+        Position oldPos = position;
         position = position.move(movement);
+        return new UnitPositionUpdate(this, oldPos);
     }
 
     /**
@@ -51,6 +57,17 @@ public class Unit {
 
     public UnitUpdate changeStrength(int change) {
         strength += change;
+        return new UnitUpdate(this);
+    }
+
+    public UnitUpdate increaseExperience(int change) {
+        experience += change;
+        return new UnitUpdate(this);
+    }
+
+    public UnitUpdate levelUp() {
+        experience = 0;
+        level += 1;
         return new UnitUpdate(this);
     }
 
@@ -96,5 +113,34 @@ public class Unit {
 
     public Strategy getStrategy() {
         return strategy;
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Unit unit = (Unit) o;
+        return maxHealth == unit.maxHealth &&
+                health == unit.health &&
+                strength == unit.strength &&
+                experience == unit.experience &&
+                level == unit.level &&
+                Objects.equals(stash, unit.stash) &&
+                Objects.equals(position, unit.position) &&
+                Objects.equals(strategy, unit.strategy);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(
+                maxHealth,
+                health,
+                strength,
+                experience,
+                level,
+                stash,
+                position,
+                strategy);
     }
 }
