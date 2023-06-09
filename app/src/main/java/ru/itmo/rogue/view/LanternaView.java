@@ -114,7 +114,7 @@ public class LanternaView implements View {
             for (int j = 0; j < height; j++) {
                 var tileType = curMap.getTile(new Position(i, j));
 
-                if (tileType == Map.MapTile.DOOR_IN)                    // TODO: change for map.getEntrance()
+                if (tileType == Map.MapTile.DOOR_IN)
                     curPlayerPos = new Position(i + 4, j + 3);
 
                 var tileObject = mapObjects.get(tileType);
@@ -133,7 +133,7 @@ public class LanternaView implements View {
 
         graphics.setCharacter(curPlayerPos.x(), curPlayerPos.y(),
                 new TextCharacter(prevTileObject.tile).withForegroundColor(prevTileObject.color));
-        graphics.setCharacter(newPos.x() + 4, newPos.getY() + 3, '@');            // TODO: put real char
+        graphics.setCharacter(newPos.x() + 4, newPos.getY() + 3, '@');
         curPlayerPos = new Position(newPos.x() + 4, newPos.getY() + 3);
     }
 
@@ -143,7 +143,7 @@ public class LanternaView implements View {
         }
     }
 
-    static MapChars floor = new MapChars(' ', TextColor.ANSI.DEFAULT);  // TODO: check shapes and colors
+    static MapChars floor = new MapChars(' ', TextColor.ANSI.DEFAULT);
     static MapChars wall = new MapChars(0x2588, TextColor.ANSI.WHITE);
     static MapChars doorIn = new MapChars(0x2591, TextColor.ANSI.WHITE);
     static MapChars doorOutNormal = new MapChars(0x2588, TextColor.ANSI.GREEN);

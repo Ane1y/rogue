@@ -1,11 +1,10 @@
 package ru.itmo.rogue.control;
+
+import com.googlecode.lanterna.input.KeyStroke;
 import com.googlecode.lanterna.input.KeyType;
 import com.googlecode.lanterna.screen.Screen;
-import com.googlecode.lanterna.input.KeyStroke;
 import ru.itmo.rogue.model.Model;
-import ru.itmo.rogue.model.state.Delta;
 
-import java.io.DataInput;
 import java.io.IOException;
 
 public class KeyboardController implements Controller {

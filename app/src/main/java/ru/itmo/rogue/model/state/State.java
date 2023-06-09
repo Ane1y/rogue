@@ -1,7 +1,8 @@
 package ru.itmo.rogue.model.state;
 
 import ru.itmo.rogue.model.game.UnitFactory;
-import ru.itmo.rogue.model.game.unit.*;
+import ru.itmo.rogue.model.game.unit.Position;
+import ru.itmo.rogue.model.game.unit.Unit;
 
 import java.util.ArrayList;
 import java.util.List;
