@@ -1,6 +1,8 @@
 package ru.itmo.rogue;
 
+import com.googlecode.lanterna.TerminalSize;
 import com.googlecode.lanterna.screen.Screen;
+import com.googlecode.lanterna.screen.VirtualScreen;
 import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
 import ru.itmo.rogue.control.Controller;
 import ru.itmo.rogue.control.KeyboardController;
@@ -20,15 +22,21 @@ public class App {
 
     App() throws IOException {
         DefaultTerminalFactory terminalFactory = new DefaultTerminalFactory();
-
-        screen = terminalFactory.createScreen();
-        view = new LanternaView(screen); // TODO: Replace
+        terminalFactory.setInitialTerminalSize(new TerminalSize(130, 40));
+        var virtualScreen = new VirtualScreen(terminalFactory.createScreen());
+        screen = virtualScreen;
+        view = new LanternaView(virtualScreen);
         model = new GameModel(view);
         controller = new KeyboardController(model, screen);
     }
 
     void loop() {
         controller.loop();
+        try {
+            screen.stopScreen();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public static void main(String[] args) {
@@ -42,6 +50,4 @@ public class App {
         }
         // run
     }
-
-
 }

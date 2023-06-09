@@ -1,30 +1,69 @@
 package ru.itmo.rogue.model;
 
 import ru.itmo.rogue.control.Signal;
+import ru.itmo.rogue.model.game.LevelBuilder;
 import ru.itmo.rogue.model.game.UnitFactory;
 import ru.itmo.rogue.model.state.Delta;
 import ru.itmo.rogue.model.state.State;
 
 public class GameLogic {
 
-    private State state;
+    private final State state;
     public GameLogic(State state) {
         this.state = state;
     }
 
-    public Delta update(Signal cmd) {
-        // action of player
-        switch (cmd) {
-            case UP, DOWN, LEFT, RIGHT -> UnitFactory
-                    .getPlayerProxyStrategy()
-                    .queueAction(cmd);
-        }
-
-        // action of enemies
-        for (var enemy : state.enemies) {
-            var action = enemy.getAction(state);
-
-        }
-        return null;
+    /**
+     * Generates default map and updates state accordingly
+     * @return Delta corresponding to changes
+     */
+    public Delta defaultMap() {
+        return update(0);
     }
+
+    public Delta update(Signal ignored) {
+        var playerLevel = state.getPlayer().getLevel();
+        var playerPosition = state.getPlayer().getPosition();
+
+        int difficulty = switch (state.getLevelMap().getTile(playerPosition)) {
+            case DOOR_OUT_HARD -> hardDifficulty(playerLevel);
+            case DOOR_OUT_NORMAL -> playerLevel;
+            case DOOR_OUT_TREASURE_ROOM -> 0;
+            default -> -1;
+        };
+
+        return update(difficulty);
+    }
+
+    private Delta update(int difficulty) {
+        if (difficulty == -1) {
+            return new Delta(); // Empty delta
+        }
+
+        var levelBuilder = new LevelBuilder();
+        var levelMap = levelBuilder
+                .complexity(difficulty)
+                .build();
+
+        var delta = state.setMap(levelMap);
+
+        // Generate Units
+        var unitFactory = new UnitFactory(difficulty);
+        for (int i = 0; i < state.getLevelMap().getInitialEnemyNubmer(); i++) {
+            var enemy = unitFactory.getUnit();
+            if (enemy == null) { // TODO: Remove when NotNull guarantee is in place
+                continue;
+            }
+            delta.append(state.addUnit(enemy));
+        }
+
+        delta.append(state.setFocus(State.Focus.LEVEL));
+        return delta;
+    }
+
+    private int hardDifficulty(int difficulty) {
+        return (int)Math.floor(difficulty * 1.5);
+    }
+
+
 }

@@ -5,16 +5,25 @@ import java.util.List;
 import java.util.Objects;
 
 public class Delta {
-    private final List<UnitUpdate> unitUpdates = new ArrayList<>();
-    private final List<UnitPositionUpdate> inventoryChanges = new ArrayList<>();
-
+    private State.Focus focus;
+    private List<UnitUpdate> unitUpdates;
+    private List<InventoryFocusUpdate> inventoryChanges;
+    // not null only at the new level
     private Map map = null;
+
     public void add(UnitUpdate unitUpdate) {
-        this.unitUpdates.add(unitUpdate);
+        if (unitUpdates == null) {
+            unitUpdates = new ArrayList<>();
+        }
+        unitUpdates.add(unitUpdate);
     }
 
-    public void add(UnitPositionUpdate inventoryChange) {
-        this.inventoryChanges.add(inventoryChange);
+    public void add(InventoryFocusUpdate inventoryChange) {
+        if (inventoryChanges == null) {
+            inventoryChanges = new ArrayList<>();
+        }
+
+        inventoryChanges.add(inventoryChange);
     }
 
     public void setMap(Map map) {
@@ -24,17 +33,45 @@ public class Delta {
     public Map getMap() {
         return map;
     }
+
     public void append(Delta that) {
-        unitUpdates.addAll(that.unitUpdates);
-        inventoryChanges.addAll(that.inventoryChanges);
+        if (that.focus != null) {
+            this.focus = that.focus;
+        }
+
+        if (that.map != null) {
+            this.map = that.map;
+        }
+
+        if (that.unitUpdates != null) {
+            unitUpdates.addAll(that.unitUpdates);
+        }
+
+        if (that.inventoryChanges != null) {
+            inventoryChanges.addAll(that.inventoryChanges);
+        }
     }
 
     public List<UnitUpdate> getUnitChanges() {
-        return this.unitUpdates;
+        if (unitUpdates == null) {
+            return List.of();
+        }
+        return unitUpdates;
     }
 
-    public List<UnitPositionUpdate> getInventoryChanges() {
-        return this.inventoryChanges;
+    public List<InventoryFocusUpdate> getInventoryChanges() {
+        if (inventoryChanges == null) {
+            return List.of();
+        }
+        return inventoryChanges;
+    }
+
+    public State.Focus getFocus() {
+        return focus;
+    }
+
+    public void setFocus(State.Focus focus) {
+        this.focus = focus;
     }
 
     @Override
@@ -42,7 +79,10 @@ public class Delta {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Delta delta = (Delta) o;
-        return Objects.equals(unitUpdates, delta.unitUpdates) && Objects.equals(inventoryChanges, delta.inventoryChanges);
+        return Objects.equals(focus, delta.focus) &&
+                Objects.equals(map, delta.map) &&
+                Objects.equals(unitUpdates, delta.unitUpdates) &&
+                Objects.equals(inventoryChanges, delta.inventoryChanges);
     }
 
     @Override

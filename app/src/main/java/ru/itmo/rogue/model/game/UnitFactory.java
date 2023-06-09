@@ -34,7 +34,7 @@ public class UnitFactory {
     }
 
     public static Unit getPlayerUnit() {
-        return new Unit(DEFAULT_PLAYER_HEALTH, // should use UnitFactory
+        return new Unit(DEFAULT_PLAYER_HEALTH,
                 DEFAULT_PLAYER_STRENGTH,
                 0,
                 1,

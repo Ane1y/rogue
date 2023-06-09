@@ -1,5 +1,5 @@
 package ru.itmo.rogue.model.game.unit.strategies;
-import ru.itmo.rogue.model.*;
+
 import ru.itmo.rogue.model.game.unit.Action;
 import ru.itmo.rogue.model.game.unit.Position;
 import ru.itmo.rogue.model.game.unit.Strategy;

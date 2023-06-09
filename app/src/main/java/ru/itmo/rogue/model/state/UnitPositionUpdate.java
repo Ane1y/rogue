@@ -34,6 +34,5 @@ public class UnitPositionUpdate extends UnitUpdate {
         return that instanceof UnitPositionUpdate;
     }
 
-
     private final Position oldPosition;
 }
