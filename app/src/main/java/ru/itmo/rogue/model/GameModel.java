@@ -5,6 +5,10 @@ import ru.itmo.rogue.model.state.Delta;
 import ru.itmo.rogue.model.state.State;
 import ru.itmo.rogue.view.View;
 
+/**
+ * Class that contains general Logic of the game that is active between the levels (Level, Unit and Item generation)
+ * Class have control over the State of the game (as all Logic classes)
+ */
 public class GameModel implements Model {
 
     private final GameLogic gameLogic;

@@ -6,9 +6,14 @@ import ru.itmo.rogue.model.game.UnitFactory;
 import ru.itmo.rogue.model.state.Delta;
 import ru.itmo.rogue.model.state.State;
 
+/**
+ * Class that contains general Logic of the game that is active between the levels (Level, Unit and Item generation)
+ * Class have control over the State of the game (as all Logic classes)
+ */
 public class GameLogic {
 
     private final State state;
+
     public GameLogic(State state) {
         this.state = state;
     }
@@ -21,6 +26,11 @@ public class GameLogic {
         return update(0);
     }
 
+    /**
+     * Updates game state, called on Model initialization, or by LevelLogic
+     * @param ignored generally Logic classes have update method that accepts input, but in this case input is ignored
+     * @return delta that reflects changes made by the method
+     */
     public Delta update(Signal ignored) {
         var playerLevel = state.getPlayer().getLevel();
         var playerPosition = state.getPlayer().getPosition();
@@ -49,7 +59,7 @@ public class GameLogic {
 
         // Generate Units
         var unitFactory = new UnitFactory(difficulty);
-        for (int i = 0; i < state.getLevelMap().getInitialEnemyNubmer(); i++) {
+        for (int i = 0; i < state.getLevelMap().getInitialEnemyNumber(); i++) {
             var enemy = unitFactory.getUnit();
             if (enemy == null) { // TODO: Remove when NotNull guarantee is in place
                 continue;

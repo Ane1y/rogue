@@ -4,13 +4,19 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * Model changes that should be reflected in the View
+ */
 public class Delta {
     private State.Focus focus;
     private List<UnitUpdate> unitUpdates;
     private List<InventoryFocusUpdate> inventoryChanges;
-    // not null only at the new level
     private Map map = null;
 
+    /**
+     * Adds new UnitUpdate to the Delta
+     * @param unitUpdate update of unit's statistics or position
+     */
     public void add(UnitUpdate unitUpdate) {
         if (unitUpdates == null) {
             unitUpdates = new ArrayList<>();
@@ -18,6 +24,10 @@ public class Delta {
         unitUpdates.add(unitUpdate);
     }
 
+    /**
+     * Adds new player's inventory update to the Delta
+     * @param inventoryChange inventory focus update or list update
+     */
     public void add(InventoryFocusUpdate inventoryChange) {
         if (inventoryChanges == null) {
             inventoryChanges = new ArrayList<>();
@@ -26,14 +36,29 @@ public class Delta {
         inventoryChanges.add(inventoryChange);
     }
 
+    /**
+     * Sets new map
+     * @param map new map to be displayed by View
+     */
     public void setMap(Map map) {
         this.map = map;
     }
 
-    public Map getMap() {
-        return map;
+    /**
+     * Sets new focus value
+     * @param focus new focus to be reflected in view
+     */
+    public void setFocus(State.Focus focus) {
+        this.focus = focus;
     }
 
+    /**
+     * Appends other delta to current delta
+     * Changes made to the other delta are prevalent,
+     * so if THAT delta contains update to the focus, it will override value of THIS delta
+     * Same is true for the map
+     * @param that other delta
+     */
     public void append(Delta that) {
         if (that.focus != null) {
             this.focus = that.focus;
@@ -52,6 +77,9 @@ public class Delta {
         }
     }
 
+    /**
+     * @return list of unit changes
+     */
     public List<UnitUpdate> getUnitChanges() {
         if (unitUpdates == null) {
             return List.of();
@@ -59,6 +87,9 @@ public class Delta {
         return unitUpdates;
     }
 
+    /**
+     * @return list of player Inventory changes
+     */
     public List<InventoryFocusUpdate> getInventoryChanges() {
         if (inventoryChanges == null) {
             return List.of();
@@ -66,12 +97,22 @@ public class Delta {
         return inventoryChanges;
     }
 
-    public State.Focus getFocus() {
-        return focus;
+    /**
+     * Returns map update
+     * @return null if map wasn't changed,
+     *          new Map object otherwise
+     */
+    public Map getMap() {
+        return map;
     }
 
-    public void setFocus(State.Focus focus) {
-        this.focus = focus;
+    /**
+     * Returns update to focus
+     * @return null if there was no update,
+     *          actual focus value State.Focus
+     */
+    public State.Focus getFocus() {
+        return focus;
     }
 
     @Override
@@ -87,6 +128,6 @@ public class Delta {
 
     @Override
     public int hashCode() {
-        return Objects.hash(unitUpdates, inventoryChanges);
+        return Objects.hash(unitUpdates, inventoryChanges, focus, map);
     }
 }

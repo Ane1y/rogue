@@ -5,11 +5,20 @@ import ru.itmo.rogue.model.game.unit.Position;
 
 import java.util.*;
 
+
+/**
+ * Class that represents map
+ * Instances SHOULD be produced by game.LevelFactory
+ * Represents unmoving parts of the level (background for action)
+ */
 public class Map {
-    private final int initialEnemyNubmer;
+    private final int initialEnemyNumber;
     private final MapTile[][] map;
     private Position entrance = new Position();
 
+    /**
+     * Tiles that make up the map
+     */
     public enum MapTile {
         FLOOR,
         WALL,
@@ -19,24 +28,41 @@ public class Map {
         DOOR_OUT_TREASURE_ROOM
     }
 
+    /**
+     * Checks if given Tile is an Entrance tile
+     */
     static public boolean isEntrance(MapTile tile) {
         return tile.equals(MapTile.DOOR_IN);
     }
 
+    /**
+     * Checks if given Tile is an Exit tile
+     */
     static public boolean isExit(MapTile tile) {
         return tile.equals(MapTile.DOOR_OUT_NORMAL) ||
                 tile.equals(MapTile.DOOR_OUT_HARD) ||
                 tile.equals(MapTile.DOOR_OUT_TREASURE_ROOM);
     }
 
+    /**
+     * Checks if given Tile is a Floor tile
+     */
     static public boolean isFloor(MapTile tile) {
         return tile.equals(MapTile.FLOOR);
     }
 
+    /**
+     * Checks if given Tile is a Wall tile
+     */
     static public boolean isWall(MapTile tile) {
         return tile.equals(MapTile.WALL);
     }
 
+    /**
+     * Constructs Map that should contain 0 enemies
+     * @param width free space width inside the created map
+     * @param height free space height inside the created map
+     */
     public Map(int width, int height) {
         this(width, height, 0);
     }
@@ -50,7 +76,7 @@ public class Map {
      */
     public Map(int width, int height, int initialEnemyNubmer) {
         this.map = new Map.MapTile[width + 2][height + 2];
-        this.initialEnemyNubmer = initialEnemyNubmer;
+        this.initialEnemyNumber = initialEnemyNubmer;
         for (var column: map) {
             Arrays.fill(column, MapTile.FLOOR);
         }
@@ -107,15 +133,15 @@ public class Map {
     /**
      * @return number of enemies that should be placed on the map
      */
-    public int getInitialEnemyNubmer() {
-        return initialEnemyNubmer;
+    public int getInitialEnemyNumber() {
+        return initialEnemyNumber;
     }
 
     /**
      * @return true if tile on position `position` represents floor,
      */
     public boolean isFloor(Position pos) {
-        return positionIsInbound(pos) && isFloor(getTile(pos));
+        return isPositionInbound(pos) && isFloor(getTile(pos));
     }
 
 
@@ -123,7 +149,7 @@ public class Map {
      * @return true if tile on position `position` represents exit door,
      */
     public boolean isExit(Position pos) {
-        return positionIsInbound(pos) && isExit(getTile(pos));
+        return isPositionInbound(pos) && isExit(getTile(pos));
     }
 
 
@@ -131,14 +157,14 @@ public class Map {
      * @return true if tile on position `position` represents entrance,
      */
     public boolean isEntrance(Position pos) {
-        return positionIsInbound(pos) && isEntrance(getTile(pos));
+        return isPositionInbound(pos) && isEntrance(getTile(pos));
     }
 
     /**
      * @return true if tile on position `position` represents wall,
      */
     public boolean isWall(Position pos) {
-        return positionIsInbound(pos) && isWall(getTile(pos));
+        return isPositionInbound(pos) && isWall(getTile(pos));
     }
 
     /**
@@ -152,7 +178,7 @@ public class Map {
      */
     // returns -1 if path was not found, distance otherwise
     public int getDistance(Position from, Position to) {
-        if (!positionIsInbound(from) || !positionIsInbound(to)) {
+        if (!isPositionInbound(from) || !isPositionInbound(to)) {
             throw new IllegalArgumentException("Given coordinate is out of bound");
         }
 
@@ -176,7 +202,7 @@ public class Map {
             for (var movement : Movement.defaults) {
                 var newPosition = currentPosition.position.move(movement);
 
-                if (positionIsInbound(newPosition) && !enqueued.contains(newPosition)) {
+                if (isPositionInbound(newPosition) && !enqueued.contains(newPosition)) {
                     enqueued.add(newPosition);
                     queue.add(new QueuedPosition(newPosition, currentPosition.distance + 1));
                 }
@@ -190,12 +216,14 @@ public class Map {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Map that)) return false;
-        return Arrays.deepEquals(map, that.map) && Objects.equals(entrance, that.entrance);
+        return Arrays.deepEquals(map, that.map) &&
+                Objects.equals(entrance, that.entrance) &&
+                Objects.equals(initialEnemyNumber, that.initialEnemyNumber);
     }
 
     @Override
     public int hashCode() {
-        int result = Objects.hash(entrance);
+        int result = Objects.hash(entrance, initialEnemyNumber);
         result = Objects.hash(result, Arrays.deepHashCode(map));
         return result;
     }
@@ -205,7 +233,7 @@ public class Map {
         assert pos.getY() >= 0 && pos.getY() < getHeight();
     }
 
-    private boolean positionIsInbound(Position pos) {
+    private boolean isPositionInbound(Position pos) {
         return ((pos.getY() >= 0) && (pos.getY() < getHeight()) &&
                 (pos.getX() >= 0) && (pos.getX() < getWidth()));
     }
