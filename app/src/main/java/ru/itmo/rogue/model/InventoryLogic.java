@@ -7,20 +7,35 @@ import ru.itmo.rogue.model.state.InventoryFocusUpdate;
 import ru.itmo.rogue.model.state.InventoryItemUpdate;
 import ru.itmo.rogue.model.state.State;
 
+
+/**
+ * Class that contains Inventory Logic that is active when Inventory is in focus, or when called by game logic
+ * Responsible for transferring items between different Units and generating deltas if this changes affect the player
+ * Class have control over the State of the game (as all Logic classes)
+ */
 public class InventoryLogic {
 
     private final State state;
     private Unit trackedUnit;
     private int focusedItem = 0;
 
+    /**
+     * @param state state to control
+     * @param trackedUnit unit to track (player)
+     */
     public InventoryLogic(State state, Unit trackedUnit) {
         this.state = state;
         this.trackedUnit = trackedUnit;
     }
 
-    public Delta update(Signal data) {
+    /**
+     * Updates game state, changes item selection or applies item depending on the input
+     * @param signal Controller's signal
+     * @return delta that represents changes made by the method
+     */
+    public Delta update(Signal signal) {
         var delta = new Delta();
-        switch (data) {
+        switch (signal) {
             case UP -> {
                 if (focusedItem > 0) {
                     focusedItem -= 1;

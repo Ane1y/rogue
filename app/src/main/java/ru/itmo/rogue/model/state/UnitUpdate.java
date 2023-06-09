@@ -4,8 +4,15 @@ import ru.itmo.rogue.model.game.unit.Unit;
 
 import java.util.Objects;
 
+
+/**
+ * Update of some unit's statistics that should be reflected in the View
+ */
 public class UnitUpdate {
 
+    /**
+     * @param unit unit whose stats were changed, contains information about current position
+     */
     public UnitUpdate(Unit unit) {
         this.unit = unit;
     }
@@ -22,6 +29,7 @@ public class UnitUpdate {
     public int hashCode() {
         return Objects.hash(unit);
     }
+
     public boolean canEquals(UnitUpdate that) {
         return true;
     }
