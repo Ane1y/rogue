@@ -5,6 +5,7 @@ import ru.itmo.rogue.model.game.unit.items.Item;
 import ru.itmo.rogue.model.state.State;
 import ru.itmo.rogue.model.state.UnitUpdate;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Unit {
@@ -13,7 +14,7 @@ public class Unit {
     protected int strength;
     protected int experience;
     protected int level;
-    protected List<Item> stash;
+    protected List<Item> stash = new ArrayList<>();
     protected Position position;
     protected Strategy strategy;
 
