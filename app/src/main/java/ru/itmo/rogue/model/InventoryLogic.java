@@ -49,7 +49,7 @@ public class InventoryLogic {
             case SELECT -> {
                 var stash = trackedUnit.getStash();
                 var item = stash.get(focusedItem);
-                item.apply(trackedUnit, state); // TODO: Item application should produce delta
+                delta.append(item.apply(trackedUnit, state));
                 stash.remove(focusedItem);
 
                 // Include information for list update
