@@ -1,9 +1,6 @@
 package ru.itmo.rogue.view;
 
-import com.googlecode.lanterna.TerminalPosition;
-import com.googlecode.lanterna.TerminalSize;
-import com.googlecode.lanterna.TextCharacter;
-import com.googlecode.lanterna.TextColor;
+import com.googlecode.lanterna.*;
 import com.googlecode.lanterna.screen.Screen;
 import com.googlecode.lanterna.screen.VirtualScreen;
 import ru.itmo.rogue.model.game.unit.Position;
@@ -11,6 +8,7 @@ import ru.itmo.rogue.model.game.unit.Unit;
 import ru.itmo.rogue.model.state.*;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -73,7 +71,7 @@ public class LanternaView implements View {
         }
 
         if (delta.getInventoryChanges() != null) {
-            // TODO
+            drawInventory(delta.getInventoryChanges());
         }
 
         // Refresh after everything
@@ -232,8 +230,29 @@ public class LanternaView implements View {
         // TODO
     }
 
-    private void drawInventory(List<InventoryUpdate> inventoryUpdates) {
+    private String extendItemString(String name) {
+        final var required = getInventoryWidth() - 2;
+        var length = name.length();
+        var spaces = new char[required - length];
+        Arrays.fill(spaces, ' ');
+        return name + new String(spaces);
+    }
 
+    private void drawInventory(List<InventoryUpdate> inventoryUpdates) {
+        var graphics = screen.newTextGraphics();
+        for (var update : inventoryUpdates) {
+            if (update.index() == -1) {
+                continue; // ignore
+            }
+
+            var name = extendItemString(update.name());
+            var idx = getInventoryIndex(update.index());
+            if (update.focused()) {
+                graphics.putString(idx, name, SGR.REVERSE);
+            } else {
+                graphics.putString(idx, name);
+            }
+        }
     }
 
     private Position getScreenIndex(Position mapIndex) {
@@ -254,11 +273,11 @@ public class LanternaView implements View {
         return new Position(x - dx, y - dy);
     }
 
-    private Position getInventoryIndex(int itemIdx) {
+    private TerminalPosition getInventoryIndex(int itemIdx) {
         var origin = getInventoryOrigin();
         var x = origin.getColumn();
         var y = origin.getRow();
-        return new Position(x, y + itemIdx);
+        return new TerminalPosition(x, y + itemIdx);
     }
 
     record MapChars(char tile, TextColor color) {

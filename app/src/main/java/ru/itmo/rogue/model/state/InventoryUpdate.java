@@ -19,11 +19,18 @@ public record InventoryUpdate (int index, @NotNull String name, boolean focused)
     }
 
     public static InventoryUpdate focus(int index, @NotNull List<Item> stash) {
-        return new InventoryUpdate(index, stash.get(index).getName(), true);
+        return new InventoryUpdate(index, getName(index, stash), true);
     }
 
     public static InventoryUpdate unfocus(int index, @NotNull List<Item> stash) {
-        return new InventoryUpdate(index, stash.get(index).getName(), false);
+        return new InventoryUpdate(index, getName(index, stash), false);
+    }
+
+    private static String getName(int index, @NotNull List<Item> stash) {
+        if (index < 0 || index >= stash.size()) {
+            return "";
+        }
+        return stash.get(index).getName();
     }
 
 }
