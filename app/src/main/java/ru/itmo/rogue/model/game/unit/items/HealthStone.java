@@ -16,10 +16,7 @@ public class HealthStone implements Item {
 
     @Override
     public Delta apply(Unit unit, State state) {
-        Delta delta = new Delta();
-        unit.changeHealth(change);
-        delta.add(new UnitUpdate(unit));
-        return delta;
+        return new Delta(unit.changeHealth(change));
     }
 
     @Override

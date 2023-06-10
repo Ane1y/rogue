@@ -19,8 +19,9 @@ public class BombStone implements Item {
     public Delta apply(Unit unit, State state) {
         Delta delta = new Delta();
         for (Unit enemy : state.getUnits()) {
-            enemy.changeHealth(change);
-            delta.add(new UnitUpdate(enemy));
+            if (enemy != unit) {
+                delta.add(enemy.changeHealth(change));
+            }
         }
         return delta;
     }

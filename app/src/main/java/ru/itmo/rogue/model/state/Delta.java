@@ -13,6 +13,24 @@ public class Delta {
     private List<InventoryFocusUpdate> inventoryChanges;
     private Map map = null;
 
+    public Delta() {}
+
+    public Delta(State.Focus focus) {
+        this.focus = focus;
+    }
+
+    public Delta(UnitUpdate unitUpdate) {
+        add(unitUpdate);
+    }
+
+    public Delta(InventoryFocusUpdate inventoryUpdate) {
+        add(inventoryUpdate);
+    }
+
+    public Delta(Map map) {
+        this.map = map;
+    }
+
     /**
      * Adds new UnitUpdate to the Delta
      * @param unitUpdate update of unit's statistics or position

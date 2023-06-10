@@ -17,10 +17,7 @@ public class StrengthStone implements Item {
 
     @Override
     public Delta apply(Unit unit, State state) {
-        Delta delta = new Delta();
-        unit.changeStrength(change);
-        delta.add(new UnitUpdate(unit));
-        return delta;
+        return new Delta(unit.changeStrength(change));
     }
 
 

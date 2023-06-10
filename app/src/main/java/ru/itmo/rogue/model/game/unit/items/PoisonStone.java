@@ -11,11 +11,7 @@ public class PoisonStone implements Item {
 
     @Override
     public Delta apply(Unit unit, State state) {
-        Delta delta = new Delta();
-
-        unit.changeHealth(-unit.getHealth());
-        delta.add(new UnitUpdate(unit));
-        return delta;
+        return new Delta(unit.changeHealth(-unit.getHealth()));
     }
 
     @Override
