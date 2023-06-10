@@ -48,7 +48,7 @@ public class TestUnit {
         fieldMaxHealth.set(unitMaxHealth, unitMaxHealth.getMaxHealth() + 2);
 
         assertEquals(unit.getMaxHealth() + 2, unitMaxHealth.getMaxHealth());
-        assertNotEquals(unit, unitMaxHealth);;
+        assertNotEquals(unit, unitMaxHealth);
 
         var unitHealth = copyUnit(unit);
         unitHealth.changeHealth(2);
@@ -150,6 +150,35 @@ public class TestUnit {
 
         assertNotEquals(unit1.getStrategy(), unit2.getStrategy());
         assertNotEquals(unit1, unit2);
+    }
+
+    @Test
+    void healthCanOverflow() {
+        var unit = factory.getUnit();
+
+        int initialHealth = unit.getHealth();
+        unit.changeHealth(10);
+
+        assertTrue(unit.getHealth() > initialHealth);
+        assertTrue(unit.getHealth() > unit.getMaxHealth());
+    }
+
+    @Test
+    void healthCantUnderflow() {
+        var unit = factory.getUnit();
+
+        unit.changeHealth(-unit.getHealth() - 100);
+
+        assertEquals(0, unit.getHealth());
+    }
+
+    @Test
+    void strengthCantUnderflow() {
+        var unit = factory.getUnit();
+
+        unit.changeStrength(unit.getStrength() - 100);
+
+        assertEquals(0, unit.getStrength());
     }
 
 }

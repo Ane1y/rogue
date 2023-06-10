@@ -1,12 +1,11 @@
-package ru.itmo.rogue.model.game;
+package ru.itmo.rogue.model.state;
 
 import org.junit.jupiter.api.Test;
-import ru.itmo.rogue.model.game.unit.Position;
-import ru.itmo.rogue.model.game.unit.Unit;
-import ru.itmo.rogue.model.state.UnitPositionUpdate;
-import ru.itmo.rogue.model.state.UnitUpdate;
-
 import static org.junit.jupiter.api.Assertions.*;
+
+import ru.itmo.rogue.model.game.UnitFactory;
+import ru.itmo.rogue.model.game.unit.Position;
+
 
 public class TestUnitUpdate {
 

@@ -56,7 +56,7 @@ public class Unit {
     }
 
     public UnitUpdate changeStrength(int change) {
-        strength += change;
+        strength = (-change >= strength) ? 0 : strength + change;
         return new UnitUpdate(this);
     }
 
@@ -72,7 +72,7 @@ public class Unit {
     }
 
     public boolean isDead() {
-        return health == 0 && !stash.isEmpty();
+        return health < 1;
     }
 
     public List<Item> getStash() {
