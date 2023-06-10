@@ -4,8 +4,7 @@ import ru.itmo.rogue.control.Signal;
 import ru.itmo.rogue.model.game.ItemFactory;
 import ru.itmo.rogue.model.game.unit.Unit;
 import ru.itmo.rogue.model.state.Delta;
-import ru.itmo.rogue.model.state.InventoryFocusUpdate;
-import ru.itmo.rogue.model.state.InventoryItemUpdate;
+import ru.itmo.rogue.model.state.InventoryUpdate;
 import ru.itmo.rogue.model.state.State;
 
 
@@ -38,9 +37,7 @@ public class InventoryLogic {
         stash.clear();
         stash.add(poison);
 
-        var delta = new Delta(new InventoryItemUpdate(0, poison.getName()));
-        delta.add(new InventoryFocusUpdate(0));
-        return delta;
+        return new Delta(new InventoryUpdate(0, poison.getName(), true));
     }
 
     /**
@@ -50,6 +47,10 @@ public class InventoryLogic {
      */
     public Delta update(Signal signal) {
         var delta = new Delta();
+
+        var stash = trackedUnit.getStash();
+        int previousFocusedItem = focusedItem;
+
         switch (signal) {
             case UP -> {
                 if (focusedItem > 0) {
@@ -62,25 +63,31 @@ public class InventoryLogic {
                 }
             }
             case SELECT -> {
-                var stash = trackedUnit.getStash();
                 var item = stash.get(focusedItem);
                 delta.append(item.apply(trackedUnit, state));
                 stash.remove(focusedItem);
 
                 // Include information for list update
-                for (int i = focusedItem; i < stash.size(); i++) {
-                    delta.add(new InventoryItemUpdate(i, stash.get(i).getName()));
-                }
-
-                delta.add(new InventoryItemUpdate(stash.size(), "")); // To erase last item
-
-                if (focusedItem >= stash.size()) {
+                if (focusedItem >= stash.size()) { // Move focus downwards
                     focusedItem = stash.size() - 1;
+                } else {
+                    for (int i = focusedItem; i < stash.size(); i++) {
+                        delta.add(new InventoryUpdate(i, stash.get(i).getName(), i == focusedItem));
+                    }
                 }
+
+                delta.add(InventoryUpdate.erase(stash.size())); // To erase last item
             }
         }
 
-        delta.add(new InventoryFocusUpdate(focusedItem));
+        if (previousFocusedItem == focusedItem) {
+            return delta;
+        }
+
+        // Add update to the focus:
+        delta.add(InventoryUpdate.unfocus(previousFocusedItem, stash));
+        delta.add(InventoryUpdate.focus(focusedItem, stash));
+
         return delta;
     }
 
@@ -104,7 +111,7 @@ public class InventoryLogic {
         destStash.addAll(index, from.getStash());
 
         for (int i = index; i < destStash.size(); i++) {
-            delta.add(new InventoryItemUpdate(i, destStash.get(i).getName()));
+            delta.add(new InventoryUpdate(i, destStash.get(i).getName(), false));
         }
 
         return delta;
