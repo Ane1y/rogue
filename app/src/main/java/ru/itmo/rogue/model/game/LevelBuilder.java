@@ -123,7 +123,11 @@ public class LevelBuilder {
     }
 
     private static int numberOfEnemies(int complexity) {
-        return (int)Math.log(complexity);
+        if (complexity == 0) {
+            return 0;
+        }
+
+        return 2 + (int) Math.ceil(Math.log(complexity));
     }
 
     private Map buildFromDisk() {
