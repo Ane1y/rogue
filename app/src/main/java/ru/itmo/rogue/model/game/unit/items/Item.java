@@ -10,6 +10,7 @@ public interface Item {
      * Applies effects of Item's use to the state
      * @param unit unit that used the item
      * @param state state
+     * @return delta that reflects changes to the state made by the item
      */
     Delta apply(Unit unit, State state);
 

@@ -20,6 +20,18 @@ public class Unit {
     protected Position position;
     protected Strategy strategy;
 
+    private int levelUpCondition() {
+        return (int) Math.ceil(Math.log(level + 1) * 10);
+    }
+
+    private int levelUpStrengthBonus() {
+        return 2; // TODO: Maybe not constant
+    }
+
+    private int levelUpHealthBonus() {
+        return 2;
+    }
+
     private char aliveChar;
     private char deadChar;
 
@@ -38,6 +50,11 @@ public class Unit {
 
     public void setStrategy(Strategy strategy) {
         this.strategy = strategy;
+    }
+
+    public void wipeExperience() {
+        this.experience = 0;
+        this.level = 0;
     }
 
     public Action getAction(State state) {
@@ -74,12 +91,22 @@ public class Unit {
 
     public UnitUpdate increaseExperience(int change) {
         experience += change;
+
+        if (experience >= levelUpCondition()) {
+            return levelUp();
+        }
+
         return new UnitUpdate(this);
     }
 
     public UnitUpdate levelUp() {
         experience = 0;
         level += 1;
+
+        maxHealth += levelUpHealthBonus();
+        health += levelUpHealthBonus();
+        strength += levelUpStrengthBonus();
+
         return new UnitUpdate(this);
     }
 

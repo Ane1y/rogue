@@ -3,16 +3,17 @@ package ru.itmo.rogue.model.game.unit.items;
 import ru.itmo.rogue.model.game.unit.Unit;
 import ru.itmo.rogue.model.state.Delta;
 import ru.itmo.rogue.model.state.State;
-import ru.itmo.rogue.model.state.UnitUpdate;
 
 public class BombStone implements Item {
     private final String name = "Bomb";
+    private final int change;
 
-    int change = -1;
+    public BombStone() {
+        this(1);
+    };
 
-    public BombStone(){};
     public BombStone(int change) {
-        this.change = change;
+        this.change = -change;
     }
 
     @Override

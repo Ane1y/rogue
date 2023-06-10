@@ -8,8 +8,10 @@ import ru.itmo.rogue.model.state.UnitUpdate;
 public class StrengthStone implements Item {
     private final String name = "Strength Potion";
 
-    private int change = 1;
-    public StrengthStone(){};
+    private final int change;
+    public StrengthStone(){
+        this.change = -1;
+    };
 
     public StrengthStone(int addition) {
         this.change = addition;

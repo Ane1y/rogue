@@ -2,6 +2,7 @@ package ru.itmo.rogue.model;
 
 import ru.itmo.rogue.control.Signal;
 import ru.itmo.rogue.model.game.UnitFactory;
+import ru.itmo.rogue.model.game.unit.strategies.IdleStrategy;
 import ru.itmo.rogue.model.state.Delta;
 import ru.itmo.rogue.model.state.State;
 import ru.itmo.rogue.model.state.UnitPositionUpdate;
@@ -46,30 +47,29 @@ public class LevelLogic {
             var action = unit.getAction(state);
             var actionResult = state.getJudge().actionResult(unit, action, state);
 
-             switch (actionResult) {
-                 case MOVE -> {
-                     var oldPos = unit.getPosition();
-                     unit.moveTo(action.dest());
-                     delta.add(new UnitPositionUpdate(unit, oldPos));
-                 }
-                 case FIGHT -> {
-                     var defender = state.getUnitOnPosition(action.dest());
-                     var healthDelta = state.getJudge().resolveFight(unit, defender);
-                     if (healthDelta > 0) {
-                         delta.add(defender.changeHealth(-healthDelta));
-                     } else if (healthDelta < 0) {
-                         delta.add(unit.changeHealth(healthDelta));
-                     }
-                 }
-                 case MOVE_AND_COLLECT -> {
-                     var source = state.getUnitOnPosition(action.dest());
-                     delta.append(inventoryLogic.transferItems(source, unit));
-                     state.getUnits().remove(source);
-                     var oldPos = unit.getPosition();
-                     unit.moveTo(action.dest());
-                     delta.add(new UnitPositionUpdate(unit, oldPos));
-                 }
-             }
+            switch (actionResult) {
+                case MOVE -> delta.add(unit.moveTo(action.dest()));
+                case FIGHT -> {
+                    var defender = state.getUnitOnPosition(action.dest());
+                    var healthDelta = state.getJudge().resolveFight(unit, defender);
+                    if (healthDelta > 0) {
+                        delta.add(defender.changeHealth(-healthDelta));
+                    } else if (healthDelta < 0) {
+                        delta.add(unit.changeHealth(healthDelta));
+                    }
+                    if (defender.isDead()) { // If defender is killed transfer all experience to attacker
+                        unit.increaseExperience(defender.getExperience());
+                        defender.wipeExperience();
+                        defender.setStrategy(new IdleStrategy());
+                    }
+                }
+                case MOVE_AND_COLLECT -> {
+                    var source = state.getUnitOnPosition(action.dest());
+                    delta.append(inventoryLogic.transferItems(source, unit));
+                    state.getUnits().remove(source);
+                    delta.add(unit.moveTo(action.dest()));
+                }
+            }
         }
         var playerPosition = state.getPlayer().getPosition();
         if (state.getLevelMap().isExit(playerPosition)) {

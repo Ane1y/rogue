@@ -26,6 +26,9 @@ public class State {
     // Current map
     private Map levelMap;
 
+    // Number of current level
+    private int levelNumber = 0;
+
     // Running flag, if false, game should stop
     private boolean running = true;
 
@@ -142,6 +145,8 @@ public class State {
      * @return delta that reflects the change
      */
     public Delta setMap(Map newMap) {
+        levelNumber += 1;
+
         levelMap = newMap;
         units.clear();
         units.add(player);
