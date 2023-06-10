@@ -1,8 +1,10 @@
-package ru.itmo.rogue.model.game.unit;
+package ru.itmo.rogue.model.game.unit.strategies;
 
 import org.junit.jupiter.api.Test;
 import ru.itmo.rogue.control.Signal;
 import ru.itmo.rogue.model.game.UnitFactory;
+import ru.itmo.rogue.model.game.unit.Movement;
+import ru.itmo.rogue.model.game.unit.Position;
 import ru.itmo.rogue.model.state.State;
 
 import java.util.List;

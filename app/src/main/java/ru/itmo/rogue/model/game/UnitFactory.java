@@ -1,6 +1,6 @@
 package ru.itmo.rogue.model.game;
 
-import ru.itmo.rogue.model.game.unit.PlayerProxyStrategy;
+import ru.itmo.rogue.model.game.unit.strategies.PlayerProxyStrategy;
 import ru.itmo.rogue.model.game.unit.Position;
 import ru.itmo.rogue.model.game.unit.Unit;
 import ru.itmo.rogue.model.game.unit.strategies.AgressiveStrategy;

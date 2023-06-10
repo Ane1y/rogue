@@ -1,6 +1,7 @@
 package ru.itmo.rogue.model;
 
 import ru.itmo.rogue.control.Signal;
+import ru.itmo.rogue.model.game.ItemFactory;
 import ru.itmo.rogue.model.game.unit.Unit;
 import ru.itmo.rogue.model.state.Delta;
 import ru.itmo.rogue.model.state.InventoryFocusUpdate;
@@ -16,7 +17,7 @@ import ru.itmo.rogue.model.state.State;
 public class InventoryLogic {
 
     private final State state;
-    private Unit trackedUnit;
+    private final Unit trackedUnit;
     private int focusedItem = 0;
 
     /**
@@ -26,6 +27,8 @@ public class InventoryLogic {
     public InventoryLogic(State state, Unit trackedUnit) {
         this.state = state;
         this.trackedUnit = trackedUnit;
+
+        trackedUnit.getStash().add(ItemFactory.getPoison());
     }
 
     /**

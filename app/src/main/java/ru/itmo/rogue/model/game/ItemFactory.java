@@ -7,22 +7,20 @@ import java.util.Random;
 public class ItemFactory {
     private final Random random = new Random();
 
-    public Item getItem()
-    {
-        int rand = random.nextInt();
-        if(rand == 0)
-        {
+    public Item getItem() {
+        int rand = random.nextInt(10);
+        if (rand < 2) {
             return new BombStone();
-        }
-        else if(rand == 1) {
+        } else if (rand < 6) {
             return new HealthStone();
+        } else if (rand < 8) {
+            return new StrengthStone();
+        } else {
+            return new ConfusionSpell();
         }
-            else{
-                return new StrengthStone();
-            }
 
     }
-    public Item getPoison(){
+    public static Item getPoison() {
         return new PoisonStone();
     }
 }

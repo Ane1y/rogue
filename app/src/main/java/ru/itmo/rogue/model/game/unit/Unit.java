@@ -36,8 +36,14 @@ public class Unit {
         this.deadChar = deadChar;
     }
 
+    public void setStrategy(Strategy strategy) {
+        this.strategy = strategy;
+    }
+
     public Action getAction(State state) {
-        return strategy.getAction(this, state);
+        var action = strategy.getAction(this, state);
+        this.strategy = strategy.nextStrategy();
+        return action;
     }
 
     public UnitPositionUpdate moveTo(Position pos) {
@@ -74,6 +80,16 @@ public class Unit {
     public UnitUpdate levelUp() {
         experience = 0;
         level += 1;
+        return new UnitUpdate(this);
+    }
+
+    public UnitUpdate setAliveChar(char aliveChar) {
+        this.aliveChar = aliveChar;
+        return new UnitUpdate(this);
+    }
+
+    public UnitUpdate setDeadChar(char deadChar) {
+        this.deadChar = deadChar;
         return new UnitUpdate(this);
     }
 

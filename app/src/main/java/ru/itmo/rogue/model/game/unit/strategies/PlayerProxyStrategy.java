@@ -1,6 +1,10 @@
-package ru.itmo.rogue.model.game.unit;
+package ru.itmo.rogue.model.game.unit.strategies;
 
 import ru.itmo.rogue.control.Signal;
+import ru.itmo.rogue.model.game.unit.Action;
+import ru.itmo.rogue.model.game.unit.Movement;
+import ru.itmo.rogue.model.game.unit.Strategy;
+import ru.itmo.rogue.model.game.unit.Unit;
 import ru.itmo.rogue.model.state.State;
 
 import java.util.ArrayDeque;
@@ -10,7 +14,7 @@ public class PlayerProxyStrategy implements Strategy {
 
     /**
      * Queues Signal to later perform action
-     * @param signal
+     * @param signal to be queued
      */
     public void queueAction(Signal signal) {
         queue.add(signal);
@@ -20,7 +24,7 @@ public class PlayerProxyStrategy implements Strategy {
     public Action getAction(Unit unit, State state) {
         var signal = queue.poll();
         if (signal == null) {
-            return new Action(unit.position);
+            return new Action(unit.getPosition());
         }
 
         Movement movement = switch (signal) {
@@ -31,7 +35,7 @@ public class PlayerProxyStrategy implements Strategy {
             default -> Movement.NONE; // Neutral action
         };
 
-        return new Action(unit.position.move(movement));
+        return new Action(unit.getPosition().move(movement));
     }
 
     private final Queue<Signal> queue = new ArrayDeque<>();
