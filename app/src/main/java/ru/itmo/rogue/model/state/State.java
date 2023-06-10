@@ -11,26 +11,22 @@ import java.util.List;
  * Class that contains current state of the Game
  */
 public class State {
-    // Focused part of the game (part that should receive commands)
     private Focus focus = Focus.LEVEL;
-
-    // Player Unit
-    private final Unit player = UnitFactory.getPlayerUnit();
-
-    // List of all units present on the level (player included and should be listed first)
+    private final Unit player;
     private final List<Unit> units = new ArrayList<>();
-
-    // Current judge
     private final AbstractJudge rdj = new JustJudge();
-
-    // Current map
     private Map levelMap;
-
-    // Number of current level
-    private int levelNumber = 0;
-
-    // Running flag, if false, game should stop
+    private Statistics statistics;
     private boolean running = true;
+
+    public State() {
+        this(0, 0);
+    }
+
+    public State(int highestRoom, int highestLevel) {
+        player = UnitFactory.getPlayerUnit();
+        statistics = new Statistics(highestRoom, 0, highestLevel, 0, player);
+    }
 
     /**
      * Focused part of the game (part that should receive commands)
@@ -89,6 +85,10 @@ public class State {
         return levelMap;
     }
 
+    public Statistics getStatistics() {
+        return statistics;
+    }
+
     /**
      * @return state of the running flag
      */
@@ -104,6 +104,11 @@ public class State {
     }
 
     // Setters that produce Delta
+
+    public Delta setStatistics(Statistics statistics) {
+        this.statistics = statistics;
+        return null; // TODO: Create proper delta
+    }
 
     /**
      * @param newFocus focus that should be set now
@@ -145,7 +150,7 @@ public class State {
      * @return delta that reflects the change
      */
     public Delta setMap(Map newMap) {
-        levelNumber += 1;
+        statistics = statistics.nextRoom();
 
         levelMap = newMap;
         units.clear();
