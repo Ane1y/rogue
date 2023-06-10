@@ -24,7 +24,7 @@ public class Unit {
     private char deadChar;
 
 
-    public Unit(int maxHealth, int strength, int experience, int level, Position position, Strategy strategy, char aliveChar , char deadChar ) {
+    public Unit(int maxHealth, int strength, int experience, int level, Position position, Strategy strategy, char aliveChar, char deadChar ) {
         this.maxHealth = maxHealth;
         this.health = maxHealth;
         this.experience = experience;
@@ -121,6 +121,14 @@ public class Unit {
         return strategy;
     }
 
+    public char getAliveChar() {
+        return aliveChar;
+    }
+
+    public char getDeadChar() {
+        return deadChar;
+    }
+
 
     @Override
     public boolean equals(Object o) {
@@ -132,6 +140,8 @@ public class Unit {
                 strength == unit.strength &&
                 experience == unit.experience &&
                 level == unit.level &&
+                deadChar == unit.deadChar &&
+                aliveChar == unit.aliveChar &&
                 Objects.equals(stash, unit.stash) &&
                 Objects.equals(position, unit.position) &&
                 Objects.equals(strategy, unit.strategy);
@@ -145,6 +155,8 @@ public class Unit {
                 strength,
                 experience,
                 level,
+                deadChar,
+                aliveChar,
                 stash,
                 position,
                 strategy);

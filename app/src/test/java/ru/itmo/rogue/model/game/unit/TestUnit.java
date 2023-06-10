@@ -20,7 +20,9 @@ public class TestUnit {
                 unit.getExperience(),
                 unit.getLevel(),
                 unit.getPosition(),
-                unit.getStrategy());
+                unit.getStrategy(),
+                unit.getAliveChar(),
+                unit.getDeadChar());
     }
 
 
