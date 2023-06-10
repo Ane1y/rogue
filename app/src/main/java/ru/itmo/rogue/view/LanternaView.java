@@ -26,6 +26,9 @@ public class LanternaView implements View {
     private Map background;
     private Position curPlayerPos;
 
+    /**
+     * @param screen virtual screen which will be used for the visuals
+     */
     public LanternaView(VirtualScreen screen) {
         this.screen = screen;
         this.screen.setMinimumSize(new TerminalSize(130, 40));
@@ -36,6 +39,10 @@ public class LanternaView implements View {
         }
     }
 
+    /**
+     * @param delta latest changes from units, map and inventory
+     * @return the positive or negative result of the update process
+     */
     @Override
     public boolean update(Delta delta) {
         screen.doResizeIfNecessary(); // Actualize size data
