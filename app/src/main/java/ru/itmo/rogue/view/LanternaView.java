@@ -8,13 +8,11 @@ import com.googlecode.lanterna.screen.Screen;
 import com.googlecode.lanterna.screen.VirtualScreen;
 import ru.itmo.rogue.model.game.unit.Position;
 import ru.itmo.rogue.model.game.unit.Unit;
-import ru.itmo.rogue.model.state.Delta;
-import ru.itmo.rogue.model.state.Map;
-import ru.itmo.rogue.model.state.State;
-import ru.itmo.rogue.model.state.UnitUpdate;
+import ru.itmo.rogue.model.state.*;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 
 public class LanternaView implements View {
     private final static double PLAYGROUND_COEF = 0.7;
@@ -61,7 +59,14 @@ public class LanternaView implements View {
         }
 
         if (delta.getUnitChanges() != null && !delta.getUnitChanges().isEmpty()) {
-            drawPlayer(delta.getUnitChanges().get(0));
+            var unitChanges = delta.getUnitChanges();
+            // TODO: mobs: player changes is null. Is it possible that player is null and mobs are not?
+            drawPlayer(unitChanges.get(0));
+            drawMobs(unitChanges.subList(1, unitChanges.size()));
+        }
+
+        if (delta.getInventoryChanges() != null) {
+            // TODO
         }
 
         // Refresh after everything
@@ -119,13 +124,15 @@ public class LanternaView implements View {
         var graphics = screen.newTextGraphics();
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
+                var screenCoordinates = getScreenIndex(new Position(i, j));
                 var tileType = curMap.getTile(new Position(i, j));
 
                 if (tileType == Map.MapTile.DOOR_IN)
-                    curPlayerPos = new Position(i + 4, j + 3);
+                    curPlayerPos = screenCoordinates;
 
                 var tileObject = mapObjects.get(tileType);
-                graphics.setCharacter(i + 4, j + 3, new TextCharacter(tileObject.tile).withForegroundColor(tileObject.color));
+                graphics.setCharacter(screenCoordinates.x(), screenCoordinates.y(),
+                        new TextCharacter(tileObject.tile).withForegroundColor(tileObject.color));
             }
         }
     }
@@ -135,13 +142,40 @@ public class LanternaView implements View {
         var newPos = player.getPosition();
 
         var graphics = screen.newTextGraphics();
-        var prevTile = background.getTile(new Position(curPlayerPos.x() - 4, curPlayerPos.y() - 3));
+        var prevTile = background.getTile(getMapIndex(curPlayerPos));
         var prevTileObject = mapObjects.get(prevTile);
 
         graphics.setCharacter(curPlayerPos.x(), curPlayerPos.y(),
                 new TextCharacter(prevTileObject.tile).withForegroundColor(prevTileObject.color));
-        graphics.setCharacter(newPos.x() + 4, newPos.getY() + 3, '@');
-        curPlayerPos = new Position(newPos.x() + 4, newPos.getY() + 3);
+        var screenCoordinates = getScreenIndex(newPos);
+        graphics.setCharacter(screenCoordinates.x(), screenCoordinates.y(), player.getAliveChar());
+        curPlayerPos = screenCoordinates;
+    }
+
+    private void drawMobs(List<UnitUpdate> mobsUpd) {
+        // TODO
+    }
+
+    private void drawInventory(List<InventoryUpdate> invUpds) {
+        // TODO
+    }
+
+    private Position getScreenIndex(Position mapIndex) {
+        var x = mapIndex.x();
+        var y = mapIndex.y();
+        return new Position(x + 4, y + 3);
+    }
+
+    private Position getMapIndex(Position screenIndex) {
+        var x = screenIndex.x();
+        var y = screenIndex.y();
+        return new Position(x - 4, y - 3);
+    }
+
+    private Position getInventoryIndex(int itemIdx) {
+        var x = (int)(screen.getTerminalSize().getColumns() * INVENTORY_COEF);
+        var y = itemIdx + 2;
+        return new Position(x, y);
     }
 
     record MapChars(char tile, TextColor color) {
