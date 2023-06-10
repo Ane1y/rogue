@@ -32,6 +32,7 @@ public class GameModel implements Model {
 
         var delta = gameLogic.defaultMap();
         delta.append(state.setFocus(State.Focus.LEVEL));
+        delta.append(inventoryLogic.initInventory());
 
         this.view.update(delta);
     }

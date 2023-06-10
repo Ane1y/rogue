@@ -10,7 +10,7 @@ import java.util.Objects;
 public class Delta {
     private State.Focus focus;
     private List<UnitUpdate> unitUpdates;
-    private List<InventoryFocusUpdate> inventoryChanges;
+    private List<InventoryUpdate> inventoryChanges;
     private Map map = null;
 
     public Delta() {}
@@ -23,7 +23,7 @@ public class Delta {
         add(unitUpdate);
     }
 
-    public Delta(InventoryFocusUpdate inventoryUpdate) {
+    public Delta(InventoryUpdate inventoryUpdate) {
         add(inventoryUpdate);
     }
 
@@ -46,7 +46,7 @@ public class Delta {
      * Adds new player's inventory update to the Delta
      * @param inventoryChange inventory focus update or list update
      */
-    public void add(InventoryFocusUpdate inventoryChange) {
+    public void add(InventoryUpdate inventoryChange) {
         if (inventoryChanges == null) {
             inventoryChanges = new ArrayList<>();
         }
@@ -75,7 +75,7 @@ public class Delta {
      * Changes made to the other delta are prevalent,
      * so if THAT delta contains update to the focus, it will override value of THIS delta
      * Same is true for the map
-     * @param that other delta
+     * @param that other delta, SHOULD NOT be used after this
      */
     public void append(Delta that) {
         if (that.focus != null) {
@@ -87,11 +87,19 @@ public class Delta {
         }
 
         if (that.unitUpdates != null) {
-            unitUpdates.addAll(that.unitUpdates);
+            if (unitUpdates == null) {
+                unitUpdates = that.unitUpdates;
+            } else {
+                unitUpdates.addAll(that.unitUpdates);
+            }
         }
 
         if (that.inventoryChanges != null) {
-            inventoryChanges.addAll(that.inventoryChanges);
+            if (inventoryChanges == null) {
+                inventoryChanges = that.inventoryChanges;
+            } else {
+                inventoryChanges.addAll(that.inventoryChanges);
+            }
         }
     }
 
@@ -108,7 +116,7 @@ public class Delta {
     /**
      * @return list of player Inventory changes
      */
-    public List<InventoryFocusUpdate> getInventoryChanges() {
+    public List<InventoryUpdate> getInventoryChanges() {
         if (inventoryChanges == null) {
             return List.of();
         }

@@ -18,7 +18,7 @@ public class InventoryLogic {
 
     private final State state;
     private final Unit trackedUnit;
-    private int focusedItem = 0;
+    private int focusedItem = -1;
 
     /**
      * @param state state to control
@@ -27,8 +27,20 @@ public class InventoryLogic {
     public InventoryLogic(State state, Unit trackedUnit) {
         this.state = state;
         this.trackedUnit = trackedUnit;
+    }
 
-        trackedUnit.getStash().add(ItemFactory.getPoison());
+    /**
+     *
+     */
+    public Delta initInventory() {
+        var stash = trackedUnit.getStash();
+        var poison = ItemFactory.getPoison();
+        stash.clear();
+        stash.add(poison);
+
+        var delta = new Delta(new InventoryItemUpdate(0, poison.getName()));
+        delta.add(new InventoryFocusUpdate(0));
+        return delta;
     }
 
     /**
@@ -59,6 +71,8 @@ public class InventoryLogic {
                 for (int i = focusedItem; i < stash.size(); i++) {
                     delta.add(new InventoryItemUpdate(i, stash.get(i).getName()));
                 }
+
+                delta.add(new InventoryItemUpdate(stash.size(), "")); // To erase last item
 
                 if (focusedItem >= stash.size()) {
                     focusedItem = stash.size() - 1;
