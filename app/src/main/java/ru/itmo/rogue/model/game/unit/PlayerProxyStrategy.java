@@ -9,7 +9,7 @@ import java.util.Queue;
 public class PlayerProxyStrategy implements Strategy {
 
     /**
-     * Queues
+     * Queues Signal to later perform action
      * @param signal
      */
     public void queueAction(Signal signal) {
