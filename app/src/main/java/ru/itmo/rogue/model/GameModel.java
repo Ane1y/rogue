@@ -49,6 +49,11 @@ public class GameModel implements Model {
             };
         }
 
+        if (state.getPlayer().isDead()) {
+            // TODO: Maybe display death screen?
+            return false;
+        }
+
         if (delta == null) { // TODO: Remove when NotNull guarantee is in place
             delta = new Delta();
         }
