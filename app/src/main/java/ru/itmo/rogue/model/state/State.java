@@ -23,9 +23,9 @@ public class State {
         this(0, 0);
     }
 
-    public State(int highestRoom, int highestLevel) {
+    public State(int previousRoomRecord, int previousLevelRecord) {
         player = UnitFactory.getPlayerUnit();
-        statistics = new Statistics(highestRoom, 0, highestLevel, 0, player);
+        statistics = new Statistics(previousLevelRecord, previousRoomRecord, 0, false, player);
     }
 
     /**
