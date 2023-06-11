@@ -8,9 +8,11 @@ import ru.itmo.rogue.model.game.unit.Unit;
 import ru.itmo.rogue.model.state.*;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class LanternaView implements View {
     private final static double PLAYGROUND_COEF = 0.7;
@@ -65,9 +67,9 @@ public class LanternaView implements View {
 
         if (delta.getUnitChanges() != null && !delta.getUnitChanges().isEmpty()) {
             var unitChanges = delta.getUnitChanges();
-            // TODO: mobs: player changes is null. Is it possible that player is null and mobs are not?
-            drawPlayer(unitChanges.get(0));
-            drawMobs(unitChanges.subList(1, unitChanges.size()));
+            for (var change : unitChanges) {
+                drawUnitChanges(change);
+            }
         }
 
         if (delta.getInventoryChanges() != null) {
@@ -211,23 +213,24 @@ public class LanternaView implements View {
         }
     }
 
-    private void drawPlayer(UnitUpdate playerUpd) {
-        Unit player = playerUpd.getUnit();
-        var newPos = player.getPosition();
+    private void drawUnitChanges(UnitUpdate unitUpd) {
+        Unit unit = unitUpd.getUnit();
+        var newPos = unit.getPosition();
+        var screenCoordinates = getScreenIndex(newPos);
 
         var graphics = screen.newTextGraphics();
-        var prevTile = background.getTile(getMapIndex(curPlayerPos));
-        var prevTileObject = mapObjects.get(prevTile);
+        var unitChar = unit.isDead() ? unit.getDeadChar() : unit.getAliveChar();
+        graphics.setCharacter(screenCoordinates.x(), screenCoordinates.y(),unitChar);
 
-        graphics.setCharacter(curPlayerPos.x(), curPlayerPos.y(),
-                new TextCharacter(prevTileObject.tile).withForegroundColor(prevTileObject.color));
-        var screenCoordinates = getScreenIndex(newPos);
-        graphics.setCharacter(screenCoordinates.x(), screenCoordinates.y(), player.getAliveChar());
-        curPlayerPos = screenCoordinates;
-    }
+        if (unitUpd instanceof UnitPositionUpdate) {
+            var prevPos = ((UnitPositionUpdate) unitUpd).getOldPosition();
+            var prevTile = background.getTile(prevPos);
+            var prevTileObject = mapObjects.get(prevTile);
 
-    private void drawMobs(List<UnitUpdate> mobsUpd) {
-        // TODO
+            graphics.setCharacter(getScreenIndex(prevPos).x(), getScreenIndex(prevPos).y(),
+                    new TextCharacter(prevTileObject.tile).withForegroundColor(prevTileObject.color));
+            graphics.setCharacter(screenCoordinates.x(), screenCoordinates.y(), unit.getAliveChar());
+        }
     }
 
     private String extendItemString(String name) {
