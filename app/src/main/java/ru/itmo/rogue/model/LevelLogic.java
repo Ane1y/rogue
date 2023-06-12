@@ -2,9 +2,13 @@ package ru.itmo.rogue.model;
 
 import ru.itmo.rogue.control.Signal;
 import ru.itmo.rogue.model.game.UnitFactory;
+import ru.itmo.rogue.model.game.unit.Unit;
 import ru.itmo.rogue.model.game.unit.strategies.IdleStrategy;
 import ru.itmo.rogue.model.state.Delta;
 import ru.itmo.rogue.model.state.State;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Class that contains Level Logic that is active while level is in focus
@@ -42,6 +46,8 @@ public class LevelLogic {
         }
         var delta = new Delta();
         // action of enemies
+
+        List<Unit> toDelete = new ArrayList<>();
         for (var unit : state.getUnits()) {
             var action = unit.getAction(state);
             var actionResult = state.getJudge().actionResult(unit, action, state);
@@ -65,10 +71,15 @@ public class LevelLogic {
                 case MOVE_AND_COLLECT -> {
                     var source = state.getUnitOnPosition(action.dest());
                     delta.append(inventoryLogic.transferItems(source, unit));
-                    state.getUnits().remove(source);
+//                    state.getUnits().remove(source);
+                    toDelete.add(source);
                     delta.add(unit.moveTo(action.dest()));
                 }
             }
+        }
+
+        for (var d : toDelete) {
+            state.getUnits().remove(d);
         }
 
         var playerPosition = state.getPlayer().getPosition();
