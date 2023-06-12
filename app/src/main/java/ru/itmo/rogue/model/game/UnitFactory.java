@@ -21,7 +21,7 @@ public class UnitFactory {
     public static final char ALIVE_PLAYER = '@';
     public static final char DEAD_PLAYER = '?';
     private static final PlayerProxyStrategy playerProxyStrategy = new PlayerProxyStrategy();
-    private static final Unit player = newPlayerUnit();
+//    private static final Unit player = newPlayerUnit();
 
     public static int DEFAULT_PLAYER_HEALTH = 3;
     public static int DEFAULT_PLAYER_STRENGTH = 1;
@@ -30,6 +30,8 @@ public class UnitFactory {
     public static int UNIT_EXPERIENCE = 2;
     public static int UNIT_LEVEL = 2;
     private final Random random = new Random();
+
+    private static final Unit player = newPlayerUnit();
 
     public final int difficulty;
     private final int width;
