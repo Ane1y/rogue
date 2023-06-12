@@ -5,7 +5,6 @@ import ru.itmo.rogue.model.game.UnitFactory;
 import ru.itmo.rogue.model.game.unit.strategies.IdleStrategy;
 import ru.itmo.rogue.model.state.Delta;
 import ru.itmo.rogue.model.state.State;
-import ru.itmo.rogue.model.state.UnitPositionUpdate;
 
 /**
  * Class that contains Level Logic that is active while level is in focus
@@ -71,6 +70,7 @@ public class LevelLogic {
                 }
             }
         }
+
         var playerPosition = state.getPlayer().getPosition();
         if (state.getLevelMap().isExit(playerPosition)) {
             return gameLogic.update(signal); // Return Map update instead of unit updates

@@ -76,6 +76,8 @@ public class LanternaView implements View {
             drawInventory(delta.getInventoryChanges());
         }
 
+        drawStatistics(delta.getStatistics());
+
         // Refresh after everything
         try {
             screen.refresh(updateType);
@@ -258,6 +260,42 @@ public class LanternaView implements View {
         }
     }
 
+    private void drawStatistics(Statistics statistics) {
+        if (statistics == null) {
+            return;
+        }
+
+        var graphics = screen.newTextGraphics();
+        var unit = statistics.trackedUnit();
+
+        var origin = getStatisticsOrigin();
+        int currX = origin.getColumn();
+        int currY = origin.getRow();
+
+        var healthString = unit.getHealth() + "/" + unit.getMaxHealth();
+        graphics.setCharacter(currX, currY, getUnicode(0x2665));
+        graphics.putString(currX + 1, currY, healthString);
+
+        currX += healthString.length() + 2;
+        var strengthString = "STR" + unit.getStrength();
+        graphics.putString(currX, currY, strengthString);
+
+        currX += strengthString.length() + 1;
+        var exp = "EXP:" + unit.getExperience() + "/" + unit.levelUpCondition();
+        graphics.putString(currX, currY, exp);
+
+        currX += exp.length() + 1;
+        var lvl = "LVL:" + unit.getLevel();
+        graphics.putString(currX, currY, lvl);
+
+        currX = origin.getColumn();
+        currY += 2;
+
+        var room = "ROOM:" + statistics.currentRoom() + " HIGH:" + statistics.previousRoomRecord();
+        graphics.putString(currX, currY, room);
+    }
+
+
     private Position getScreenIndex(Position mapIndex) {
         var x = mapIndex.x();
         var y = mapIndex.y();
@@ -288,6 +326,8 @@ public class LanternaView implements View {
             this(getUnicode(tile), color);
         }
     }
+
+    static TextCharacter healthSymbol = new TextCharacter(getUnicode(0x2665));
 
     static MapChars floor = new MapChars(' ', TextColor.ANSI.DEFAULT);
     static MapChars wall = new MapChars(0x2588, TextColor.ANSI.WHITE);

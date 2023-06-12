@@ -13,6 +13,8 @@ public class Delta {
     private List<InventoryUpdate> inventoryChanges;
     private Map map = null;
 
+    private Statistics statistics = null;
+
     public Delta() {}
 
     public Delta(State.Focus focus) {
@@ -29,6 +31,10 @@ public class Delta {
 
     public Delta(Map map) {
         this.map = map;
+    }
+
+    public Delta(Statistics statistics) {
+        this.statistics = statistics;
     }
 
     /**
@@ -52,6 +58,10 @@ public class Delta {
         }
 
         inventoryChanges.add(inventoryChange);
+    }
+
+    public void setStatistics(Statistics statistics) {
+        this.statistics = statistics;
     }
 
     /**
@@ -139,6 +149,10 @@ public class Delta {
      */
     public State.Focus getFocus() {
         return focus;
+    }
+
+    public Statistics getStatistics() {
+        return statistics;
     }
 
     @Override

@@ -20,7 +20,7 @@ public class Unit {
     protected Position position;
     protected Strategy strategy;
 
-    private int levelUpCondition() {
+    public int levelUpCondition() {
         return (int) Math.ceil(Math.log(level + 1) * 10);
     }
 

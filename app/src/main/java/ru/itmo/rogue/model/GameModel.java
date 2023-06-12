@@ -33,6 +33,7 @@ public class GameModel implements Model {
         var delta = gameLogic.defaultMap();
         delta.append(state.setFocus(State.Focus.LEVEL));
         delta.append(inventoryLogic.initInventory());
+        delta.setStatistics(state.getStatistics());
 
         this.view.update(delta);
     }
@@ -49,9 +50,16 @@ public class GameModel implements Model {
             };
         }
 
+        if (state.getPlayer().isDead()) {
+            // TODO: Maybe display death screen?
+            return false;
+        }
+
         if (delta == null) { // TODO: Remove when NotNull guarantee is in place
             delta = new Delta();
         }
+
+        delta.setStatistics(state.getStatistics());
 
         return state.running() && view.update(delta);
     }

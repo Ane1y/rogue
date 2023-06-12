@@ -37,7 +37,7 @@ public class InventoryLogic {
         var poison = ItemFactory.getPoison();
         stash.clear();
         stash.add(poison);
-
+        focusedItem = 0;
         return new Delta(new InventoryUpdate(0, poison.getName(), true));
     }
 
@@ -86,8 +86,12 @@ public class InventoryLogic {
         }
 
         // Add update to the focus:
-        delta.add(InventoryUpdate.unfocus(previousFocusedItem, stash));
-        delta.add(InventoryUpdate.focus(focusedItem, stash));
+        if (previousFocusedItem != -1) {
+            delta.add(InventoryUpdate.unfocus(previousFocusedItem, stash));
+        }
+        if (focusedItem != -1) {
+            delta.add(InventoryUpdate.focus(focusedItem, stash));
+        }
 
         return delta;
     }
