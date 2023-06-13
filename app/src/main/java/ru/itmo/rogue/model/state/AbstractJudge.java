@@ -24,6 +24,9 @@ public abstract class AbstractJudge {
     public ActionResult actionResult(Unit unit, Action action, State state) {
         var map = state.getLevelMap();
         var destination = action.dest();
+        if (unit.getPosition().equals(action.dest())) {
+            return ActionResult.NOTHING;
+        }
         // Doors are open only if all enemies are dead
         boolean doorsOpen = state.getUnits().stream().allMatch(u -> u == state.getPlayer() || u.isDead());
         boolean walkable = map.isFloor(destination) || (map.isExit(destination) && doorsOpen);

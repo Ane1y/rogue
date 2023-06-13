@@ -25,7 +25,7 @@ public class UnitFactory {
 
     public static int DEFAULT_PLAYER_HEALTH = 3;
     public static int DEFAULT_PLAYER_STRENGTH = 1;
-    public static int UNIT_STRENGTH = 3;
+    public static int UNIT_STRENGTH = 2;
     public static int UNIT_HEALTH = 2;
     public static int UNIT_EXPERIENCE = 2;
     public static int UNIT_LEVEL = 2;
@@ -79,14 +79,24 @@ public class UnitFactory {
         Probabilities probabilities = new Probabilities();
         int sum = probabilities.sum();
 
+        Unit unit;
         int num = random.nextInt(sum);
         if (num < probabilities.idleProb) {
-            return getIdleUnit();
+            unit = getIdleUnit();
         }
         if (num < probabilities.idleProb + probabilities.cowardProb) {
-            return getCowardUnit();
+            unit = getCowardUnit();
+        } else {
+            unit = getAgressiveUnit();
         }
-        return getAgressiveUnit();
+
+        ItemFactory factory = new ItemFactory();
+        int items = random.nextInt(6);
+        for (int i = 0; i < items; i++) {
+            unit.getStash().add(factory.getItem());
+        }
+
+        return unit;
     }
 
     private Position generatePosition(){

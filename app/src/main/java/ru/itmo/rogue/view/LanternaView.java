@@ -28,7 +28,6 @@ public class LanternaView implements View {
     private final TerminalSize referenceSize;
     private TerminalSize lastTerminalSize;
     private Map background;
-    private Position curPlayerPos;
 
     /**
      * @param screen virtual screen which will be used for the visuals
@@ -205,9 +204,6 @@ public class LanternaView implements View {
                 var screenCoordinates = getScreenIndex(new Position(i, j));
                 var tileType = curMap.getTile(new Position(i, j));
 
-                if (tileType == Map.MapTile.DOOR_IN)
-                    curPlayerPos = screenCoordinates;
-
                 var tileObject = mapObjects.get(tileType);
                 graphics.setCharacter(screenCoordinates.x(), screenCoordinates.y(),
                         new TextCharacter(tileObject.tile).withForegroundColor(tileObject.color));
@@ -222,7 +218,12 @@ public class LanternaView implements View {
 
         var graphics = screen.newTextGraphics();
         var unitChar = unit.isDead() ? unit.getDeadChar() : unit.getAliveChar();
-        graphics.setCharacter(screenCoordinates.x(), screenCoordinates.y(),unitChar);
+        var curHealth = unit.getHealth();
+        var maxHealth = unit.getMaxHealth();
+        var color = curHealth / (double)maxHealth > 0.7 ? TextColor.ANSI.GREEN : TextColor.ANSI.YELLOW;
+        if (curHealth < 0.3) color = TextColor.ANSI.RED;
+        graphics.setCharacter(screenCoordinates.x(), screenCoordinates.y(),
+                new TextCharacter(unitChar).withForegroundColor(color));
 
         if (unitUpd instanceof UnitPositionUpdate) {
             var prevPos = ((UnitPositionUpdate) unitUpd).getOldPosition();
@@ -231,7 +232,8 @@ public class LanternaView implements View {
 
             graphics.setCharacter(getScreenIndex(prevPos).x(), getScreenIndex(prevPos).y(),
                     new TextCharacter(prevTileObject.tile).withForegroundColor(prevTileObject.color));
-            graphics.setCharacter(screenCoordinates.x(), screenCoordinates.y(), unit.getAliveChar());
+            graphics.setCharacter(screenCoordinates.x(), screenCoordinates.y(),
+                    new TextCharacter(unit.getAliveChar()).withForegroundColor(color));
         }
     }
 
