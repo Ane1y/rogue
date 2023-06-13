@@ -14,7 +14,6 @@ import java.util.*;
  * Represents unmoving parts of the level (background for action)
  */
 public class Map implements Serializable {
-    private final int initialEnemyNumber;
     private final MapTile[][] map;
     private Position entrance = new Position();
 
@@ -61,24 +60,12 @@ public class Map implements Serializable {
     }
 
     /**
-     * Constructs Map that should contain 0 enemies
-     * @param width free space width inside the created map
-     * @param height free space height inside the created map
-     */
-    public Map(int width, int height) {
-        this(width, height, 0);
-    }
-
-
-    /**
      * Produces map with free space of size width * height surrounded by wall
      * @param width width of free space
      * @param height height of free space
-     * @param initialEnemyNumber number of enemies that should be placed on the map
      */
-    public Map(int width, int height, int initialEnemyNumber) {
+    public Map(int width, int height) {
         this.map = new Map.MapTile[width + 2][height + 2];
-        this.initialEnemyNumber = initialEnemyNumber;
         for (var column: map) {
             Arrays.fill(column, MapTile.WALL);
         }
@@ -132,12 +119,6 @@ public class Map implements Serializable {
         return map.length;
     }
 
-    /**
-     * @return number of enemies that should be placed on the map
-     */
-    public int getInitialEnemyNumber() {
-        return initialEnemyNumber;
-    }
 
 
     public boolean positionIsInbound(Position pos) {
@@ -274,8 +255,7 @@ public class Map implements Serializable {
         if (this == o) return true;
         if (!(o instanceof Map that)) return false;
         return Arrays.deepEquals(map, that.map) &&
-                Objects.equals(entrance, that.entrance) &&
-                Objects.equals(initialEnemyNumber, that.initialEnemyNumber);
+                Objects.equals(entrance, that.entrance);
     }
 
     @Override

@@ -107,36 +107,7 @@ public class LevelBuilder {
         
         params = new Parameters(4, width, height);
         var map = generateMap();
-//        for(int i = 0; i < 5; i++) {
-//            try {
-//                map = generateMap();
-//                FileOutputStream fileOutputStream
-//                        = new FileOutputStream(String.format("./app/src/main/resources/complex%d.map", i));
-//                ObjectOutputStream objectOutputStream
-//                        = new ObjectOutputStream(fileOutputStream);
-//                objectOutputStream.writeObject(map);
-//                objectOutputStream.flush();
-//                objectOutputStream.close();
-//            } catch (Exception e) {
-//                System.err.println(e.getMessage());
-//            }
-//        }
         return map;
-    }
-
-    /**
-     * @return number of enemies for set complexity
-     */
-    public int getNumberOfEnemies() {
-        return numberOfEnemies(complexity);
-    }
-
-    private static int numberOfEnemies(int complexity) {
-        if (complexity == 0) {
-            return 0;
-        }
-
-        return 2 + (int) Math.ceil(Math.log(complexity));
     }
 
     private Map buildFromDisk() {
@@ -150,7 +121,7 @@ public class LevelBuilder {
     }
 
     private Map generateMap() {
-        Map map = new Map(width, height, this.getNumberOfEnemies());
+        Map map = new Map(width, height);
         // dividing space and creating subrooms
         List<Position> corePoints = new Partition(width, height, params.depth, 5).getCenters();
         boolean isEntrance = true;
@@ -164,8 +135,9 @@ public class LevelBuilder {
         // creating doors out
         map.setTile(generateDoor(map), Map.MapTile.DOOR_OUT_NORMAL);
         map.setTile(generateDoor(map), Map.MapTile.DOOR_OUT_HARD);
-        map.setTile(generateDoor(map), Map.MapTile.DOOR_OUT_TREASURE_ROOM);
-        
+        if (rand.nextDouble() > 0.8) {
+            map.setTile(generateDoor(map), Map.MapTile.DOOR_OUT_TREASURE_ROOM);
+        }
         return map;
     }
     public class Partition {
@@ -331,7 +303,7 @@ public class LevelBuilder {
         Parameters(int depth, int width, int height) {
             this.depth = depth;
             this.numberOfSubRooms = (int)Math.pow(2, depth);
-
+//            int squareDepth = 1;
             int squareDepth = depth * depth;
             var deltaWidth = Math.max(width / squareDepth, squareDepth);
             this.minWidth = deltaWidth / 3;

@@ -7,6 +7,8 @@ import ru.itmo.rogue.model.game.unit.Position;
 import ru.itmo.rogue.model.state.Delta;
 import ru.itmo.rogue.model.state.State;
 
+import javax.swing.*;
+
 /**
  * Class that contains general Logic of the game that is active between the levels (Level, Unit and Item generation)
  * Class have control over the State of the game (as all Logic classes)
@@ -52,9 +54,9 @@ public class GameLogic {
         }
 
         var levelBuilder = new LevelBuilder()
-                .complexity(difficulty)
                 .width(87)
-                .height(32);
+                .height(32)
+                .complexity(difficulty);
 
         if (difficulty == 0) {
             levelBuilder.loadFromDisk("./app/src/main/resources/simple.map");
@@ -67,7 +69,7 @@ public class GameLogic {
         var reachability = levelMap.getDistance(levelMap.getEntrance(), new Position(levelMap.getWidth() - 1, levelMap.getHeight() - 1));
         // Generate Units
         var unitFactory = new UnitFactory(difficulty, reachability.reachableFloors());
-        for (int i = 0; i < state.getLevelMap().getInitialEnemyNumber(); i++) {
+        for (int i = 0; i < numberOfEnemies(difficulty); i++) {
             var enemy = unitFactory.getUnit();
             if (enemy == null) { // TODO: Remove when NotNull guarantee is in place
                 continue;
@@ -84,4 +86,11 @@ public class GameLogic {
     }
 
 
+    private int numberOfEnemies(int complexity) {
+        if (complexity == 0) {
+            return state.getPlayer().getLevel();
+        }
+
+        return 2 + (int) Math.ceil(Math.log(complexity));
+    }
 }
