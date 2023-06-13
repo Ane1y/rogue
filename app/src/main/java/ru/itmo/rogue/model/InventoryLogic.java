@@ -1,26 +1,58 @@
 package ru.itmo.rogue.model;
 
 import ru.itmo.rogue.control.Signal;
+import ru.itmo.rogue.model.game.ItemFactory;
+import ru.itmo.rogue.model.game.UnitFactory;
 import ru.itmo.rogue.model.game.unit.Unit;
 import ru.itmo.rogue.model.state.Delta;
-import ru.itmo.rogue.model.state.InventoryFocusUpdate;
-import ru.itmo.rogue.model.state.InventoryItemUpdate;
+import ru.itmo.rogue.model.state.InventoryUpdate;
 import ru.itmo.rogue.model.state.State;
 
+
+/**
+ * Class that contains Inventory Logic that is active when Inventory is in focus, or when called by game logic
+ * Responsible for transferring items between different Units and generating deltas if this changes affect the player
+ * Class have control over the State of the game (as all Logic classes)
+ */
 public class InventoryLogic {
 
     private final State state;
-    private Unit trackedUnit;
-    private int focusedItem = 0;
+    private final Unit trackedUnit;
+    private int focusedItem = -1;
 
+    /**
+     * @param state state to control
+     * @param trackedUnit unit to track (player)
+     */
     public InventoryLogic(State state, Unit trackedUnit) {
         this.state = state;
         this.trackedUnit = trackedUnit;
     }
 
-    public Delta update(Signal data) {
+    /**
+     *
+     */
+    public Delta initInventory() {
+        var stash = trackedUnit.getStash();
+        var poison = ItemFactory.getPoison();
+        stash.clear();
+        stash.add(poison);
+        focusedItem = 0;
+        return new Delta(new InventoryUpdate(0, poison.getName(), true));
+    }
+
+    /**
+     * Updates game state, changes item selection or applies item depending on the input
+     * @param signal Controller's signal
+     * @return delta that represents changes made by the method
+     */
+    public Delta update(Signal signal) {
         var delta = new Delta();
-        switch (data) {
+
+        var stash = trackedUnit.getStash();
+        int previousFocusedItem = focusedItem;
+
+        switch (signal) {
             case UP -> {
                 if (focusedItem > 0) {
                     focusedItem -= 1;
@@ -32,23 +64,35 @@ public class InventoryLogic {
                 }
             }
             case SELECT -> {
-                var stash = trackedUnit.getStash();
                 var item = stash.get(focusedItem);
-                item.apply(trackedUnit, state); // TODO: Item application should produce delta
+                delta.append(item.apply(trackedUnit, state));
                 stash.remove(focusedItem);
 
                 // Include information for list update
-                for (int i = focusedItem; i < stash.size(); i++) {
-                    delta.add(new InventoryItemUpdate(i, stash.get(i).getName()));
+                if (focusedItem >= stash.size()) { // Move focus downwards
+                    focusedItem = stash.size() - 1;
+                } else {
+                    for (int i = focusedItem; i < stash.size(); i++) {
+                        delta.add(new InventoryUpdate(i, stash.get(i).getName(), i == focusedItem));
+                    }
                 }
 
-                if (focusedItem >= stash.size()) {
-                    focusedItem = stash.size() - 1;
-                }
+                delta.add(InventoryUpdate.erase(stash.size())); // To erase last item
             }
         }
 
-        delta.add(new InventoryFocusUpdate(focusedItem));
+        if (previousFocusedItem == focusedItem) {
+            return delta;
+        }
+
+        // Add update to the focus:
+        if (previousFocusedItem != -1) {
+            delta.add(InventoryUpdate.unfocus(previousFocusedItem, stash));
+        }
+        if (focusedItem != -1) {
+            delta.add(InventoryUpdate.focus(focusedItem, stash));
+        }
+
         return delta;
     }
 
@@ -72,7 +116,7 @@ public class InventoryLogic {
         destStash.addAll(index, from.getStash());
 
         for (int i = index; i < destStash.size(); i++) {
-            delta.add(new InventoryItemUpdate(i, destStash.get(i).getName()));
+            delta.add(new InventoryUpdate(i, destStash.get(i).getName(), i == focusedItem));
         }
 
         return delta;

@@ -5,6 +5,10 @@ import ru.itmo.rogue.model.state.Delta;
 import ru.itmo.rogue.model.state.State;
 import ru.itmo.rogue.view.View;
 
+/**
+ * Class that contains general Logic of the game that is active between the levels (Level, Unit and Item generation)
+ * Class have control over the State of the game (as all Logic classes)
+ */
 public class GameModel implements Model {
 
     private final GameLogic gameLogic;
@@ -28,6 +32,8 @@ public class GameModel implements Model {
 
         var delta = gameLogic.defaultMap();
         delta.append(state.setFocus(State.Focus.LEVEL));
+        delta.append(inventoryLogic.initInventory());
+        delta.setStatistics(state.getStatistics());
 
         this.view.update(delta);
     }
@@ -44,9 +50,16 @@ public class GameModel implements Model {
             };
         }
 
+        if (state.getPlayer().isDead()) {
+            // TODO: Maybe display death screen?
+            return false;
+        }
+
         if (delta == null) { // TODO: Remove when NotNull guarantee is in place
             delta = new Delta();
         }
+
+        delta.setStatistics(state.getStatistics());
 
         return state.running() && view.update(delta);
     }

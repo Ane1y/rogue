@@ -5,12 +5,22 @@ import ru.itmo.rogue.model.game.unit.Unit;
 
 import java.util.Objects;
 
+/**
+ * Update of some unit's position that should be reflected in the View
+ */
 public class UnitPositionUpdate extends UnitUpdate {
-    public UnitPositionUpdate(Unit unit, Position position) {
+    /**
+     * @param unit unit that was moved, contains information about current position
+     * @param oldPosition old position of the unit
+     */
+    public UnitPositionUpdate(Unit unit, Position oldPosition) {
         super(unit);
-        this.oldPosition = position;
+        this.oldPosition = oldPosition;
     }
 
+    /**
+     * @return old position of the unit
+     */
     public Position getOldPosition() {
         return oldPosition;
     }

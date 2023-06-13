@@ -30,7 +30,12 @@ public class KeyboardController implements Controller {
         return lastStroke;
     }
 
-    Signal getSignal(KeyStroke stroke)
+    /**
+     * Transforms keystrokes into Signals for the model
+     * @param stroke keystroke done by user
+     * @return null, if keystroke is irrelevant, else - Signal
+     */
+    private Signal getSignal(KeyStroke stroke)
     {
         KeyType type = stroke.getKeyType();
         return switch (type) {
@@ -45,8 +50,10 @@ public class KeyboardController implements Controller {
         };
 
     }
-    // TODO: Implement
 
+    /**
+     * See Controller interface
+     */
     @Override
     public void loop() {
         boolean run = true;
@@ -65,9 +72,8 @@ public class KeyboardController implements Controller {
             }
         }
         catch (IOException e) {
+            System.err.println("Error occurred when tried to read keystroke");
             System.err.println(e);
         }
-
-        // TODO: Ending message
     }
 }

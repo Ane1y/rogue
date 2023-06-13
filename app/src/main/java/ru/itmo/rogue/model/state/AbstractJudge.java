@@ -5,11 +5,14 @@ import ru.itmo.rogue.model.game.unit.Unit;
 
 public abstract class AbstractJudge {
 
+    /**
+     * Unit may want to do some action, but Judge determines what result that action will have
+     */
     public enum ActionResult {
-        NOTHING,
-        MOVE,
-        FIGHT,
-        MOVE_AND_COLLECT // Includes movement
+        NOTHING,    // Action has no result (unit stepped into the wall)
+        MOVE,       // ... results in move
+        FIGHT,      // ... results in move
+        MOVE_AND_COLLECT // ... results in move and item collection (stepped on dead enemy or chest)
     }
 
     /**
@@ -21,6 +24,9 @@ public abstract class AbstractJudge {
     public ActionResult actionResult(Unit unit, Action action, State state) {
         var map = state.getLevelMap();
         var destination = action.dest();
+        if (unit.getPosition().equals(action.dest())) {
+            return ActionResult.NOTHING;
+        }
         // Doors are open only if all enemies are dead
         boolean doorsOpen = state.getUnits().stream().allMatch(u -> u == state.getPlayer() || u.isDead());
         boolean walkable = map.isFloor(destination) || (map.isExit(destination) && doorsOpen);

@@ -3,10 +3,12 @@ package ru.itmo.rogue.model.game.unit;
 
 import ru.itmo.rogue.model.game.unit.items.Item;
 import ru.itmo.rogue.model.state.State;
+import ru.itmo.rogue.model.state.UnitPositionUpdate;
 import ru.itmo.rogue.model.state.UnitUpdate;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class Unit {
     protected int maxHealth;
@@ -18,7 +20,23 @@ public class Unit {
     protected Position position;
     protected Strategy strategy;
 
-    public Unit(int maxHealth, int strength, int experience, int level, Position position, Strategy strategy) {
+    public int levelUpCondition() {
+        return (int) Math.ceil(Math.log(level + 1) * 10);
+    }
+
+    private int levelUpStrengthBonus() {
+        return 2; // TODO: Maybe not constant
+    }
+
+    private int levelUpHealthBonus() {
+        return 2;
+    }
+
+    private char aliveChar;
+    private char deadChar;
+
+
+    public Unit(int maxHealth, int strength, int experience, int level, Position position, Strategy strategy, char aliveChar, char deadChar ) {
         this.maxHealth = maxHealth;
         this.health = maxHealth;
         this.experience = experience;
@@ -26,18 +44,35 @@ public class Unit {
         this.strength = strength;
         this.position = position;
         this.strategy = strategy;
+        this.aliveChar = aliveChar;
+        this.deadChar = deadChar;
+    }
+
+    public void setStrategy(Strategy strategy) {
+        this.strategy = strategy;
+    }
+
+    public void wipeExperience() {
+        this.experience = 0;
+        this.level = 0;
     }
 
     public Action getAction(State state) {
-        return strategy.getAction(this, state);
+        var action = strategy.getAction(this, state);
+        this.strategy = strategy.nextStrategy();
+        return action;
     }
 
-    public void moveTo(Position pos) {
+    public UnitPositionUpdate moveTo(Position pos) {
+        Position oldPos = position;
         position = pos;
+        return new UnitPositionUpdate(this, oldPos);
     }
 
-    public void move(Movement movement) {
+    public UnitPositionUpdate move(Movement movement) {
+        Position oldPos = position;
         position = position.move(movement);
+        return new UnitPositionUpdate(this, oldPos);
     }
 
     /**
@@ -50,12 +85,43 @@ public class Unit {
     }
 
     public UnitUpdate changeStrength(int change) {
-        strength += change;
+        strength = (-change >= strength) ? 0 : strength + change;
+        return new UnitUpdate(this);
+    }
+
+    public UnitUpdate increaseExperience(int change) {
+        experience += change;
+
+        if (experience >= levelUpCondition()) {
+            return levelUp();
+        }
+
+        return new UnitUpdate(this);
+    }
+
+    public UnitUpdate levelUp() {
+        experience = 0;
+        level += 1;
+
+        maxHealth += levelUpHealthBonus();
+        health += levelUpHealthBonus();
+        strength += levelUpStrengthBonus();
+
+        return new UnitUpdate(this);
+    }
+
+    public UnitUpdate setAliveChar(char aliveChar) {
+        this.aliveChar = aliveChar;
+        return new UnitUpdate(this);
+    }
+
+    public UnitUpdate setDeadChar(char deadChar) {
+        this.deadChar = deadChar;
         return new UnitUpdate(this);
     }
 
     public boolean isDead() {
-        return health == 0 && !stash.isEmpty();
+        return health < 1;
     }
 
     public List<Item> getStash() {
@@ -96,5 +162,46 @@ public class Unit {
 
     public Strategy getStrategy() {
         return strategy;
+    }
+
+    public char getAliveChar() {
+        return aliveChar;
+    }
+
+    public char getDeadChar() {
+        return deadChar;
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Unit unit = (Unit) o;
+        return maxHealth == unit.maxHealth &&
+                health == unit.health &&
+                strength == unit.strength &&
+                experience == unit.experience &&
+                level == unit.level &&
+                deadChar == unit.deadChar &&
+                aliveChar == unit.aliveChar &&
+                Objects.equals(stash, unit.stash) &&
+                Objects.equals(position, unit.position) &&
+                Objects.equals(strategy, unit.strategy);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(
+                maxHealth,
+                health,
+                strength,
+                experience,
+                level,
+                deadChar,
+                aliveChar,
+                stash,
+                position,
+                strategy);
     }
 }
