@@ -52,10 +52,10 @@ public class Map {
         this.map = new Map.MapTile[width + 2][height + 2];
         this.initialEnemyNubmer = initialEnemyNubmer;
         for (var column: map) {
-            Arrays.fill(column, MapTile.FLOOR);
+            Arrays.fill(column, MapTile.WALL);
         }
-        Arrays.fill(map[0], MapTile.WALL);
-        Arrays.fill(map[width + 1], MapTile.WALL);
+//        Arrays.fill(map[0], MapTile.WALL);
+//        Arrays.fill(map[width + 1], MapTile.WALL);
 
         for (int i = 0; i < width + 2; i++) {
             map[i][0] = MapTile.WALL;
@@ -151,39 +151,42 @@ public class Map {
      * @throws IllegalArgumentException if one of provided positions is out of bounds
      */
     // returns -1 if path was not found, distance otherwise
-    public int getDistance(Position from, Position to) {
+    public ReachableObjects getDistance(Position from, Position to) {
         if (!positionIsInbound(from) || !positionIsInbound(to)) {
             throw new IllegalArgumentException("Given coordinate is out of bound");
         }
 
-        Set<Position> enqueued = new HashSet<>();
+        Set<Position> reachableFloors = new HashSet<>();
+        Set<Position> reachableWalls = new HashSet<>();
+
         Queue<QueuedPosition> queue = new ArrayDeque<>();
 
         queue.add(new QueuedPosition(from, 0));
-        enqueued.add(from);
+        reachableFloors.add(from);
 
         while (!queue.isEmpty()) {
             var currentPosition = queue.poll();
 
             if (currentPosition.position.equals(to)) {
-                return currentPosition.distance;
+                return new ReachableObjects(currentPosition.distance, reachableFloors, reachableWalls);
             }
 
-            if (!isFloor(currentPosition.position)) {
-                continue; // We can step anywhere only from floor
-            }
 
             for (var movement : Movement.defaults) {
                 var newPosition = currentPosition.position.move(movement);
 
-                if (positionIsInbound(newPosition) && !enqueued.contains(newPosition)) {
-                    enqueued.add(newPosition);
-                    queue.add(new QueuedPosition(newPosition, currentPosition.distance + 1));
+                if (positionIsInbound(newPosition) && !reachableFloors.contains(newPosition)) {
+                    if (isFloor(newPosition)) {
+                        reachableFloors.add(newPosition);
+                        queue.add(new QueuedPosition(newPosition, currentPosition.distance + 1));
+                    } else if (isWall(newPosition)) {
+                        reachableWalls.add(newPosition);
+                    }
                 }
             }
         }
 
-        return -1;
+        return new ReachableObjects(-1, reachableFloors, reachableWalls);
     }
 
     @Override
@@ -205,10 +208,10 @@ public class Map {
         assert pos.getY() >= 0 && pos.getY() < getHeight();
     }
 
-    private boolean positionIsInbound(Position pos) {
+    public boolean positionIsInbound(Position pos) {
         return ((pos.getY() >= 0) && (pos.getY() < getHeight()) &&
                 (pos.getX() >= 0) && (pos.getX() < getWidth()));
     }
-
+    public record ReachableObjects(int distance, Set<Position> reachableFloors, Set<Position> reachableWalls) {}
     private record QueuedPosition(Position position, int distance) {}
 }
