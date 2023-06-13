@@ -2,7 +2,6 @@ package ru.itmo.rogue.model;
 
 import ru.itmo.rogue.control.Signal;
 import ru.itmo.rogue.model.game.ItemFactory;
-import ru.itmo.rogue.model.game.UnitFactory;
 import ru.itmo.rogue.model.game.unit.Unit;
 import ru.itmo.rogue.model.state.Delta;
 import ru.itmo.rogue.model.state.InventoryUpdate;
@@ -116,7 +115,6 @@ public class InventoryLogic {
         var index = destStash.size() > 0 ? destStash.size() - 1 : 0;
         var realStash = from.getStash().size() >= maxInventory- destStash.size() ?
                 from.getStash().subList(0, maxInventory - destStash.size()) : from.getStash();
-//        var realStash = from.getStash();
 
         destStash.addAll(index, realStash);
 
