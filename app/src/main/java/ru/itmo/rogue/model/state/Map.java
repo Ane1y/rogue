@@ -189,6 +189,42 @@ public class Map {
         return new ReachableObjects(-1, reachableFloors, reachableWalls);
     }
 
+    public List<Position> getPossiblePath(Position from, Position to) {
+        if (!positionIsInbound(from) || !positionIsInbound(to)) {
+            throw new IllegalArgumentException("Given coordinate is out of bound");
+        }
+
+        java.util.Map<Position, Position> visited = new HashMap<>();
+
+        Queue<Position> queue = new ArrayDeque<>();
+        queue.add(from);
+        visited.put(from, null);
+
+        Position curPos = from;
+        while (!queue.isEmpty()) {
+            curPos = queue.poll();
+            if (curPos.equals(to)) {
+                break;
+            }
+
+            for (var movement : Movement.defaults) {
+                var newPos = curPos.move(movement);
+
+                if (positionIsInbound(newPos) && !visited.containsKey(newPos)) {
+                        visited.put(newPos,curPos);
+                        queue.add(newPos);
+                }
+            }
+        }
+        List<Position> path = new ArrayList<>();
+        path.add(curPos);
+        while (!curPos.equals(from)) {
+            curPos = visited.get(curPos);
+            path.add(curPos);
+        }
+        return path;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

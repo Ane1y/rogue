@@ -104,7 +104,7 @@ public class LevelBuilder {
         assert exits > 0;
         assert complexity >= 0;
         
-        params = new Parameters(3, width, height);
+        params = new Parameters(4, width, height);
         var map = generateMap();
 
         return map;
@@ -140,21 +140,16 @@ public class LevelBuilder {
         // creating doors out
         map.setTile(generateDoor(map), Map.MapTile.DOOR_OUT_NORMAL);
         map.setTile(generateDoor(map), Map.MapTile.DOOR_OUT_HARD);
+
         return map;
     }
-
     public class Partition {
-        enum Axis {
-            HORIZONTAL,
-            VERTICAL, NONE
-        }
+
         private final int minimum = 5;
         private final int width;
         private final int height;
         private final Position originPos;
-        private final int depth;
         private final boolean isLeaf;
-        private Axis axis = Axis.NONE;
         private final Partition left;
         private final Partition right;
 
@@ -164,11 +159,9 @@ public class LevelBuilder {
         Partition(int width, int height, Position originPos, int depth, int variance) {
             this.width = width;
             this.height = height;
-            this.depth = depth;
             this.originPos = originPos;
             if (depth > 0 && width > minimum && height > minimum) {
-                axis = (rand.nextInt(0, width + height) > width) ? Axis.HORIZONTAL
-                        : Axis.VERTICAL;
+                var axis = (rand.nextInt(0, width + height) > width) ? Axis.HORIZONTAL : Axis.VERTICAL;
                 this.isLeaf = false;
                 depth--;
                 if (axis == Axis.VERTICAL) {
@@ -233,13 +226,34 @@ public class LevelBuilder {
         if (nComponents == 0) {
             return;
         }
+        for (int roomIdx = 1; roomIdx < components.size(); roomIdx++) {
+            // entrance subroom is the zero
+            if (components.get(roomIdx) !=  0) {
+                // make the corridor
+                var path = map.getPossiblePath(map.getEntrance(), corePoints.get(roomIdx));
+                for (var coord: path) {
+                    map.setTile(coord, Map.MapTile.FLOOR);
+                    for (var movement : Movement.defaults) {
+                        var newCoord = coord.move(movement);
+                        if (map.positionIsInbound(newCoord)) {
+                            map.setTile(newCoord, Map.MapTile.FLOOR);
+                        }
+                    }
+                }
+            }
+        }
 
     }
-    // generates door and checks if the player can reach ot from entrance
+
+    /**
+     generates door and checks if the player can reach ot from entrance
+     * @param map map of the level to check reachability
+     * @return position of the generated door
+     */
     private Position generateDoor(Map map) {
         var walls = map.getDistance(map.getEntrance(), new Position(width - 1, height - 1)).reachableWalls();
         int randomPos = rand.nextInt(0, walls.size());
-        // todo: i dont like this implementation with arraylist conversion
+        // todo: i dont like this thing with arraylist conversion
         return new ArrayList<>(walls).get(randomPos);
     }
     private Position getRandomPosition() {
@@ -254,9 +268,10 @@ public class LevelBuilder {
      */
     private int getComponents(Map map, List<Position> centers, List<Integer> components) {
         var entrance = centers.get(0);
-        components = new ArrayList<>(Collections.nCopies(centers.size(), 0));
-        Set<Position> visited = new HashSet<>();
         int nComponent = 0;
+        components.clear();
+        components.add(nComponent);
+        Set<Position> visited = new HashSet<>();
         for (int i = 1; i < centers.size(); i++) {
             var center = centers.get(i);
             if (!visited.contains(center)) {
@@ -266,13 +281,17 @@ public class LevelBuilder {
                 } else {
                     visited.addAll(info.reachableFloors());
                 }
-                components.set(i, nComponent);
             }
+            components.add(nComponent);
         }
         return nComponent;
     }
 
 
+    enum Axis {
+        HORIZONTAL,
+        VERTICAL, NONE
+    }
     private class Parameters {
         public final int depth;
         public final int numberOfSubRooms;
