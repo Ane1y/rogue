@@ -3,6 +3,7 @@ package ru.itmo.rogue.model.state;
 import ru.itmo.rogue.model.game.unit.Movement;
 import ru.itmo.rogue.model.game.unit.Position;
 
+import java.sql.Array;
 import java.util.*;
 
 
@@ -191,40 +192,44 @@ public class Map {
             throw new IllegalArgumentException("Given coordinate is out of bound");
         }
 
-        Set<Position> reachableFloors = new HashSet<>();
-        Set<Position> reachableWalls = new HashSet<>();
+        java.util.Map<Position, Position> visited = new HashMap<>();
+        List<Position> reachableWalls = new ArrayList<>();
 
-        Queue<QueuedPosition> queue = new ArrayDeque<>();
+        Queue<Position> queue = new ArrayDeque<>();
 
-        queue.add(new QueuedPosition(from, 0));
-        reachableFloors.add(from);
-
+        queue.add(from);
+        visited.put(from, null);
+        var curPos = from;
         while (!queue.isEmpty()) {
-            var currentPosition = queue.poll();
+            curPos = queue.poll();
 
-            if (currentPosition.position.equals(to)) {
-                return new ReachableObjects(currentPosition.distance,
-                        new ArrayList<>(reachableFloors),
-                        new ArrayList<>(reachableWalls));
+            if (curPos.equals(to)) {
+                break;
             }
 
-
             for (var movement : Movement.defaults) {
-                var newPosition = currentPosition.position.move(movement);
+                var newPos = curPos.move(movement);
 
-                if (positionIsInbound(newPosition) && !reachableFloors.contains(newPosition)) {
-                    if (isFloor(newPosition)) {
-                        reachableFloors.add(newPosition);
-                        queue.add(new QueuedPosition(newPosition, currentPosition.distance + 1));
-                    } else if (isWall(newPosition)) {
-                        reachableWalls.add(newPosition);
+                if (positionIsInbound(newPos) && !visited.containsKey(newPos)) {
+                    if (isFloor(newPos)) {
+                        visited.put(newPos, curPos);
+                        queue.add(newPos);
+                    } else if (isWall(newPos)) {
+                        reachableWalls.add(newPos);
                     }
                 }
             }
         }
 
-        return new ReachableObjects(-1,
-                new ArrayList<>(reachableFloors), new ArrayList<>(reachableWalls));
+        List<Position> path = new ArrayList<>();
+        path.add(curPos);
+        while (!curPos.equals(from)) {
+            curPos = visited.get(curPos);
+            path.add(curPos);
+        }
+
+        return new ReachableObjects(path, new ArrayList<>(visited.keySet()), reachableWalls);
+
     }
 
     public List<Position> getPossiblePath(Position from, Position to) {
@@ -284,6 +289,5 @@ public class Map {
         assert pos.getY() >= 0 && pos.getY() < getHeight();
     }
 
-    public record ReachableObjects(int distance, List<Position> reachableFloors, List<Position> reachableWalls) {}
-    private record QueuedPosition(Position position, int distance) {}
+    public record ReachableObjects(List<Position> path, List<Position> reachableFloors, List<Position> reachableWalls) {}
 }

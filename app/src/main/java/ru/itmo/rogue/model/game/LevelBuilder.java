@@ -104,7 +104,7 @@ public class LevelBuilder {
         assert exits > 0;
         assert complexity >= 0;
         
-        params = new Parameters(3, width, height);
+        params = new Parameters(4, width, height);
         var map = generateMap();
 
         return map;
@@ -278,11 +278,9 @@ public class LevelBuilder {
             var center = centers.get(i);
             if (!visited.contains(center)) {
                 var info = map.getDistance(center, entrance);
-                if (info.distance() == -1) {
-                    nComponent++;
-                } else {
-                    visited.addAll(info.reachableFloors());
-                }
+                nComponent++;
+                visited.addAll(info.reachableFloors());
+
             }
             components.add(nComponent);
         }
@@ -313,11 +311,11 @@ public class LevelBuilder {
 
             int squareDepth = depth * depth;
             var deltaWidth = Math.max(width / squareDepth, squareDepth);
-            this.minWidth = deltaWidth / squareDepth;
+            this.minWidth = deltaWidth / 3;
             this.maxWidth = deltaWidth;
 
             var deltaHeight = Math.max(height / squareDepth, squareDepth);
-            this.minHeight = deltaHeight / squareDepth;
+            this.minHeight = deltaHeight / 3;
             this.maxHeight = deltaHeight;
         }
     }

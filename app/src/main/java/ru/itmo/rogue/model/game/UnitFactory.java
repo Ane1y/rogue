@@ -35,7 +35,7 @@ public class UnitFactory {
 //    private final int height;
     private final List<Position> currentPositions;
 
-    private final List<Boolean> busy;
+    private final boolean[] busy;
 //    public UnitFactory(int difficulty) {
 //        this(difficulty, 10, 10, Collections.emptyList());
 //    }
@@ -51,7 +51,7 @@ public class UnitFactory {
     public UnitFactory(int difficulty, List<Position> possiblePositions) {
         this.difficulty = difficulty;
         this.currentPositions = possiblePositions;
-        this.busy = new ArrayList<>(Collections.nCopies(currentPositions.size(), false));
+        this.busy = new boolean[currentPositions.size()];
     }
 
 
@@ -106,11 +106,11 @@ public class UnitFactory {
 
     private Position generatePosition(){
         int ind = random.nextInt(currentPositions.size());
-        while (busy.get(ind)) {
+        while (busy[ind]) {
             ind = random.nextInt(currentPositions.size());
         }
         Position position = currentPositions.get(ind);
-        this.busy.set(ind, true);
+        busy[ind] = true;
         return position;
     }
 
