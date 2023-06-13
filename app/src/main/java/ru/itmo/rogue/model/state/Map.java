@@ -111,6 +111,11 @@ public class Map {
         return initialEnemyNubmer;
     }
 
+
+    public boolean positionIsInbound(Position pos) {
+        return ((pos.getY() >= 0) && (pos.getY() < getHeight()) &&
+                (pos.getX() >= 0) && (pos.getX() < getWidth()));
+    }
     /**
      * @return true if tile on position `position` represents floor,
      */
@@ -141,6 +146,10 @@ public class Map {
         return positionIsInbound(pos) && isWall(getTile(pos));
     }
 
+    public boolean isBorderWall(Position pos) {
+        return ((pos.getY() > 0) && (pos.getY() < getHeight() - 1) &&
+                (pos.getX() > 0) && (pos.getX() < getWidth() - 1));
+    }
     /**
      * Computes walking distance between 2 positions using BFS
      * All tiles are valid targets for destinations,
@@ -244,10 +253,6 @@ public class Map {
         assert pos.getY() >= 0 && pos.getY() < getHeight();
     }
 
-    public boolean positionIsInbound(Position pos) {
-        return ((pos.getY() >= 0) && (pos.getY() < getHeight()) &&
-                (pos.getX() >= 0) && (pos.getX() < getWidth()));
-    }
     public record ReachableObjects(int distance, Set<Position> reachableFloors, Set<Position> reachableWalls) {}
     private record QueuedPosition(Position position, int distance) {}
 }

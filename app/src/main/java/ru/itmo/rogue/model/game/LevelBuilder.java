@@ -104,7 +104,7 @@ public class LevelBuilder {
         assert exits > 0;
         assert complexity >= 0;
         
-        params = new Parameters(4, width, height);
+        params = new Parameters(3, width, height);
         var map = generateMap();
 
         return map;
@@ -235,7 +235,7 @@ public class LevelBuilder {
                     map.setTile(coord, Map.MapTile.FLOOR);
                     for (var movement : Movement.defaults) {
                         var newCoord = coord.move(movement);
-                        if (map.positionIsInbound(newCoord)) {
+                        if (map.isBorderWall(newCoord)) {
                             map.setTile(newCoord, Map.MapTile.FLOOR);
                         }
                     }
@@ -308,13 +308,14 @@ public class LevelBuilder {
         Parameters(int depth, int width, int height) {
             this.depth = depth;
             this.numberOfSubRooms = (int)Math.pow(2, depth);
-            
-            var deltaWidth = width / 2;
-            this.minWidth = deltaWidth / 2;
+
+            int squareDepth = depth * depth;
+            var deltaWidth = Math.max(width / squareDepth, squareDepth);
+            this.minWidth = deltaWidth / squareDepth;
             this.maxWidth = deltaWidth;
 
-            var deltaHeight = height / 2;
-            this.minHeight = deltaHeight / 2;
+            var deltaHeight = Math.max(height / squareDepth, squareDepth);
+            this.minHeight = deltaHeight / squareDepth;
             this.maxHeight = deltaHeight;
         }
     }

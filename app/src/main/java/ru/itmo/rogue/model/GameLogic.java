@@ -18,7 +18,7 @@ public class GameLogic {
      * @return Delta corresponding to changes
      */
     public Delta defaultMap() {
-        return update(0);
+        return update(1);
     }
 
     public Delta update(Signal ignored) {
