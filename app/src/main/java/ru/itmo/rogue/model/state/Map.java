@@ -1,7 +1,7 @@
 package ru.itmo.rogue.model.state;
 
-import ru.itmo.rogue.model.game.unit.Movement;
-import ru.itmo.rogue.model.game.unit.Position;
+import ru.itmo.rogue.model.unit.Movement;
+import ru.itmo.rogue.model.unit.Position;
 
 import java.util.*;
 

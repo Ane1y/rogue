@@ -1,7 +1,6 @@
-package ru.itmo.rogue.model.game;
+package ru.itmo.rogue.model.state;
 
-import ru.itmo.rogue.model.game.unit.Position;
-import ru.itmo.rogue.model.state.Map;
+import ru.itmo.rogue.model.unit.Position;
 
 import java.util.Random;
 

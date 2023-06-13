@@ -1,11 +1,10 @@
-package ru.itmo.rogue.model.game;
+package ru.itmo.rogue.model.unit;
 
-import ru.itmo.rogue.model.game.unit.strategies.PlayerProxyStrategy;
-import ru.itmo.rogue.model.game.unit.Position;
-import ru.itmo.rogue.model.game.unit.Unit;
-import ru.itmo.rogue.model.game.unit.strategies.AgressiveStrategy;
-import ru.itmo.rogue.model.game.unit.strategies.CowardStrategy;
-import ru.itmo.rogue.model.game.unit.strategies.IdleStrategy;
+import ru.itmo.rogue.model.items.ItemFactory;
+import ru.itmo.rogue.model.unit.strategy.PlayerProxyStrategy;
+import ru.itmo.rogue.model.unit.strategy.AgressiveStrategy;
+import ru.itmo.rogue.model.unit.strategy.CowardStrategy;
+import ru.itmo.rogue.model.unit.strategy.IdleStrategy;
 
 import java.util.ArrayList;
 import java.util.Collections;

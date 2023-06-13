@@ -5,10 +5,10 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import static org.junit.jupiter.api.Assertions.*;
 
-import ru.itmo.rogue.model.game.UnitFactory;
-import ru.itmo.rogue.model.game.unit.Action;
-import ru.itmo.rogue.model.game.unit.Position;
-import ru.itmo.rogue.model.game.unit.Unit;
+import ru.itmo.rogue.model.unit.UnitFactory;
+import ru.itmo.rogue.model.unit.Action;
+import ru.itmo.rogue.model.unit.Position;
+import ru.itmo.rogue.model.unit.Unit;
 
 public class TestJudge {
 

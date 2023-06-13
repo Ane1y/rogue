@@ -1,9 +1,8 @@
-package ru.itmo.rogue.model.game.unit.strategies;
+package ru.itmo.rogue.model.unit.strategy;
 
-import ru.itmo.rogue.model.game.unit.Action;
-import ru.itmo.rogue.model.game.unit.Position;
-import ru.itmo.rogue.model.game.unit.Strategy;
-import ru.itmo.rogue.model.game.unit.Unit;
+import ru.itmo.rogue.model.unit.Action;
+import ru.itmo.rogue.model.unit.Position;
+import ru.itmo.rogue.model.unit.Unit;
 import ru.itmo.rogue.model.state.State;
 
 import java.util.ArrayList;

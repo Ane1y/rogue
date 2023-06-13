@@ -1,4 +1,4 @@
-package ru.itmo.rogue.model.game.unit;
+package ru.itmo.rogue.model.unit;
 
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;

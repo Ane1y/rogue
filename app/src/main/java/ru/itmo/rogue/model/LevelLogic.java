@@ -1,10 +1,9 @@
 package ru.itmo.rogue.model;
 
 import ru.itmo.rogue.control.Signal;
-import ru.itmo.rogue.model.game.UnitFactory;
-import ru.itmo.rogue.model.game.unit.Unit;
-import ru.itmo.rogue.model.game.unit.strategies.IdleStrategy;
-import ru.itmo.rogue.model.state.Delta;
+import ru.itmo.rogue.model.unit.UnitFactory;
+import ru.itmo.rogue.model.unit.Unit;
+import ru.itmo.rogue.model.unit.strategy.IdleStrategy;
 import ru.itmo.rogue.model.state.State;
 
 import java.util.ArrayList;
@@ -55,7 +54,7 @@ public class LevelLogic {
             switch (actionResult) {
                 case MOVE -> delta.add(unit.moveTo(action.dest()));
                 case FIGHT -> {
-                    var defender = state.getUnitOnPosition(action.dest());
+                    var defender = state.getUnitByPosition(action.dest());
                     var healthDelta = state.getJudge().resolveFight(unit, defender);
                     if (healthDelta > 0) {
                         delta.add(defender.changeHealth(-healthDelta));
@@ -69,7 +68,7 @@ public class LevelLogic {
                     }
                 }
                 case MOVE_AND_COLLECT -> {
-                    var source = state.getUnitOnPosition(action.dest());
+                    var source = state.getUnitByPosition(action.dest());
                     delta.append(inventoryLogic.transferItems(source, unit));
 //                    state.getUnits().remove(source);
                     toDelete.add(source);

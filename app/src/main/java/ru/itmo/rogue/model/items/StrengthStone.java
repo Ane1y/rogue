@@ -1,9 +1,7 @@
-package ru.itmo.rogue.model.game.unit.items;
+package ru.itmo.rogue.model.items;
 
-import ru.itmo.rogue.model.game.unit.Unit;
-import ru.itmo.rogue.model.state.Delta;
+import ru.itmo.rogue.model.unit.Unit;
 import ru.itmo.rogue.model.state.State;
-import ru.itmo.rogue.model.state.UnitUpdate;
 
 public class StrengthStone implements Item {
     private final String name = "Strength Potion";

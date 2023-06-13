@@ -1,4 +1,4 @@
-package ru.itmo.rogue.model.game.unit;
+package ru.itmo.rogue.model.unit;
 
 import java.util.ArrayList;
 import java.util.Arrays;

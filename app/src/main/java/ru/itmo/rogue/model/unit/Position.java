@@ -1,4 +1,4 @@
-package ru.itmo.rogue.model.game.unit;
+package ru.itmo.rogue.model.unit;
 
 public record Position (int x, int y) {
 

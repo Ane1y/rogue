@@ -1,6 +1,6 @@
 package ru.itmo.rogue.model.state;
 
-import ru.itmo.rogue.model.game.unit.Unit;
+import ru.itmo.rogue.model.unit.Unit;
 
 public record Statistics (
         int previousRoomRecord,

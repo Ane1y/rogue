@@ -1,9 +1,8 @@
 package ru.itmo.rogue.model;
 
 import ru.itmo.rogue.control.Signal;
-import ru.itmo.rogue.model.game.LevelBuilder;
-import ru.itmo.rogue.model.game.UnitFactory;
-import ru.itmo.rogue.model.state.Delta;
+import ru.itmo.rogue.model.state.LevelBuilder;
+import ru.itmo.rogue.model.unit.UnitFactory;
 import ru.itmo.rogue.model.state.State;
 
 /**

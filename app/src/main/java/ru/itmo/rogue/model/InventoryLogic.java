@@ -1,11 +1,8 @@
 package ru.itmo.rogue.model;
 
 import ru.itmo.rogue.control.Signal;
-import ru.itmo.rogue.model.game.ItemFactory;
-import ru.itmo.rogue.model.game.UnitFactory;
-import ru.itmo.rogue.model.game.unit.Unit;
-import ru.itmo.rogue.model.state.Delta;
-import ru.itmo.rogue.model.state.InventoryUpdate;
+import ru.itmo.rogue.model.items.ItemFactory;
+import ru.itmo.rogue.model.unit.Unit;
 import ru.itmo.rogue.model.state.State;
 
 

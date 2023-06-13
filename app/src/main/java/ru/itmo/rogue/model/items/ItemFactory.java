@@ -1,10 +1,10 @@
-package ru.itmo.rogue.model.game;
+package ru.itmo.rogue.model.items;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 import java.util.Random;
 
-import ru.itmo.rogue.model.game.unit.items.*;
+import ru.itmo.rogue.model.items.*;
 
 public class ItemFactory {
 

@@ -3,16 +3,15 @@ package ru.itmo.rogue.view;
 import com.googlecode.lanterna.*;
 import com.googlecode.lanterna.screen.Screen;
 import com.googlecode.lanterna.screen.VirtualScreen;
-import ru.itmo.rogue.model.game.unit.Position;
-import ru.itmo.rogue.model.game.unit.Unit;
+import ru.itmo.rogue.model.unit.Position;
+import ru.itmo.rogue.model.unit.Unit;
 import ru.itmo.rogue.model.state.*;
+import ru.itmo.rogue.model.unit.UnitUpdate;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class LanternaView implements View {
     private final static double PLAYGROUND_COEF = 0.7;

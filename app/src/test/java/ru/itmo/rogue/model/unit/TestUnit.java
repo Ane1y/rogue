@@ -1,9 +1,9 @@
-package ru.itmo.rogue.model.game.unit;
+package ru.itmo.rogue.model.unit;
 
 import org.junit.jupiter.api.Test;
-import ru.itmo.rogue.model.game.UnitFactory;
-import ru.itmo.rogue.model.game.unit.strategies.CowardStrategy;
-import ru.itmo.rogue.model.game.unit.strategies.IdleStrategy;
+import ru.itmo.rogue.model.unit.strategy.CowardStrategy;
+import ru.itmo.rogue.model.unit.strategy.IdleStrategy;
+import ru.itmo.rogue.model.unit.strategy.Strategy;
 
 import java.lang.reflect.Field;
 

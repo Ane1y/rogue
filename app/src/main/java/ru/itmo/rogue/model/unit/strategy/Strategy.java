@@ -1,6 +1,8 @@
-package ru.itmo.rogue.model.game.unit;
+package ru.itmo.rogue.model.unit.strategy;
 
 import ru.itmo.rogue.model.state.State;
+import ru.itmo.rogue.model.unit.Action;
+import ru.itmo.rogue.model.unit.Unit;
 
 public interface Strategy {
 

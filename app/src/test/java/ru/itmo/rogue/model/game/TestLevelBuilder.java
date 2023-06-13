@@ -1,6 +1,7 @@
 package ru.itmo.rogue.model.game;
 
 import org.junit.jupiter.api.Test;
+import ru.itmo.rogue.model.state.LevelBuilder;
 
 public class TestLevelBuilder {
     @Test

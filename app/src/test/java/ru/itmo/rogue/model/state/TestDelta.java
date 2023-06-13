@@ -1,7 +1,8 @@
 package ru.itmo.rogue.model.state;
 
 import org.junit.jupiter.api.Test;
-import ru.itmo.rogue.model.game.UnitFactory;
+import ru.itmo.rogue.model.unit.UnitFactory;
+import ru.itmo.rogue.model.unit.UnitUpdate;
 
 import static org.junit.jupiter.api.Assertions.*;
 
