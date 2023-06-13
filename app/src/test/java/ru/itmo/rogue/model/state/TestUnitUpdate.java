@@ -5,7 +5,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import ru.itmo.rogue.model.unit.UnitFactory;
 import ru.itmo.rogue.model.unit.Position;
-import ru.itmo.rogue.model.unit.UnitUpdate;
+import ru.itmo.rogue.model.updates.UnitUpdate;
 
 
 public class TestUnitUpdate {

@@ -1,7 +1,7 @@
 package ru.itmo.rogue.model;
 
 import ru.itmo.rogue.control.Signal;
-import ru.itmo.rogue.model.state.LevelBuilder;
+import ru.itmo.rogue.model.state.MapBuilder;
 import ru.itmo.rogue.model.unit.UnitFactory;
 import ru.itmo.rogue.model.state.State;
 
@@ -34,7 +34,7 @@ public class GameLogic {
         var playerLevel = state.getPlayer().getLevel();
         var playerPosition = state.getPlayer().getPosition();
 
-        int difficulty = switch (state.getLevelMap().getTile(playerPosition)) {
+        int difficulty = switch (state.getMap().getTile(playerPosition)) {
             case DOOR_OUT_HARD -> hardDifficulty(playerLevel);
             case DOOR_OUT_NORMAL -> playerLevel;
             case DOOR_OUT_TREASURE_ROOM -> 0;
@@ -49,7 +49,7 @@ public class GameLogic {
             return new Delta(); // Empty delta
         }
 
-        var levelBuilder = new LevelBuilder();
+        var levelBuilder = new MapBuilder();
         var levelMap = levelBuilder
                 .complexity(difficulty)
                 .build();
@@ -58,7 +58,7 @@ public class GameLogic {
 
         // Generate Units
         var unitFactory = new UnitFactory(difficulty);
-        for (int i = 0; i < state.getLevelMap().getInitialEnemyNumber(); i++) {
+        for (int i = 0; i < state.getMap().getInitialEnemyNumber(); i++) {
             var enemy = unitFactory.getUnit();
             if (enemy == null) { // TODO: Remove when NotNull guarantee is in place
                 continue;

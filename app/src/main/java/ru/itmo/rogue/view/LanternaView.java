@@ -6,7 +6,7 @@ import com.googlecode.lanterna.screen.VirtualScreen;
 import ru.itmo.rogue.model.unit.Position;
 import ru.itmo.rogue.model.unit.Unit;
 import ru.itmo.rogue.model.state.*;
-import ru.itmo.rogue.model.unit.UnitUpdate;
+import ru.itmo.rogue.model.updates.UnitUpdate;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -337,13 +337,13 @@ public class LanternaView implements View {
     static MapChars doorOurHard = new MapChars(0x2588, TextColor.ANSI.RED);
     static MapChars doorOutTreasure = new MapChars(0x2588, TextColor.ANSI.YELLOW);
 
-    private static final HashMap<Map.MapTile, MapChars> mapObjects = new HashMap<>() {{
-        put(Map.MapTile.FLOOR, floor);
-        put(Map.MapTile.WALL, wall);
-        put(Map.MapTile.DOOR_IN, doorIn);
-        put(Map.MapTile.DOOR_OUT_NORMAL, doorOutNormal);
-        put(Map.MapTile.DOOR_OUT_HARD, doorOurHard);
-        put(Map.MapTile.DOOR_OUT_TREASURE_ROOM, doorOutTreasure);
+    private static final HashMap<MapView.Tile, MapChars> mapObjects = new HashMap<>() {{
+        put(MapView.Tile.FLOOR, floor);
+        put(MapView.Tile.WALL, wall);
+        put(MapView.Tile.DOOR_IN, doorIn);
+        put(MapView.Tile.DOOR_OUT_NORMAL, doorOutNormal);
+        put(MapView.Tile.DOOR_OUT_HARD, doorOurHard);
+        put(MapView.Tile.DOOR_OUT_TREASURE_ROOM, doorOutTreasure);
     }};
 
     record SquareChars(char horizontal, char vertical, char[] corners) {

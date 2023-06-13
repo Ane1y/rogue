@@ -54,7 +54,7 @@ public class LevelLogic {
             switch (actionResult) {
                 case MOVE -> delta.add(unit.moveTo(action.dest()));
                 case FIGHT -> {
-                    var defender = state.getUnitByPosition(action.dest());
+                    var defender = state.getUnitWithPosition(action.dest());
                     var healthDelta = state.getJudge().resolveFight(unit, defender);
                     if (healthDelta > 0) {
                         delta.add(defender.changeHealth(-healthDelta));
@@ -68,7 +68,7 @@ public class LevelLogic {
                     }
                 }
                 case MOVE_AND_COLLECT -> {
-                    var source = state.getUnitByPosition(action.dest());
+                    var source = state.getUnitWithPosition(action.dest());
                     delta.append(inventoryLogic.transferItems(source, unit));
 //                    state.getUnits().remove(source);
                     toDelete.add(source);
@@ -82,7 +82,7 @@ public class LevelLogic {
         }
 
         var playerPosition = state.getPlayer().getPosition();
-        if (state.getLevelMap().isExit(playerPosition)) {
+        if (state.getMap().isExit(playerPosition)) {
             return gameLogic.update(signal); // Return Map update instead of unit updates
         }
 

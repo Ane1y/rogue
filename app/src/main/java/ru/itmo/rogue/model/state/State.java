@@ -3,6 +3,7 @@ package ru.itmo.rogue.model.state;
 import ru.itmo.rogue.model.unit.UnitFactory;
 import ru.itmo.rogue.model.unit.Position;
 import ru.itmo.rogue.model.unit.Unit;
+import ru.itmo.rogue.model.unit.UnitView;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -11,7 +12,7 @@ import java.util.List;
 /**
  * Class that contains current state of the Game
  */
-public class State {
+public class State implements StateView {
     private final Unit player;
     private final List<Unit> units = new ArrayList<>();
     private Map levelMap;
@@ -37,7 +38,7 @@ public class State {
     /**
      * @return Immutable list of all units (including player)
      */
-    public List<Unit> getUnits(){
+    public List<UnitView> getUnits(){
         return Collections.unmodifiableList(units);
     }
 
@@ -46,16 +47,20 @@ public class State {
      * @param position position to check
      * @return unit if it placed, null if there's no unit on position
      */
-    public Unit getUnitByPosition(Position position) {
+    public Unit getUnitWithPosition(Position position) {
         return units.stream()
                 .filter(e -> e.getPosition().equals(position))
                 .findFirst().orElse(null);
     }
 
+    public Unit getUnitWithView(UnitView view) {
+        return (Unit) view;
+    }
+
     /**
      * @return current Map
      */
-    public Map getLevelMap() {
+    public Map getMap() {
         return levelMap;
     }
 
@@ -87,7 +92,7 @@ public class State {
      * Adds unit to the current state
      * @param unit unit to be added
      */
-    protected void addUnit(Unit unit) {
+    public void addUnit(Unit unit) {
         units.add(unit);
     }
 

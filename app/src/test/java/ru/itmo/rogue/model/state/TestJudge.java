@@ -3,7 +3,6 @@ package ru.itmo.rogue.model.state;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
-import static org.junit.jupiter.api.Assertions.*;
 
 import ru.itmo.rogue.model.unit.UnitFactory;
 import ru.itmo.rogue.model.unit.Action;
@@ -15,7 +14,7 @@ public class TestJudge {
     private static final Position target = new Position(1, 2);
     private static final AbstractJudge judge = new JustJudge();
 
-    private State getStateWith(Map.MapTile tile) {
+    private State getStateWith(MapView.Tile tile) {
         var state = new State();
         var map = new Map(3, 4);
         map.setTile(target, tile);
@@ -24,7 +23,7 @@ public class TestJudge {
     }
 
     private State getStateWith(Unit unit) {
-        var state = getStateWith(Map.MapTile.FLOOR);
+        var state = getStateWith(MapView.Tile.FLOOR);
         unit.moveTo(target);
         state.addUnit(unit);
         return state;
@@ -32,17 +31,17 @@ public class TestJudge {
 
     @Test
     void stepOnWall() {
-        var state = getStateWith(Map.MapTile.WALL);
+        var state = getStateWith(MapView.Tile.WALL);
         var result = judge.actionResult(state.getPlayer(), new Action(target), state);
         assertEquals(AbstractJudge.ActionResult.NOTHING, result);
     }
 
     @ParameterizedTest
     @EnumSource(
-            value = Map.MapTile.class,
+            value = MapView.Tile.class,
             names = {"FLOOR", "DOOR_OUT_NORMAL", "DOOR_OUT_HARD", "DOOR_OUT_TREASURE_ROOM"}
     )
-    void stepOnExitWalkable(Map.MapTile tile) {
+    void stepOnExitWalkable(MapView.Tile tile) {
         var state = getStateWith(tile);
         var result = judge.actionResult(state.getPlayer(), new Action(target), state);
         assertEquals(AbstractJudge.ActionResult.MOVE, result);
@@ -50,10 +49,10 @@ public class TestJudge {
 
     @ParameterizedTest
     @EnumSource(
-            value = Map.MapTile.class,
+            value = MapView.Tile.class,
             names = {"DOOR_OUT_NORMAL", "DOOR_OUT_HARD", "DOOR_OUT_TREASURE_ROOM"}
     )
-    void stepOnClosedExit(Map.MapTile tile) {
+    void stepOnClosedExit(MapView.Tile tile) {
         var factory = new UnitFactory(1);
         var unit = factory.getUnit();
         unit.changeHealth(10);
@@ -67,7 +66,7 @@ public class TestJudge {
 
     @Test
     void stepOnEntrance() {
-        var state = getStateWith(Map.MapTile.DOOR_IN);
+        var state = getStateWith(MapView.Tile.DOOR_IN);
         var result = judge.actionResult(state.getPlayer(), new Action(target), state);
 
         assertEquals(AbstractJudge.ActionResult.NOTHING, result);

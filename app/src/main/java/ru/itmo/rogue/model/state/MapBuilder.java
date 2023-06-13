@@ -4,7 +4,7 @@ import ru.itmo.rogue.model.unit.Position;
 
 import java.util.Random;
 
-public class LevelBuilder {
+public class MapBuilder {
     public static final int DEFAULT_WIDTH = 16;
     public static final int DEFAULT_HEIGHT = 12;
     public static final int DEFAULT_COMPLEXITY = 12;
@@ -25,7 +25,7 @@ public class LevelBuilder {
      * Map will be loaded from disk and not generated, overrides all other options
      * @param filename name of the file that contains map
      */
-    public LevelBuilder loadFromDisk(String filename) {
+    public MapBuilder loadFromDisk(String filename) {
         this.filename = filename;
         return this;
     }
@@ -34,7 +34,7 @@ public class LevelBuilder {
      * Changes width of generated map, by default, see: DEFAULT_WIDTH
      * @param width width of generated map
      */
-    public LevelBuilder width(int width) {
+    public MapBuilder width(int width) {
         assert width >= MIN_ROOM_WIDTH && width <= MAX_ROOM_WIDTH;
         this.width = width;
         return this;
@@ -45,7 +45,7 @@ public class LevelBuilder {
      * Changes height of generated map, by default, see: DEFAULT_HEIGHT
      * @param height width of generated map
      */
-    public LevelBuilder height(int height) {
+    public MapBuilder height(int height) {
         assert height >= MIN_ROOM_HEIGHT && height <= MAX_ROOM_HEIGHT;
         this.height = height;
         return this;
@@ -55,7 +55,7 @@ public class LevelBuilder {
      * Changes complexity of generated map, by default, see: DEFAULT_COMPLEXITY
      * @param c complexity of generated map, must be not negative
      */
-    public LevelBuilder complexity(int c) {
+    public MapBuilder complexity(int c) {
         assert c > 0;
         this.complexity = c;
         return this;
@@ -65,7 +65,7 @@ public class LevelBuilder {
      * Changes side on which entrance is placed, by default is WEST
      * @param side side of the entrance
      */
-    public LevelBuilder entrySide(EntrySide side) {
+    public MapBuilder entrySide(EntrySide side) {
         this.entrySide = side;
         return this;
     }
@@ -74,7 +74,7 @@ public class LevelBuilder {
      * Sets amount of exists from the room
      * @param count amount of doors, must be in a range [1; 3]
      */
-    public LevelBuilder exists(int count) {
+    public MapBuilder exists(int count) {
         assert count <= 3 && count > 0;
         this.exits = count;
         return this;
@@ -102,14 +102,14 @@ public class LevelBuilder {
 
         if (entrySide == EntrySide.EAST) { // Placeholder options // TODO: Replace with actual
             var eastPos = new Position(width + 1, height / 2);
-            map.setTile(eastPos, Map.MapTile.DOOR_IN);
+            map.setTile(eastPos, MapView.Tile.DOOR_IN);
         } else {
             var westPos = new Position(0, height / 2);
-            map.setTile(westPos, Map.MapTile.DOOR_IN);
+            map.setTile(westPos, MapView.Tile.DOOR_IN);
         }
 
-        map.setTile(generateDoor(map), Map.MapTile.DOOR_OUT_NORMAL);
-        map.setTile(generateDoor(map), Map.MapTile.DOOR_OUT_HARD);
+        map.setTile(generateDoor(map), MapView.Tile.DOOR_OUT_NORMAL);
+        map.setTile(generateDoor(map), MapView.Tile.DOOR_OUT_HARD);
 
         return map;
     }

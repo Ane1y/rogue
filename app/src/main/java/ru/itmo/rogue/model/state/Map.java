@@ -11,52 +11,10 @@ import java.util.*;
  * Instances SHOULD be produced by game.LevelFactory
  * Represents unmoving parts of the level (background for action)
  */
-public class Map {
+public class Map implements MapView {
     private final int initialEnemyNumber;
-    private final MapTile[][] map;
+    private final Tile[][] map;
     private Position entrance = new Position();
-
-    /**
-     * Tiles that make up the map
-     */
-    public enum MapTile {
-        FLOOR,
-        WALL,
-        DOOR_IN,
-        DOOR_OUT_NORMAL,
-        DOOR_OUT_HARD,
-        DOOR_OUT_TREASURE_ROOM
-    }
-
-    /**
-     * Checks if given Tile is an Entrance tile
-     */
-    static public boolean isEntrance(MapTile tile) {
-        return tile.equals(MapTile.DOOR_IN);
-    }
-
-    /**
-     * Checks if given Tile is an Exit tile
-     */
-    static public boolean isExit(MapTile tile) {
-        return tile.equals(MapTile.DOOR_OUT_NORMAL) ||
-                tile.equals(MapTile.DOOR_OUT_HARD) ||
-                tile.equals(MapTile.DOOR_OUT_TREASURE_ROOM);
-    }
-
-    /**
-     * Checks if given Tile is a Floor tile
-     */
-    static public boolean isFloor(MapTile tile) {
-        return tile.equals(MapTile.FLOOR);
-    }
-
-    /**
-     * Checks if given Tile is a Wall tile
-     */
-    static public boolean isWall(MapTile tile) {
-        return tile.equals(MapTile.WALL);
-    }
 
     /**
      * Constructs Map that should contain 0 enemies
@@ -75,17 +33,17 @@ public class Map {
      * @param initialEnemyNubmer number of enemies that should be placed on the map
      */
     public Map(int width, int height, int initialEnemyNubmer) {
-        this.map = new Map.MapTile[width + 2][height + 2];
+        this.map = new Tile[width + 2][height + 2];
         this.initialEnemyNumber = initialEnemyNubmer;
         for (var column: map) {
-            Arrays.fill(column, MapTile.FLOOR);
+            Arrays.fill(column, Tile.FLOOR);
         }
-        Arrays.fill(map[0], MapTile.WALL);
-        Arrays.fill(map[width + 1], MapTile.WALL);
+        Arrays.fill(map[0], Tile.WALL);
+        Arrays.fill(map[width + 1], Tile.WALL);
 
         for (int i = 0; i < width + 2; i++) {
-            map[i][0] = MapTile.WALL;
-            map[i][height + 1] = MapTile.WALL;
+            map[i][0] = Tile.WALL;
+            map[i][height + 1] = Tile.WALL;
         }
 
     }
@@ -93,7 +51,7 @@ public class Map {
     /**
      * Returns tile that is placed on position
      */
-    public MapTile getTile(Position pos) {
+    public Tile getTile(Position pos) {
         assertValidPosition(pos);
         return map[pos.getX()][pos.getY()];
     }
@@ -101,10 +59,10 @@ public class Map {
     /**
      * Sets tile on position `position` to tile
      */
-    public void setTile(Position pos, MapTile tile) {
+    public void setTile(Position pos, Tile tile) {
         assertValidPosition(pos);
         map[pos.getX()][pos.getY()] = tile;
-        if (isEntrance(tile)) {
+        if (MapView.isEntrance(tile)) {
             entrance = pos;
         }
     }
@@ -141,7 +99,8 @@ public class Map {
      * @return true if tile on position `position` represents floor,
      */
     public boolean isFloor(Position pos) {
-        return isPositionInbound(pos) && isFloor(getTile(pos));
+        return isPositionInbound(pos) &&
+                MapView.isFloor(getTile(pos));
     }
 
 
@@ -149,7 +108,8 @@ public class Map {
      * @return true if tile on position `position` represents exit door,
      */
     public boolean isExit(Position pos) {
-        return isPositionInbound(pos) && isExit(getTile(pos));
+        return isPositionInbound(pos) &&
+                MapView.isExit(getTile(pos));
     }
 
 
@@ -157,14 +117,16 @@ public class Map {
      * @return true if tile on position `position` represents entrance,
      */
     public boolean isEntrance(Position pos) {
-        return isPositionInbound(pos) && isEntrance(getTile(pos));
+        return isPositionInbound(pos) &&
+                MapView.isEntrance(getTile(pos));
     }
 
     /**
      * @return true if tile on position `position` represents wall,
      */
     public boolean isWall(Position pos) {
-        return isPositionInbound(pos) && isWall(getTile(pos));
+        return isPositionInbound(pos) &&
+                MapView.isWall(getTile(pos));
     }
 
     /**
@@ -176,7 +138,6 @@ public class Map {
      * @return amount of steps that should be made to reach `to` from `from`, returns -1 if `to` is unreachable
      * @throws IllegalArgumentException if one of provided positions is out of bounds
      */
-    // returns -1 if path was not found, distance otherwise
     public int getDistance(Position from, Position to) {
         if (!isPositionInbound(from) || !isPositionInbound(to)) {
             throw new IllegalArgumentException("Given coordinate is out of bound");
@@ -232,6 +193,7 @@ public class Map {
         assert pos.getX() >= 0 && pos.getX() < getWidth();
         assert pos.getY() >= 0 && pos.getY() < getHeight();
     }
+
 
     private boolean isPositionInbound(Position pos) {
         return ((pos.getY() >= 0) && (pos.getY() < getHeight()) &&
