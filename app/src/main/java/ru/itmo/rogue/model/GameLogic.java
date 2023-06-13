@@ -3,6 +3,7 @@ package ru.itmo.rogue.model;
 import ru.itmo.rogue.control.Signal;
 import ru.itmo.rogue.model.game.LevelBuilder;
 import ru.itmo.rogue.model.game.UnitFactory;
+import ru.itmo.rogue.model.game.unit.Position;
 import ru.itmo.rogue.model.state.Delta;
 import ru.itmo.rogue.model.state.State;
 
@@ -59,8 +60,9 @@ public class GameLogic {
 
         var delta = state.setMap(levelMap);
 
+        var reachability = levelMap.getDistance(levelMap.getEntrance(), new Position(levelMap.getWidth() - 1, levelMap.getHeight() - 1));
         // Generate Units
-        var unitFactory = new UnitFactory(difficulty);
+        var unitFactory = new UnitFactory(difficulty, reachability.reachableFloors());
         for (int i = 0; i < state.getLevelMap().getInitialEnemyNumber(); i++) {
             var enemy = unitFactory.getUnit();
             if (enemy == null) { // TODO: Remove when NotNull guarantee is in place

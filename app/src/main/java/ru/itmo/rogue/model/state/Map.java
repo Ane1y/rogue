@@ -78,10 +78,10 @@ public class Map {
         this.map = new Map.MapTile[width + 2][height + 2];
         this.initialEnemyNumber = initialEnemyNubmer;
         for (var column: map) {
-            Arrays.fill(column, MapTile.FLOOR);
+            Arrays.fill(column, MapTile.WALL);
         }
-        Arrays.fill(map[0], MapTile.WALL);
-        Arrays.fill(map[width + 1], MapTile.WALL);
+//        Arrays.fill(map[0], MapTile.WALL);
+//        Arrays.fill(map[width + 1], MapTile.WALL);
 
         for (int i = 0; i < width + 2; i++) {
             map[i][0] = MapTile.WALL;
@@ -172,7 +172,7 @@ public class Map {
         return positionIsInbound(pos) && isWall(getTile(pos));
     }
 
-    public boolean isBorderWall(Position pos) {
+    public boolean isNotBorderWall(Position pos) {
         return ((pos.getY() > 0) && (pos.getY() < getHeight() - 1) &&
                 (pos.getX() > 0) && (pos.getX() < getWidth() - 1));
     }
@@ -203,12 +203,11 @@ public class Map {
             var currentPosition = queue.poll();
 
             if (currentPosition.position.equals(to)) {
-                return new ReachableObjects(currentPosition.distance, reachableFloors, reachableWalls);
+                return new ReachableObjects(currentPosition.distance,
+                        new ArrayList<>(reachableFloors),
+                        new ArrayList<>(reachableWalls));
             }
 
-            if (!isFloor(currentPosition.position)) {
-                continue; // We can step anywhere only from floor
-            }
 
             for (var movement : Movement.defaults) {
                 var newPosition = currentPosition.position.move(movement);
@@ -224,7 +223,8 @@ public class Map {
             }
         }
 
-        return new ReachableObjects(-1, reachableFloors, reachableWalls);
+        return new ReachableObjects(-1,
+                new ArrayList<>(reachableFloors), new ArrayList<>(reachableWalls));
     }
 
     public List<Position> getPossiblePath(Position from, Position to) {
@@ -284,6 +284,6 @@ public class Map {
         assert pos.getY() >= 0 && pos.getY() < getHeight();
     }
 
-    public record ReachableObjects(int distance, Set<Position> reachableFloors, Set<Position> reachableWalls) {}
+    public record ReachableObjects(int distance, List<Position> reachableFloors, List<Position> reachableWalls) {}
     private record QueuedPosition(Position position, int distance) {}
 }

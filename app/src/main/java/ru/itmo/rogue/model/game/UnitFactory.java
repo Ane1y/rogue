@@ -7,10 +7,7 @@ import ru.itmo.rogue.model.game.unit.strategies.AgressiveStrategy;
 import ru.itmo.rogue.model.game.unit.strategies.CowardStrategy;
 import ru.itmo.rogue.model.game.unit.strategies.IdleStrategy;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 public class UnitFactory {
     public static final char ALIVE_AGGRESSIVE_ENEMY = '*';
@@ -34,31 +31,39 @@ public class UnitFactory {
     private static final Unit player = newPlayerUnit();
 
     public final int difficulty;
-    private final int width;
-    private final int height;
+//    private final int width;
+//    private final int height;
     private final List<Position> currentPositions;
 
-    public UnitFactory(int difficulty) {
-        this(difficulty, 10, 10, Collections.emptyList());
-    }
+    private final List<Boolean> busy;
+//    public UnitFactory(int difficulty) {
+//        this(difficulty, 10, 10, Collections.emptyList());
+//    }
 
-    public UnitFactory(int difficulty, int width, int height, List<Position> doors) {
+//    public UnitFactory(int difficulty, int width, int height, List<Position> doors) {
+//        this.difficulty = difficulty;
+//        this.width = width;
+//        this.height = height;
+//        this.currentPositions = genListOfPositions();
+//        currentPositions.removeAll(doors);
+//    }
+
+    public UnitFactory(int difficulty, List<Position> possiblePositions) {
         this.difficulty = difficulty;
-        this.width = width;
-        this.height = height;
-        this.currentPositions = genListOfPositions();
-        currentPositions.removeAll(doors);
+        this.currentPositions = possiblePositions;
+        this.busy = new ArrayList<>(Collections.nCopies(currentPositions.size(), false));
     }
 
-    private  List<Position> genListOfPositions(){
-        List<Position> currentPositions = new ArrayList<>();
-        for(int x = 1; x < width - 1; x++) {
-            for(int y = 1; y < height - 1; y++) {
-                currentPositions.add(new Position(x, y));
-            }
-        }
-        return currentPositions;
-    }
+
+//    private  List<Position> genListOfPositions(){
+//        List<Position> currentPositions = new ArrayList<>();
+//        for(int x = 1; x < width - 1; x++) {
+//            for(int y = 1; y < height - 1; y++) {
+//                currentPositions.add(new Position(x, y));
+//            }
+//        }
+//        return currentPositions;
+//    }
 
     public static Unit getPlayerUnit() {
         return player;
@@ -101,8 +106,11 @@ public class UnitFactory {
 
     private Position generatePosition(){
         int ind = random.nextInt(currentPositions.size());
+        while (busy.get(ind)) {
+            ind = random.nextInt(currentPositions.size());
+        }
         Position position = currentPositions.get(ind);
-        currentPositions.remove(ind);
+        this.busy.set(ind, true);
         return position;
     }
 

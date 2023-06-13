@@ -132,7 +132,7 @@ public class LevelBuilder {
     private Map generateMap() {
         Map map = new Map(width, height, this.getNumberOfEnemies());
         // dividing space and creating subrooms
-        List<Position> corePoints = new Partition(width, height, params.depth, 1).getCenters();
+        List<Position> corePoints = new Partition(width, height, params.depth, 5).getCenters();
         boolean isEntrance = true;
         for (var point : corePoints) {
             generateAndFillSubRoom(map, point, isEntrance);
@@ -213,7 +213,6 @@ public class LevelBuilder {
                 map.setTile(new Position(x, y), Map.MapTile.FLOOR);
             }
         }
-
         if (isEntrance) {
             map.setTile(generateEntrance(new Position(top.x() - 1, top.y() / 2)), Map.MapTile.DOOR_IN);
         }
@@ -235,11 +234,11 @@ public class LevelBuilder {
             if (components.get(roomIdx) !=  0) {
                 // make the corridor
                 var path = map.getPossiblePath(map.getEntrance(), corePoints.get(roomIdx));
-                for (var coord: path) {
+                for (var coord : path) {
                     map.setTile(coord, Map.MapTile.FLOOR);
                     for (var movement : Movement.defaults) {
                         var newCoord = coord.move(movement);
-                        if (map.isBorderWall(newCoord)) {
+                        if (map.isNotBorderWall(newCoord)) {
                             map.setTile(newCoord, Map.MapTile.FLOOR);
                         }
                     }
@@ -257,8 +256,7 @@ public class LevelBuilder {
     private Position generateDoor(Map map) {
         var walls = map.getDistance(map.getEntrance(), new Position(width - 1, height - 1)).reachableWalls();
         int randomPos = rand.nextInt(0, walls.size());
-        // todo: i dont like this thing with arraylist conversion
-        return new ArrayList<>(walls).get(randomPos);
+        return walls.get(randomPos);
     }
     private Position getRandomPosition() {
         Random rand = new Random();
