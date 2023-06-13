@@ -58,6 +58,8 @@ public class Unit {
     }
 
     public Action getAction(State state) {
+        if (isDead())
+            return new Action(getPosition());
         var action = strategy.getAction(this, state);
         this.strategy = strategy.nextStrategy();
         return action;

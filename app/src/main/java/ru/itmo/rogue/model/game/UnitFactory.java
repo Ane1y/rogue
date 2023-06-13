@@ -127,7 +127,7 @@ public class UnitFactory {
         private Probabilities() {
             this.idleProb = random.nextInt(20 / difficulty);
             this.cowardProb = random.nextInt(20 / difficulty) + idleProb;
-            this.aggressiveProb = random.nextInt(20 * difficulty) + cowardProb;
+            this.aggressiveProb = random.nextInt(3 * difficulty) + cowardProb;
         }
 
         private int sum() {
