@@ -33,7 +33,7 @@ public class TestDelta {
         var inventoryChanges = delta.getInventoryChanges();
         var unitChages = delta.getUnitChanges();
 
-        var invChange = new InventoryFocusUpdate(1);
+        var invChange = newhInventoryFocusUpdate(1);
         var unitChange = new UnitUpdate(UnitFactory.getPlayerUnit());
 
         assertThrows(UnsupportedOperationException.class, () -> inventoryChanges.add(invChange));
