@@ -17,7 +17,7 @@ public interface Strategy {
      *  and creating temporary effects (confusion or speeding up)
      * @return new strategy
      */
-    default Strategy nextStrategy() {
+    default Strategy nextStrategy(Unit unit) {
         return this;
     }
 }
