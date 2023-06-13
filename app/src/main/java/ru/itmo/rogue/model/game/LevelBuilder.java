@@ -5,6 +5,7 @@ import ru.itmo.rogue.model.game.unit.Position;
 import ru.itmo.rogue.model.state.Map;
 
 import java.awt.*;
+import java.io.*;
 import java.util.*;
 import java.util.List;
 
@@ -106,7 +107,20 @@ public class LevelBuilder {
         
         params = new Parameters(4, width, height);
         var map = generateMap();
-
+//        for(int i = 0; i < 5; i++) {
+//            try {
+//                map = generateMap();
+//                FileOutputStream fileOutputStream
+//                        = new FileOutputStream(String.format("./app/src/main/resources/complex%d.map", i));
+//                ObjectOutputStream objectOutputStream
+//                        = new ObjectOutputStream(fileOutputStream);
+//                objectOutputStream.writeObject(map);
+//                objectOutputStream.flush();
+//                objectOutputStream.close();
+//            } catch (Exception e) {
+//                System.err.println(e.getMessage());
+//            }
+//        }
         return map;
     }
 
@@ -126,7 +140,13 @@ public class LevelBuilder {
     }
 
     private Map buildFromDisk() {
-        return new Map(width, height, numberOfEnemies(complexity)); // TODO: Replace with actual loading
+        try (FileInputStream fileInputStream = new FileInputStream(filename);
+             ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream)) {
+            return (Map) objectInputStream.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            System.err.println("Error occured while map loading: " + e.getMessage());
+        }
+        return null;
     }
 
     private Map generateMap() {
@@ -144,7 +164,8 @@ public class LevelBuilder {
         // creating doors out
         map.setTile(generateDoor(map), Map.MapTile.DOOR_OUT_NORMAL);
         map.setTile(generateDoor(map), Map.MapTile.DOOR_OUT_HARD);
-
+        map.setTile(generateDoor(map), Map.MapTile.DOOR_OUT_TREASURE_ROOM);
+        
         return map;
     }
     public class Partition {
@@ -235,7 +256,9 @@ public class LevelBuilder {
                 // make the corridor
                 var path = map.getPossiblePath(map.getEntrance(), corePoints.get(roomIdx));
                 for (var coord : path) {
-                    map.setTile(coord, Map.MapTile.FLOOR);
+                    if (map.isNotBorderWall(coord)) {
+                        map.setTile(coord, Map.MapTile.FLOOR);
+                    }
                     for (var movement : Movement.defaults) {
                         var newCoord = coord.move(movement);
                         if (map.isNotBorderWall(newCoord)) {

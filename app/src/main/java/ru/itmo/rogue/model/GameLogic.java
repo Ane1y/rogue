@@ -51,12 +51,16 @@ public class GameLogic {
             return new Delta(); // Empty delta
         }
 
-        var levelBuilder = new LevelBuilder();
-        var levelMap = levelBuilder
+        var levelBuilder = new LevelBuilder()
                 .complexity(difficulty)
                 .width(87)
-                .height(32)
-                .build();
+                .height(32);
+
+        if (difficulty == 0) {
+            levelBuilder.loadFromDisk("./app/src/main/resources/simple.map");
+        }
+
+        var levelMap = levelBuilder.build();
 
         var delta = state.setMap(levelMap);
 

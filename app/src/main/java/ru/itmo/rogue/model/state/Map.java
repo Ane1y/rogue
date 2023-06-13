@@ -3,6 +3,7 @@ package ru.itmo.rogue.model.state;
 import ru.itmo.rogue.model.game.unit.Movement;
 import ru.itmo.rogue.model.game.unit.Position;
 
+import java.io.Serializable;
 import java.sql.Array;
 import java.util.*;
 
@@ -12,7 +13,7 @@ import java.util.*;
  * Instances SHOULD be produced by game.LevelFactory
  * Represents unmoving parts of the level (background for action)
  */
-public class Map {
+public class Map implements Serializable {
     private final int initialEnemyNumber;
     private final MapTile[][] map;
     private Position entrance = new Position();
@@ -73,11 +74,11 @@ public class Map {
      * Produces map with free space of size width * height surrounded by wall
      * @param width width of free space
      * @param height height of free space
-     * @param initialEnemyNubmer number of enemies that should be placed on the map
+     * @param initialEnemyNumber number of enemies that should be placed on the map
      */
-    public Map(int width, int height, int initialEnemyNubmer) {
+    public Map(int width, int height, int initialEnemyNumber) {
         this.map = new Map.MapTile[width + 2][height + 2];
-        this.initialEnemyNumber = initialEnemyNubmer;
+        this.initialEnemyNumber = initialEnemyNumber;
         for (var column: map) {
             Arrays.fill(column, MapTile.WALL);
         }
