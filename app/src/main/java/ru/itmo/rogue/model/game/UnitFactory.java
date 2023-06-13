@@ -96,7 +96,7 @@ public class UnitFactory {
         }
 
         ItemFactory factory = new ItemFactory();
-        int items = random.nextInt(6);
+        int items = random.nextInt(3);
         for (int i = 0; i < items; i++) {
             unit.getStash().add(factory.getItem());
         }
