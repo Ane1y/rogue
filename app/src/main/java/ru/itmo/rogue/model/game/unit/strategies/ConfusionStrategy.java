@@ -38,9 +38,9 @@ public class ConfusionStrategy implements Strategy {
     }
 
     @Override
-    public Strategy nextStrategy() {
+    public Strategy nextStrategy(Unit unit) {
         if (duration < 1) {
-            return underlying.nextStrategy();
+            return underlying.nextStrategy(unit);
         }
         return this;
     }

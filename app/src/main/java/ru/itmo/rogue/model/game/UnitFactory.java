@@ -1,16 +1,11 @@
 package ru.itmo.rogue.model.game;
 
-import ru.itmo.rogue.model.game.unit.strategies.PlayerProxyStrategy;
 import ru.itmo.rogue.model.game.unit.Position;
+import ru.itmo.rogue.model.game.unit.Strategy;
 import ru.itmo.rogue.model.game.unit.Unit;
-import ru.itmo.rogue.model.game.unit.strategies.AgressiveStrategy;
-import ru.itmo.rogue.model.game.unit.strategies.CowardStrategy;
-import ru.itmo.rogue.model.game.unit.strategies.IdleStrategy;
+import ru.itmo.rogue.model.game.unit.strategies.*;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 public class UnitFactory {
     public static final char ALIVE_AGGRESSIVE_ENEMY = '*';
@@ -25,15 +20,13 @@ public class UnitFactory {
 
     public static int DEFAULT_PLAYER_HEALTH = 3;
     public static int DEFAULT_PLAYER_STRENGTH = 1;
+    private static final Unit player = newPlayerUnit();
     public static int UNIT_STRENGTH = 2;
     public static int UNIT_HEALTH = 2;
     public static int UNIT_EXPERIENCE = 2;
     public static int UNIT_LEVEL = 2;
-    private final Random random = new Random();
-
-    private static final Unit player = newPlayerUnit();
-
     public final int difficulty;
+    private final Random random = new Random();
     private final int width;
     private final int height;
     private final List<Position> currentPositions;
@@ -50,16 +43,6 @@ public class UnitFactory {
         currentPositions.removeAll(doors);
     }
 
-    private  List<Position> genListOfPositions(){
-        List<Position> currentPositions = new ArrayList<>();
-        for(int x = 1; x < width - 1; x++) {
-            for(int y = 1; y < height - 1; y++) {
-                currentPositions.add(new Position(x, y));
-            }
-        }
-        return currentPositions;
-    }
-
     public static Unit getPlayerUnit() {
         return player;
     }
@@ -70,6 +53,16 @@ public class UnitFactory {
 
     public static PlayerProxyStrategy getPlayerProxyStrategy() {
         return playerProxyStrategy;
+    }
+
+    private List<Position> genListOfPositions() {
+        List<Position> currentPositions = new ArrayList<>();
+        for (int x = 1; x < width - 1; x++) {
+            for (int y = 1; y < height - 1; y++) {
+                currentPositions.add(new Position(x, y));
+            }
+        }
+        return currentPositions;
     }
 
     public Unit getUnit() {
@@ -84,12 +77,17 @@ public class UnitFactory {
         if (num < probabilities.idleProb) {
             unit = getIdleUnit();
         }
-        if (num < probabilities.idleProb + probabilities.cowardProb) {
-            unit = getCowardUnit();
-        } else {
-            unit = getAgressiveUnit();
+        else {
+            if (num < probabilities.idleProb + probabilities.cowardProb) {
+                unit = getCowardUnit();
+            } else {
+                if(num< probabilities.idleProb + probabilities.cowardProb+probabilities.changeableAggressiveProb)
+                    unit = getChangebleStrategyUnit();
+                else {
+                    unit= getAgressiveUnit();
+                }
+            }
         }
-
         ItemFactory factory = new ItemFactory();
         int items = random.nextInt(6);
         for (int i = 0; i < items; i++) {
@@ -99,7 +97,7 @@ public class UnitFactory {
         return unit;
     }
 
-    private Position generatePosition(){
+    private Position generatePosition() {
         int ind = random.nextInt(currentPositions.size());
         Position position = currentPositions.get(ind);
         currentPositions.remove(ind);
@@ -119,19 +117,26 @@ public class UnitFactory {
         return new Unit(UNIT_HEALTH, UNIT_STRENGTH, UNIT_EXPERIENCE, UNIT_LEVEL, generatePosition(), new IdleStrategy(), ALIVE_IDLE_ENEMY, DEAD_ENEMY);
     }
 
+    public Unit getChangebleStrategyUnit() {
+        return new Unit(UNIT_HEALTH, UNIT_STRENGTH, UNIT_EXPERIENCE, UNIT_LEVEL, generatePosition(), new ChangeableAggressiveStrategy(), ALIVE_IDLE_ENEMY, DEAD_ENEMY);
+    }
+
     class Probabilities {
         private final int idleProb;
         private final int cowardProb;
         private final int aggressiveProb;
+        private final int changeableAggressiveProb;
+
 
         private Probabilities() {
             this.idleProb = random.nextInt(20 / difficulty);
             this.cowardProb = random.nextInt(20 / difficulty) + idleProb;
             this.aggressiveProb = random.nextInt(20 * difficulty) + cowardProb;
+            this.changeableAggressiveProb = aggressiveProb;
         }
 
         private int sum() {
-            return idleProb + cowardProb + aggressiveProb;
+            return idleProb + cowardProb + aggressiveProb + changeableAggressiveProb;
         }
 
     }

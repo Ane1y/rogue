@@ -58,9 +58,8 @@ public class Unit {
     }
 
     public Action getAction(State state) {
-        var action = strategy.getAction(this, state);
-        this.strategy = strategy.nextStrategy();
-        return action;
+        this.strategy = strategy.nextStrategy(this);
+        return strategy.getAction(this, state);
     }
 
     public UnitPositionUpdate moveTo(Position pos) {
