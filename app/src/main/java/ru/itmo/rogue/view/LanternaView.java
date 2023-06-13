@@ -36,6 +36,7 @@ public class LanternaView implements View {
         this.screen = screen;
         this.referenceSize = new TerminalSize(130, 40);
         this.screen.setMinimumSize(referenceSize);
+        this.screen.setCursorPosition(null);
         try {
             this.screen.startScreen();
         } catch (IOException e) {
@@ -60,7 +61,7 @@ public class LanternaView implements View {
         }
 
         if (delta.getMap() != null) {
-            clearPlayground(screen.getMinimumSize());
+            clearPlayground();
             drawMap(delta.getMap());
         }
 
@@ -180,13 +181,25 @@ public class LanternaView implements View {
         drawSquare(getStatisticsPosition(), getStatisticsSize(), simple);
     }
 
-    private void clearPlayground(TerminalSize terminalSize) {
+    private void clearPlayground() {
         var playgroundSize = getPlaygroundSize();
         var origin = getMapOrigin();
         var graphics = screen.newTextGraphics();
         // -2 to adjust for borders (which are included in playgroundSize)
         for (int i = origin.getColumn(); i < playgroundSize.getColumns() - 2; i++) {
             for (int j = origin.getRow(); j < playgroundSize.getRows() - 2; j++) {
+                graphics.setCharacter(i, j, TextCharacter.DEFAULT_CHARACTER);
+            }
+        }
+    }
+
+    private void cleanStats() {
+        var statSize = getStatisticsSize();
+        var origin = getStatisticsOrigin();
+        var graphics = screen.newTextGraphics();
+
+        for (int i = origin.getColumn(); i < origin.getColumn() + statSize.getColumns() - 2; i++) {
+            for (int j = origin.getRow(); j < origin.getRow() + statSize.getRows() - 2; j++) {
                 graphics.setCharacter(i, j, TextCharacter.DEFAULT_CHARACTER);
             }
         }
@@ -267,6 +280,8 @@ public class LanternaView implements View {
             return;
         }
 
+        cleanStats();
+
         var graphics = screen.newTextGraphics();
         var unit = statistics.trackedUnit();
 
@@ -278,15 +293,15 @@ public class LanternaView implements View {
         graphics.setCharacter(currX, currY, getUnicode(0x2665));
         graphics.putString(currX + 1, currY, healthString);
 
-        currX += healthString.length() + 2;
-        var strengthString = "STR" + unit.getStrength();
+        currX += healthString.length() + 4;
+        var strengthString = "STR:" + unit.getStrength();
         graphics.putString(currX, currY, strengthString);
 
-        currX += strengthString.length() + 1;
+        currX += strengthString.length() + 3;
         var exp = "EXP:" + unit.getExperience() + "/" + unit.levelUpCondition();
         graphics.putString(currX, currY, exp);
 
-        currX += exp.length() + 1;
+        currX += exp.length() + 3;
         var lvl = "LVL:" + unit.getLevel();
         graphics.putString(currX, currY, lvl);
 

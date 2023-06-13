@@ -19,6 +19,7 @@ public class InventoryLogic {
     private final State state;
     private final Unit trackedUnit;
     private int focusedItem = -1;
+    private final int maxInventory = 30;
 
     /**
      * @param state state to control
@@ -113,7 +114,11 @@ public class InventoryLogic {
 
         // Add all items before last one
         var index = destStash.size() > 0 ? destStash.size() - 1 : 0;
-        destStash.addAll(index, from.getStash());
+        var realStash = from.getStash().size() >= maxInventory- destStash.size() ?
+                from.getStash().subList(0, maxInventory - destStash.size()) : from.getStash();
+//        var realStash = from.getStash();
+
+        destStash.addAll(index, realStash);
 
         for (int i = index; i < destStash.size(); i++) {
             delta.add(new InventoryUpdate(i, destStash.get(i).getName(), i == focusedItem));
