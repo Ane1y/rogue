@@ -8,6 +8,7 @@ import ru.itmo.rogue.model.unit.UnitView;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Class that contains current state of the Game
@@ -26,6 +27,15 @@ public class State implements StateView {
     public State(int previousRoomRecord, int previousLevelRecord) {
         player = UnitFactory.getPlayerUnit();
         statistics = new Statistics(previousLevelRecord, previousRoomRecord, 0, false, player);
+    }
+
+    private State(Unit player, List<Unit> units, Map levelMap,
+                  Statistics statistics, boolean running) {
+        this.player = player;
+        this.units.addAll(units);
+        this.levelMap = levelMap;
+        this.statistics = statistics;
+        this.running = running;
     }
 
     /**
@@ -107,5 +117,15 @@ public class State implements StateView {
         units.clear();
         units.add(player);
         player.moveTo(levelMap.getEntrance()); // Move player to an entrance
+    }
+
+    public void removeDeadEmptyUnits() {
+
+    }
+
+    @Override
+    public State copy() {
+        var unitList = units.stream().map(Unit::copy).collect(Collectors.toList());
+        return new State(player.copy(), unitList, levelMap, statistics, running);
     }
 }

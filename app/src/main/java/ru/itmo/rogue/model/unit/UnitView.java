@@ -1,7 +1,9 @@
 package ru.itmo.rogue.model.unit;
 
 import ru.itmo.rogue.model.items.Item;
+import ru.itmo.rogue.model.state.StateView;
 import ru.itmo.rogue.model.unit.strategy.Strategy;
+import ru.itmo.rogue.model.updates.StateUpdate;
 
 import java.util.List;
 
@@ -33,4 +35,5 @@ public interface UnitView {
 
     List<Item> getStash();
 
+    StateUpdate getAction(StateView stateView);
 }

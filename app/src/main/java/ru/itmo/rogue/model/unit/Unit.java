@@ -3,6 +3,7 @@ package ru.itmo.rogue.model.unit;
 
 import ru.itmo.rogue.model.items.Item;
 import ru.itmo.rogue.model.state.State;
+import ru.itmo.rogue.model.state.StateView;
 import ru.itmo.rogue.model.unit.strategy.Strategy;
 import ru.itmo.rogue.model.updates.StateUpdate;
 
@@ -60,7 +61,8 @@ public class Unit implements UnitView {
         this.level = 0;
     }
 
-    public StateUpdate getAction(State state) {
+    @Override
+    public StateUpdate getAction(StateView state) {
         this.strategy = strategy.nextStrategy(this);
         return strategy.getAction(this, state);
     }
@@ -185,6 +187,22 @@ public class Unit implements UnitView {
         return deadChar;
     }
 
+    /**
+     * Creates a copy of the Unit
+     * IMPORTANT:
+     *      Created unit SHARES Position and Strategy with the original
+     * @return copied unit
+     */
+    public Unit copy() {
+        return new Unit(maxHealth,
+                strength,
+                experience,
+                level,
+                position,
+                strategy,
+                aliveChar,
+                deadChar);
+    }
 
     @Override
     public boolean equals(Object o) {

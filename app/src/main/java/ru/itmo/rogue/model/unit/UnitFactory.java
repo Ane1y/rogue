@@ -1,7 +1,8 @@
 package ru.itmo.rogue.model.unit;
 
+import org.jetbrains.annotations.NotNull;
 import ru.itmo.rogue.model.items.ItemFactory;
-import ru.itmo.rogue.model.unit.strategy.PlayerProxyStrategy;
+import ru.itmo.rogue.model.unit.strategy.PlayerInputStrategy;
 import ru.itmo.rogue.model.unit.strategy.AgressiveStrategy;
 import ru.itmo.rogue.model.unit.strategy.CowardStrategy;
 import ru.itmo.rogue.model.unit.strategy.IdleStrategy;
@@ -19,7 +20,7 @@ public class UnitFactory {
     public static final char DEAD_ENEMY = 'x';
     public static final char ALIVE_PLAYER = '@';
     public static final char DEAD_PLAYER = '?';
-    private static final PlayerProxyStrategy playerProxyStrategy = new PlayerProxyStrategy();
+    private static final PlayerInputStrategy PLAYER_INPUT_STRATEGY = new PlayerInputStrategy();
 //    private static final Unit player = newPlayerUnit();
 
     public static int DEFAULT_PLAYER_HEALTH = 3;
@@ -64,13 +65,14 @@ public class UnitFactory {
     }
 
     private static Unit newPlayerUnit() {
-        return new Unit(DEFAULT_PLAYER_HEALTH, DEFAULT_PLAYER_STRENGTH, 0, 1, new Position(), playerProxyStrategy, ALIVE_PLAYER, DEAD_PLAYER);
+        return new Unit(DEFAULT_PLAYER_HEALTH, DEFAULT_PLAYER_STRENGTH, 0, 1, new Position(), PLAYER_INPUT_STRATEGY, ALIVE_PLAYER, DEAD_PLAYER);
     }
 
-    public static PlayerProxyStrategy getPlayerProxyStrategy() {
-        return playerProxyStrategy;
+    public static PlayerInputStrategy getPlayerInputStrategy() {
+        return PLAYER_INPUT_STRATEGY;
     }
 
+    @NotNull
     public Unit getUnit() {
         if (difficulty == 0) {
             return getIdleUnit();

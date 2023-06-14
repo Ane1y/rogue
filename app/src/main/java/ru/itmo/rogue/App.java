@@ -8,6 +8,7 @@ import ru.itmo.rogue.control.Controller;
 import ru.itmo.rogue.control.KeyboardController;
 import ru.itmo.rogue.model.GameModel;
 import ru.itmo.rogue.model.Model;
+import ru.itmo.rogue.view.DefaultView;
 import ru.itmo.rogue.view.LanternaView;
 import ru.itmo.rogue.view.View;
 
@@ -21,11 +22,8 @@ public class App {
     private final Screen screen;
 
     App() throws IOException {
-        DefaultTerminalFactory terminalFactory = new DefaultTerminalFactory();
-        terminalFactory.setInitialTerminalSize(new TerminalSize(130, 40));
-        var virtualScreen = new VirtualScreen(terminalFactory.createScreen());
         screen = virtualScreen;
-        view = new LanternaView(virtualScreen);
+        view = new DefaultView();
         model = new GameModel(view);
         controller = new KeyboardController(model, screen);
     }

@@ -3,6 +3,7 @@ package ru.itmo.rogue.view;
 import com.googlecode.lanterna.*;
 import com.googlecode.lanterna.screen.Screen;
 import com.googlecode.lanterna.screen.VirtualScreen;
+import org.jetbrains.annotations.NotNull;
 import ru.itmo.rogue.model.unit.Position;
 import ru.itmo.rogue.model.unit.Unit;
 import ru.itmo.rogue.model.state.*;
@@ -13,7 +14,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
-public class LanternaView implements View {
+public class LanternaView {
     private final static double PLAYGROUND_COEF = 0.7;
     private final static double INVENTORY_COEF = 0.3;
     private final static double STATS_COEF = 0.15;
@@ -46,7 +47,7 @@ public class LanternaView implements View {
      * @param delta latest changes from units, map and inventory
      * @return the positive or negative result of the update process
      */
-    @Override
+    // TODO: New delta
     public boolean update(Delta delta) {
         screen.doResizeIfNecessary(); // Actualize size data
         var terminalSize = screen.getTerminalSize();
@@ -162,17 +163,13 @@ public class LanternaView implements View {
         return shiftPos(getStatisticsPosition());
     }
 
-    private void drawPlains(Delta delta) {
-        if (delta.getFocus() == null) {
-            return; // Focus wasn't changed
-        }
-
+    public void drawPlains(@NotNull View.Focus focus) {
         // draw playground
-        var playBorders = delta.getFocus().equals(State.Focus.LEVEL) ? doubled : simple;
+        var playBorders = focus.equals(View.Focus.LEVEL) ? doubled : simple;
         drawSquare(getPlaygroundPosition(), getPlaygroundSize(), playBorders);
 
         // draw inventory
-        var invBorders = delta.getFocus().equals(State.Focus.LEVEL) ? simple : doubled;
+        var invBorders = focus.equals(View.Focus.LEVEL) ? simple : doubled;
         drawSquare(getInventoryPosition(), getInventorySize(), invBorders);
 
         // draw statistics

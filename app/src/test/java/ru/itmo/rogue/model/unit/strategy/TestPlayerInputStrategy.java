@@ -11,13 +11,13 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class TestPlayerProxyStrategy {
+public class TestPlayerInputStrategy {
 
     @Test
     void queuedActions() {
         var player = UnitFactory.getPlayerUnit();
-        assertEquals(PlayerProxyStrategy.class, player.getStrategy().getClass());
-        var strategy = (PlayerProxyStrategy)player.getStrategy();
+        assertEquals(PlayerInputStrategy.class, player.getStrategy().getClass());
+        var strategy = (PlayerInputStrategy)player.getStrategy();
 
         var state = new State();
 

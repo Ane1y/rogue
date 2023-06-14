@@ -2,6 +2,8 @@ package ru.itmo.rogue.model;
 
 import ru.itmo.rogue.control.Signal;
 import ru.itmo.rogue.model.state.State;
+import ru.itmo.rogue.model.state.StateView;
+import ru.itmo.rogue.model.unit.Movement;
 import ru.itmo.rogue.view.View;
 
 /**
@@ -12,7 +14,6 @@ public class GameModel implements Model {
 
     private final GameLogic gameLogic;
     private final LevelLogic levelLogic;
-    private final InventoryLogic inventoryLogic;
     private final State state;
     private final View view;
 
@@ -26,40 +27,24 @@ public class GameModel implements Model {
         this.view = view;
         state = new State();
         gameLogic = new GameLogic(state);
-        inventoryLogic = new InventoryLogic(state, state.getPlayer());
-        levelLogic = new LevelLogic(gameLogic, inventoryLogic, state);
-
-        var delta = gameLogic.defaultMap();
-        delta.append(state.setFocus(State.Focus.LEVEL));
-        delta.append(inventoryLogic.initInventory());
-        delta.setStatistics(state.getStatistics());
-
-        this.view.update(delta);
+        levelLogic = new LevelLogic(gameLogic, state);
+        this.view.update(state.copy());
     }
 
     @Override
-    public boolean update(Signal key) {
-        Delta delta;
-        if (key.equals(Signal.BACK)) {
-            delta = state.toggleFocus();
-        } else {
-            delta = switch (state.getFocus()) {
-                case LEVEL -> levelLogic.update(key);
-                case INVENTORY -> inventoryLogic.update(key);
-            };
-        }
+    public void movePlayer(Movement movement) {
+        levelLogic.movePlayer(movement);
+        view.update(state.copy());
+    }
 
-        if (state.getPlayer().isDead()) {
-            // TODO: Maybe display death screen?
-            return false;
-        }
+    @Override
+    public void usePlayerItem(int itemIndex) {
+        levelLogic.usePlayerItem(itemIndex);
+        view.update(state.copy());
+    }
 
-        if (delta == null) { // TODO: Remove when NotNull guarantee is in place
-            delta = new Delta();
-        }
-
-        delta.setStatistics(state.getStatistics());
-
-        return state.running() && view.update(delta);
+    @Override
+    public StateView getState() {
+        return state;
     }
 }

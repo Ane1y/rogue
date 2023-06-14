@@ -19,4 +19,6 @@ public interface StateView {
 
     MapView getMap();
 
+    StateView copy();
+
 }
