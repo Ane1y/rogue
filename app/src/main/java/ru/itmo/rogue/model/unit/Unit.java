@@ -215,7 +215,7 @@ public class Unit implements UnitView {
                 aliveChar,
                 deadChar);
         copy.health = health;
-        copy.stash = List.copyOf(stash);
+        copy.stash = new ArrayList<>(stash);
         return copy;
     }
 

@@ -23,6 +23,6 @@ public class SlimeFactory extends AbstractFactory {
 
     @Override
     public char getAliveChar() {
-        return 0;
+        return '^';
     }
 }

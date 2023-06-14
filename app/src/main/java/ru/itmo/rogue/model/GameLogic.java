@@ -64,10 +64,13 @@ public class GameLogic {
         var aggressiveFactory = new AggressiveFactory(difficulty);
         var idleFactory = new ChestFactory(difficulty);
         var cowardFactory = new CowardFactory(difficulty);
+        var slimeFactory = new SlimeFactory();
+
         var unitFactory = new CompositeFactory(reachability.reachableFloors(),
                 new FactoryProbability(aggressiveFactory, 3),
                 new FactoryProbability(idleFactory, 1),
-                new FactoryProbability(cowardFactory, 3)
+                new FactoryProbability(cowardFactory, 3),
+                new FactoryProbability(slimeFactory, 2)
                 );
         for (int i = 0; i < numberOfEnemies(difficulty); i++) {
             var enemy = unitFactory.getUnit();
