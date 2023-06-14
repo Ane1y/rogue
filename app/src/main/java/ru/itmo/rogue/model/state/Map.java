@@ -1,8 +1,9 @@
 package ru.itmo.rogue.model.state;
 
-import ru.itmo.rogue.model.game.unit.Movement;
-import ru.itmo.rogue.model.game.unit.Position;
+import ru.itmo.rogue.model.unit.Movement;
+import ru.itmo.rogue.model.unit.Position;
 
+import java.io.Serializable;
 import java.util.*;
 
 
@@ -11,89 +12,27 @@ import java.util.*;
  * Instances SHOULD be produced by game.LevelFactory
  * Represents unmoving parts of the level (background for action)
  */
-public class Map {
-    private final int initialEnemyNumber;
-    private final MapTile[][] map;
+public class Map implements Serializable, MapView {
+    private final MapView.Tile[][] map;
     private Position entrance = new Position();
-
-    /**
-     * Tiles that make up the map
-     */
-    public enum MapTile {
-        FLOOR,
-        WALL,
-        DOOR_IN,
-        DOOR_OUT_NORMAL,
-        DOOR_OUT_HARD,
-        DOOR_OUT_TREASURE_ROOM
-    }
-
-    /**
-     * Checks if given Tile is an Entrance tile
-     */
-    static public boolean isEntrance(MapTile tile) {
-        return tile.equals(MapTile.DOOR_IN);
-    }
-
-    /**
-     * Checks if given Tile is an Exit tile
-     */
-    static public boolean isExit(MapTile tile) {
-        return tile.equals(MapTile.DOOR_OUT_NORMAL) ||
-                tile.equals(MapTile.DOOR_OUT_HARD) ||
-                tile.equals(MapTile.DOOR_OUT_TREASURE_ROOM);
-    }
-
-    /**
-     * Checks if given Tile is a Floor tile
-     */
-    static public boolean isFloor(MapTile tile) {
-        return tile.equals(MapTile.FLOOR);
-    }
-
-    /**
-     * Checks if given Tile is a Wall tile
-     */
-    static public boolean isWall(MapTile tile) {
-        return tile.equals(MapTile.WALL);
-    }
-
-    /**
-     * Constructs Map that should contain 0 enemies
-     * @param width free space width inside the created map
-     * @param height free space height inside the created map
-     */
-    public Map(int width, int height) {
-        this(width, height, 0);
-    }
 
 
     /**
      * Produces map with free space of size width * height surrounded by wall
      * @param width width of free space
      * @param height height of free space
-     * @param initialEnemyNubmer number of enemies that should be placed on the map
      */
-    public Map(int width, int height, int initialEnemyNubmer) {
-        this.map = new Map.MapTile[width + 2][height + 2];
-        this.initialEnemyNumber = initialEnemyNubmer;
+    public Map(int width, int height) {
+        this.map = new MapView.Tile[width + 2][height + 2];
         for (var column: map) {
-            Arrays.fill(column, MapTile.FLOOR);
+            Arrays.fill(column, MapView.Tile.WALL);
         }
-        Arrays.fill(map[0], MapTile.WALL);
-        Arrays.fill(map[width + 1], MapTile.WALL);
-
-        for (int i = 0; i < width + 2; i++) {
-            map[i][0] = MapTile.WALL;
-            map[i][height + 1] = MapTile.WALL;
-        }
-
     }
 
     /**
      * Returns tile that is placed on position
      */
-    public MapTile getTile(Position pos) {
+    public MapView.Tile getTile(Position pos) {
         assertValidPosition(pos);
         return map[pos.getX()][pos.getY()];
     }
@@ -101,10 +40,10 @@ public class Map {
     /**
      * Sets tile on position `position` to tile
      */
-    public void setTile(Position pos, MapTile tile) {
+    public void setTile(Position pos, MapView.Tile tile) {
         assertValidPosition(pos);
         map[pos.getX()][pos.getY()] = tile;
-        if (isEntrance(tile)) {
+        if (MapView.isEntrance(tile)) {
             entrance = pos;
         }
     }
@@ -130,18 +69,18 @@ public class Map {
         return map.length;
     }
 
-    /**
-     * @return number of enemies that should be placed on the map
-     */
-    public int getInitialEnemyNumber() {
-        return initialEnemyNumber;
-    }
 
+
+    public boolean isPositionInbound(Position pos) {
+        return ((pos.getY() >= 0) && (pos.getY() < getHeight()) &&
+                (pos.getX() >= 0) && (pos.getX() < getWidth()));
+    }
     /**
      * @return true if tile on position `position` represents floor,
      */
     public boolean isFloor(Position pos) {
-        return isPositionInbound(pos) && isFloor(getTile(pos));
+        return isPositionInbound(pos) &&
+                MapView.isFloor(getTile(pos));
     }
 
 
@@ -149,7 +88,8 @@ public class Map {
      * @return true if tile on position `position` represents exit door,
      */
     public boolean isExit(Position pos) {
-        return isPositionInbound(pos) && isExit(getTile(pos));
+        return isPositionInbound(pos) &&
+                MapView.isExit(getTile(pos));
     }
 
 
@@ -157,16 +97,22 @@ public class Map {
      * @return true if tile on position `position` represents entrance,
      */
     public boolean isEntrance(Position pos) {
-        return isPositionInbound(pos) && isEntrance(getTile(pos));
+        return isPositionInbound(pos) &&
+                MapView.isEntrance(getTile(pos));
     }
 
     /**
      * @return true if tile on position `position` represents wall,
      */
     public boolean isWall(Position pos) {
-        return isPositionInbound(pos) && isWall(getTile(pos));
+        return isPositionInbound(pos) &&
+                MapView.isWall(getTile(pos));
     }
 
+    public boolean isNotBorderWall(Position pos) {
+        return ((pos.getY() > 0) && (pos.getY() < getHeight() - 1) &&
+                (pos.getX() > 0) && (pos.getX() < getWidth() - 1));
+    }
     /**
      * Computes walking distance between 2 positions using BFS
      * All tiles are valid targets for destinations,
@@ -176,40 +122,85 @@ public class Map {
      * @return amount of steps that should be made to reach `to` from `from`, returns -1 if `to` is unreachable
      * @throws IllegalArgumentException if one of provided positions is out of bounds
      */
-    // returns -1 if path was not found, distance otherwise
-    public int getDistance(Position from, Position to) {
+    public MapSearchResult getDistance(Position from, Position to) {
         if (!isPositionInbound(from) || !isPositionInbound(to)) {
             throw new IllegalArgumentException("Given coordinate is out of bound");
         }
 
-        Set<Position> enqueued = new HashSet<>();
-        Queue<QueuedPosition> queue = new ArrayDeque<>();
+        java.util.Map<Position, Position> visited = new HashMap<>();
+        List<Position> reachableWalls = new ArrayList<>();
 
-        queue.add(new QueuedPosition(from, 0));
-        enqueued.add(from);
+        Queue<Position> queue = new ArrayDeque<>();
 
+        queue.add(from);
+        visited.put(from, null);
+        var curPos = from;
         while (!queue.isEmpty()) {
-            var currentPosition = queue.poll();
+            curPos = queue.poll();
 
-            if (currentPosition.position.equals(to)) {
-                return currentPosition.distance;
-            }
-
-            if (!isFloor(currentPosition.position)) {
-                continue; // We can step anywhere only from floor
+            if (curPos.equals(to)) {
+                break;
             }
 
             for (var movement : Movement.defaults) {
-                var newPosition = currentPosition.position.move(movement);
+                var newPos = curPos.move(movement);
 
-                if (isPositionInbound(newPosition) && !enqueued.contains(newPosition)) {
-                    enqueued.add(newPosition);
-                    queue.add(new QueuedPosition(newPosition, currentPosition.distance + 1));
+                if (isPositionInbound(newPos) && !visited.containsKey(newPos)) {
+                    if (isFloor(newPos)) {
+                        visited.put(newPos, curPos);
+                        queue.add(newPos);
+                    } else if (isWall(newPos)) {
+                        reachableWalls.add(newPos);
+                    }
                 }
             }
         }
 
-        return -1;
+        List<Position> path = new ArrayList<>();
+        path.add(curPos);
+        while (!curPos.equals(from)) {
+            curPos = visited.get(curPos);
+            path.add(curPos);
+        }
+
+        return new MapSearchResult(path, new ArrayList<>(visited.keySet()), reachableWalls);
+
+    }
+
+    public List<Position> getPossiblePath(Position from, Position to) {
+        if (!isPositionInbound(from) || !isPositionInbound(to)) {
+            throw new IllegalArgumentException("Given coordinate is out of bound");
+        }
+
+        java.util.Map<Position, Position> visited = new HashMap<>();
+
+        Queue<Position> queue = new ArrayDeque<>();
+        queue.add(from);
+        visited.put(from, null);
+
+        Position curPos = from;
+        while (!queue.isEmpty()) {
+            curPos = queue.poll();
+            if (curPos.equals(to)) {
+                break;
+            }
+
+            for (var movement : Movement.defaults) {
+                var newPos = curPos.move(movement);
+
+                if (isPositionInbound(newPos) && !visited.containsKey(newPos)) {
+                        visited.put(newPos,curPos);
+                        queue.add(newPos);
+                }
+            }
+        }
+        List<Position> path = new ArrayList<>();
+        path.add(curPos);
+        while (!curPos.equals(from)) {
+            curPos = visited.get(curPos);
+            path.add(curPos);
+        }
+        return path;
     }
 
     @Override
@@ -217,13 +208,12 @@ public class Map {
         if (this == o) return true;
         if (!(o instanceof Map that)) return false;
         return Arrays.deepEquals(map, that.map) &&
-                Objects.equals(entrance, that.entrance) &&
-                Objects.equals(initialEnemyNumber, that.initialEnemyNumber);
+                Objects.equals(entrance, that.entrance);
     }
 
     @Override
     public int hashCode() {
-        int result = Objects.hash(entrance, initialEnemyNumber);
+        int result = Objects.hash(entrance);
         result = Objects.hash(result, Arrays.deepHashCode(map));
         return result;
     }
@@ -232,11 +222,4 @@ public class Map {
         assert pos.getX() >= 0 && pos.getX() < getWidth();
         assert pos.getY() >= 0 && pos.getY() < getHeight();
     }
-
-    private boolean isPositionInbound(Position pos) {
-        return ((pos.getY() >= 0) && (pos.getY() < getHeight()) &&
-                (pos.getX() >= 0) && (pos.getX() < getWidth()));
-    }
-
-    private record QueuedPosition(Position position, int distance) {}
 }

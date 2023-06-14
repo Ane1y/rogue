@@ -1,20 +1,19 @@
 package ru.itmo.rogue.view;
 
 import com.googlecode.lanterna.*;
-import com.googlecode.lanterna.screen.Screen;
 import com.googlecode.lanterna.screen.VirtualScreen;
-import ru.itmo.rogue.model.game.unit.Position;
-import ru.itmo.rogue.model.game.unit.Unit;
+import org.jetbrains.annotations.NotNull;
+import ru.itmo.rogue.model.state.InventoryUpdate;
+import ru.itmo.rogue.model.unit.Position;
 import ru.itmo.rogue.model.state.*;
+import ru.itmo.rogue.model.unit.UnitView;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-import java.util.stream.Collectors;
 
-public class LanternaView implements View {
+public class LanternaView {
     private final static double PLAYGROUND_COEF = 0.7;
     private final static double INVENTORY_COEF = 0.3;
     private final static double STATS_COEF = 0.15;
@@ -27,7 +26,7 @@ public class LanternaView implements View {
     private final VirtualScreen screen;
     private final TerminalSize referenceSize;
     private TerminalSize lastTerminalSize;
-    private Map background;
+    private MapView background;
 
     /**
      * @param screen virtual screen which will be used for the visuals
@@ -36,56 +35,12 @@ public class LanternaView implements View {
         this.screen = screen;
         this.referenceSize = new TerminalSize(130, 40);
         this.screen.setMinimumSize(referenceSize);
+        this.screen.setCursorPosition(null);
         try {
             this.screen.startScreen();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    /**
-     * @param delta latest changes from units, map and inventory
-     * @return the positive or negative result of the update process
-     */
-    @Override
-    public boolean update(Delta delta) {
-        screen.doResizeIfNecessary(); // Actualize size data
-        var terminalSize = screen.getTerminalSize();
-        var updateType = terminalSize.equals(lastTerminalSize) ? Screen.RefreshType.DELTA : Screen.RefreshType.COMPLETE;
-        lastTerminalSize = terminalSize;
-
-        if (delta.getFocus() != null) {
-            // for the resizable fields --- pass terminalSize as argument
-            drawPlains(delta);
-        }
-
-        if (delta.getMap() != null) {
-            clearPlayground(screen.getMinimumSize());
-            drawMap(delta.getMap());
-        }
-
-        if (delta.getUnitChanges() != null && !delta.getUnitChanges().isEmpty()) {
-            var unitChanges = delta.getUnitChanges();
-            for (var change : unitChanges) {
-                drawUnitChanges(change);
-            }
-        }
-
-        if (delta.getInventoryChanges() != null) {
-            drawInventory(delta.getInventoryChanges());
-        }
-
-        drawStatistics(delta.getStatistics());
-
-        // Refresh after everything
-        try {
-            screen.refresh(updateType);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
-        System.out.println("Display updated!");
-        return true;
     }
 
     private TerminalPosition getPlaygroundPosition() {
@@ -163,24 +118,20 @@ public class LanternaView implements View {
         return shiftPos(getStatisticsPosition());
     }
 
-    private void drawPlains(Delta delta) {
-        if (delta.getFocus() == null) {
-            return; // Focus wasn't changed
-        }
-
+    protected void drawPlains(@NotNull Focus focus) {
         // draw playground
-        var playBorders = delta.getFocus().equals(State.Focus.LEVEL) ? doubled : simple;
+        var playBorders = focus.equals(Focus.LEVEL) ? doubled : simple;
         drawSquare(getPlaygroundPosition(), getPlaygroundSize(), playBorders);
 
         // draw inventory
-        var invBorders = delta.getFocus().equals(State.Focus.LEVEL) ? simple : doubled;
+        var invBorders = focus.equals(Focus.LEVEL) ? simple : doubled;
         drawSquare(getInventoryPosition(), getInventorySize(), invBorders);
 
         // draw statistics
         drawSquare(getStatisticsPosition(), getStatisticsSize(), simple);
     }
 
-    private void clearPlayground(TerminalSize terminalSize) {
+    private void clearPlayground() {
         var playgroundSize = getPlaygroundSize();
         var origin = getMapOrigin();
         var graphics = screen.newTextGraphics();
@@ -192,7 +143,21 @@ public class LanternaView implements View {
         }
     }
 
-    private void drawMap(Map curMap) {
+    private void cleanStats() {
+        var statSize = getStatisticsSize();
+        var origin = getStatisticsOrigin();
+        var graphics = screen.newTextGraphics();
+
+        for (int i = origin.getColumn(); i < origin.getColumn() + statSize.getColumns() - 2; i++) {
+            for (int j = origin.getRow(); j < origin.getRow() + statSize.getRows() - 2; j++) {
+                graphics.setCharacter(i, j, TextCharacter.DEFAULT_CHARACTER);
+            }
+        }
+    }
+
+    protected void drawMap(MapView curMap) {
+        clearPlayground();
+
         background = curMap;
 
         var width = curMap.getWidth();
@@ -211,29 +176,36 @@ public class LanternaView implements View {
         }
     }
 
-    private void drawUnitChanges(UnitUpdate unitUpd) {
-        Unit unit = unitUpd.getUnit();
-        var newPos = unit.getPosition();
-        var screenCoordinates = getScreenIndex(newPos);
+    protected void drawUnitDelta(UnitsDelta delta) {
+        eraseOldUnits(delta.toErase());
+        drawNewUnits(delta.toDraw());
+    }
 
+    private void eraseOldUnits(List<Position> erase) {
         var graphics = screen.newTextGraphics();
-        var unitChar = unit.isDead() ? unit.getDeadChar() : unit.getAliveChar();
-        var curHealth = unit.getHealth();
-        var maxHealth = unit.getMaxHealth();
-        var color = curHealth / (double)maxHealth > 0.7 ? TextColor.ANSI.GREEN : TextColor.ANSI.YELLOW;
-        if (curHealth < 0.3) color = TextColor.ANSI.RED;
-        graphics.setCharacter(screenCoordinates.x(), screenCoordinates.y(),
-                new TextCharacter(unitChar).withForegroundColor(color));
 
-        if (unitUpd instanceof UnitPositionUpdate) {
-            var prevPos = ((UnitPositionUpdate) unitUpd).getOldPosition();
+        for (var prevPos : erase) {
             var prevTile = background.getTile(prevPos);
             var prevTileObject = mapObjects.get(prevTile);
 
             graphics.setCharacter(getScreenIndex(prevPos).x(), getScreenIndex(prevPos).y(),
                     new TextCharacter(prevTileObject.tile).withForegroundColor(prevTileObject.color));
+        }
+    }
+
+    private void drawNewUnits(List<UnitView> draw) {
+        for (var unit : draw) {
+            var newPos = unit.getPosition();
+            var screenCoordinates = getScreenIndex(newPos);
+
+            var graphics = screen.newTextGraphics();
+            var unitChar = unit.isDead() ? unit.getDeadChar() : unit.getAliveChar();
+            var curHealth = unit.getHealth();
+            var maxHealth = unit.getMaxHealth();
+            var color = curHealth / (double) maxHealth > 0.7 ? TextColor.ANSI.GREEN : TextColor.ANSI.YELLOW;
+            if (curHealth < 0.3) color = TextColor.ANSI.RED;
             graphics.setCharacter(screenCoordinates.x(), screenCoordinates.y(),
-                    new TextCharacter(unit.getAliveChar()).withForegroundColor(color));
+                    new TextCharacter(unitChar).withForegroundColor(color));
         }
     }
 
@@ -245,7 +217,7 @@ public class LanternaView implements View {
         return name + new String(spaces);
     }
 
-    private void drawInventory(List<InventoryUpdate> inventoryUpdates) {
+    protected void drawInventory(List<InventoryUpdate> inventoryUpdates) {
         var graphics = screen.newTextGraphics();
         for (var update : inventoryUpdates) {
             if (update.index() == -1) {
@@ -262,10 +234,12 @@ public class LanternaView implements View {
         }
     }
 
-    private void drawStatistics(Statistics statistics) {
+    protected void drawStatistics(Statistics statistics) {
         if (statistics == null) {
             return;
         }
+
+        cleanStats();
 
         var graphics = screen.newTextGraphics();
         var unit = statistics.trackedUnit();
@@ -278,15 +252,15 @@ public class LanternaView implements View {
         graphics.setCharacter(currX, currY, getUnicode(0x2665));
         graphics.putString(currX + 1, currY, healthString);
 
-        currX += healthString.length() + 2;
-        var strengthString = "STR" + unit.getStrength();
+        currX += healthString.length() + 4;
+        var strengthString = "STR:" + unit.getStrength();
         graphics.putString(currX, currY, strengthString);
 
-        currX += strengthString.length() + 1;
+        currX += strengthString.length() + 3;
         var exp = "EXP:" + unit.getExperience() + "/" + unit.levelUpCondition();
         graphics.putString(currX, currY, exp);
 
-        currX += exp.length() + 1;
+        currX += exp.length() + 3;
         var lvl = "LVL:" + unit.getLevel();
         graphics.putString(currX, currY, lvl);
 
@@ -338,13 +312,13 @@ public class LanternaView implements View {
     static MapChars doorOurHard = new MapChars(0x2588, TextColor.ANSI.RED);
     static MapChars doorOutTreasure = new MapChars(0x2588, TextColor.ANSI.YELLOW);
 
-    private static final HashMap<Map.MapTile, MapChars> mapObjects = new HashMap<>() {{
-        put(Map.MapTile.FLOOR, floor);
-        put(Map.MapTile.WALL, wall);
-        put(Map.MapTile.DOOR_IN, doorIn);
-        put(Map.MapTile.DOOR_OUT_NORMAL, doorOutNormal);
-        put(Map.MapTile.DOOR_OUT_HARD, doorOurHard);
-        put(Map.MapTile.DOOR_OUT_TREASURE_ROOM, doorOutTreasure);
+    private static final HashMap<MapView.Tile, MapChars> mapObjects = new HashMap<>() {{
+        put(MapView.Tile.FLOOR, floor);
+        put(MapView.Tile.WALL, wall);
+        put(MapView.Tile.DOOR_IN, doorIn);
+        put(MapView.Tile.DOOR_OUT_NORMAL, doorOutNormal);
+        put(MapView.Tile.DOOR_OUT_HARD, doorOurHard);
+        put(MapView.Tile.DOOR_OUT_TREASURE_ROOM, doorOutTreasure);
     }};
 
     record SquareChars(char horizontal, char vertical, char[] corners) {

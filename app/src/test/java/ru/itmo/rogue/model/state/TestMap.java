@@ -1,7 +1,7 @@
 package ru.itmo.rogue.model.state;
 
 import org.junit.jupiter.api.Test;
-import ru.itmo.rogue.model.game.unit.Position;
+import ru.itmo.rogue.model.unit.Position;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -47,7 +47,7 @@ public class TestMap {
 
         // Place wall in the middle:
         for (int i = 0; i < map.getHeight(); i++) {
-            map.setTile(new Position(5, i), Map.MapTile.WALL);
+            map.setTile(new Position(5, i), MapView.Tile.WALL);
         }
 
         // Should be unreachable:

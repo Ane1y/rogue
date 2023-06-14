@@ -1,20 +1,19 @@
 package ru.itmo.rogue.model.state;
 
-import ru.itmo.rogue.model.game.UnitFactory;
-import ru.itmo.rogue.model.game.unit.Position;
-import ru.itmo.rogue.model.game.unit.Unit;
+import org.jetbrains.annotations.NotNull;
+import ru.itmo.rogue.model.unit.*;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Class that contains current state of the Game
  */
-public class State {
-    private Focus focus = Focus.LEVEL;
+public class State implements StateView {
     private final Unit player;
     private final List<Unit> units = new ArrayList<>();
-    private final AbstractJudge rdj = new JustJudge();
     private Map levelMap;
     private Statistics statistics;
     private boolean running = true;
@@ -24,23 +23,17 @@ public class State {
     }
 
     public State(int previousRoomRecord, int previousLevelRecord) {
-        player = UnitFactory.getPlayerUnit();
+        player = AbstractFactory.getPlayer();
         statistics = new Statistics(previousLevelRecord, previousRoomRecord, 0, false, player);
     }
 
-    /**
-     * Focused part of the game (part that should receive commands)
-     */
-    public enum Focus {
-        LEVEL,  // Level Logic part
-        INVENTORY // Inventory Logic part
-    }
-
-    /**
-     * @return current focus
-     */
-    public Focus getFocus() {
-        return focus;
+    private State(Unit player, List<Unit> units, Map levelMap,
+                  Statistics statistics, boolean running) {
+        this.player = player;
+        this.units.addAll(units);
+        this.levelMap = levelMap;
+        this.statistics = statistics;
+        this.running = running;
     }
 
     /**
@@ -51,10 +44,10 @@ public class State {
     }
 
     /**
-     * @return list of all units
+     * @return Immutable list of all units (including player)
      */
-    public List<Unit> getUnits(){
-        return units;
+    public @NotNull List<UnitView> getUnits(){
+        return Collections.unmodifiableList(units);
     }
 
     /**
@@ -62,26 +55,20 @@ public class State {
      * @param position position to check
      * @return unit if it placed, null if there's no unit on position
      */
-    public Unit getUnitOnPosition(Position position) {
-        if (player.getPosition().equals(position)) {
-            return player;
-        }
+    public Unit getUnitWithPosition(Position position) {
         return units.stream()
                 .filter(e -> e.getPosition().equals(position))
                 .findFirst().orElse(null);
     }
 
-    /**
-     * @return current Judge object
-     */
-    public AbstractJudge getJudge() {
-        return rdj;
+    public Unit getUnitWithView(UnitView view) {
+        return (Unit) view;
     }
 
     /**
      * @return current Map
      */
-    public Map getLevelMap() {
+    public MapView getMap() {
         return levelMap;
     }
 
@@ -97,6 +84,20 @@ public class State {
     }
 
     /**
+     * @return true if doors are open (all enemies are dead)
+     */
+    public boolean doorsOpen() {
+        return units.stream().allMatch(unit -> unit == player || unit.isDead());
+    }
+
+    /**
+     * @return true if doors are closed (1 or more enemies are alive)
+     */
+    public boolean doorsClosed() {
+        return !doorsOpen();
+    }
+
+    /**
      * Sets running flag as False, game should stop after it
      */
     public void stop() {
@@ -105,61 +106,44 @@ public class State {
 
     // Setters that produce Delta
 
-    public Delta setStatistics(Statistics statistics) {
-        this.statistics = statistics;
-        return null; // TODO: Create proper delta
-    }
-
-    /**
-     * @param newFocus focus that should be set now
-     * @return delta that reflects the change
-     */
-    public Delta setFocus(Focus newFocus) {
-        var delta = new Delta();
-        focus = newFocus;
-        delta.setFocus(focus);
-        return delta;
-    }
-
-    /**
-     * Toggles focus (LEVEL -> INVENTORY and vise versa)
-     * @return delta that reflects the change
-     */
-    public Delta toggleFocus() {
-        var delta = new Delta();
-        focus = (focus == Focus.LEVEL) ? Focus.INVENTORY : Focus.LEVEL;
-        delta.setFocus(focus);
-        return delta;
+    public void setStatistics(Statistics statistics) {
+        return; // TODO: Create proper delta
     }
 
     /**
      * Adds unit to the current state
      * @param unit unit to be added
-     * @return delta that reflects the change
      */
-    public Delta addUnit(Unit unit) {
-        var delta = new Delta();
-        delta.add(new UnitUpdate(unit));
+    public void addUnit(Unit unit) {
         units.add(unit);
-        return delta;
     }
 
     /**
-     * Sets map, creates corresponding delta that includes new player position
+     * Sets map
      * @param newMap map to be set
-     * @return delta that reflects the change
      */
-    public Delta setMap(Map newMap) {
+    public void setMap(Map newMap) {
         statistics = statistics.nextRoom();
 
         levelMap = newMap;
         units.clear();
         units.add(player);
         player.moveTo(levelMap.getEntrance()); // Move player to an entrance
+    }
 
-        var delta = new Delta();
-        delta.setMap(newMap);
-        delta.add(new UnitUpdate(player));
-        return delta;
+    public void removeDeadEmptyUnits() {
+        var toDelete = units.stream()
+                .filter(unit -> unit.isDead() && unit.getStash().size() == 0)
+                .toList();
+
+        units.removeAll(toDelete);
+    }
+
+    @Override
+    public State copy() {
+        var unitList = units.stream()
+                .map(Unit::copy)
+                .collect(Collectors.toList());
+        return new State(player.copy(), unitList, levelMap, statistics, running);
     }
 }
