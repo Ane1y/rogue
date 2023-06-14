@@ -5,6 +5,8 @@ import ru.itmo.rogue.model.unit.Position;
 import ru.itmo.rogue.model.unit.UnitFactory;
 import ru.itmo.rogue.model.state.State;
 
+import java.util.Random;
+
 /**
  * Class that contains general Logic of the game that is active between the levels (Level, Unit and Item generation)
  * Class have control over the State of the game (as all Logic classes)
@@ -40,16 +42,18 @@ public class GameLogic {
     }
     
     public void generateNewMap(int difficulty) {
-        var levelBuilder = new MapBuilder()
+        var mapBuilder = new MapBuilder()
                 .width(87)
                 .height(32)
                 .complexity(difficulty);
 
         if (difficulty == 0) {
-            levelBuilder.loadFromDisk("./app/src/main/resources/simple.map");
+            Random rand = new Random();
+            int version = rand.nextInt(10);
+            mapBuilder.loadFromDisk(String.format("./app/src/main/resources/complex%d.map", version));
         }
 
-        var levelMap = levelBuilder.build();
+        var levelMap = mapBuilder.build();
 
         state.setMap(levelMap);
 

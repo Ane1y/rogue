@@ -17,7 +17,7 @@ public class MapBuilder {
     public static final int MAX_ROOM_WIDTH = 100;
     public static final int MAX_ROOM_HEIGHT = 20;
 
-    public static final double PROBABILITY_TREASURE_ROOM = 0.8;
+    public static final double PROBABILITY_TREASURE_ROOM = 0.2;
     private String filename;
     private int width = DEFAULT_WIDTH;
     private int height = DEFAULT_HEIGHT;
@@ -106,6 +106,9 @@ public class MapBuilder {
 
         params = new Parameters(4, width, height);
         var map = generateMap();
+
+        saveNewMaps(5);
+
         return map;
     }
 
@@ -119,6 +122,20 @@ public class MapBuilder {
         return null;
     }
 
+    private void saveNewMaps(int number) {
+        for (int i = 0; i < number; i++) {
+            var map = generateMap();
+            try(
+                    FileOutputStream fileOutputStream
+                            = new FileOutputStream(String.format("./app/src/main/resources/complex%d.map", i));
+                    ObjectOutputStream objectOutputStream
+                            = new ObjectOutputStream(fileOutputStream);) {
+                objectOutputStream.writeObject(map);
+            } catch (IOException e) {
+                System.err.println("Error occurred during serializaztion: " + e.getMessage());
+            }
+        }
+    }
     private Map generateMap() {
         Map map = new Map(width, height);
         // dividing space and creating subrooms
@@ -134,7 +151,7 @@ public class MapBuilder {
         // creating doors out
         map.setTile(generateDoor(map), MapView.Tile.DOOR_OUT_NORMAL);
         map.setTile(generateDoor(map), MapView.Tile.DOOR_OUT_HARD);
-        if (rand.nextDouble() > PROBABILITY_TREASURE_ROOM) {
+        if (rand.nextDouble() < PROBABILITY_TREASURE_ROOM) {
             map.setTile(generateDoor(map), MapView.Tile.DOOR_OUT_TREASURE_ROOM);
         }
         return map;
