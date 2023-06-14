@@ -1,9 +1,11 @@
 package ru.itmo.rogue.model;
 
+import ru.itmo.rogue.model.items.ItemFactory;
 import ru.itmo.rogue.model.state.MapBuilder;
-import ru.itmo.rogue.model.unit.Position;
-import ru.itmo.rogue.model.unit.UnitFactory;
+import ru.itmo.rogue.model.unit.*;
 import ru.itmo.rogue.model.state.State;
+
+import java.util.Random;
 
 /**
  * Class that contains general Logic of the game that is active between the levels (Level, Unit and Item generation)
@@ -55,9 +57,24 @@ public class GameLogic {
 
         var reachability = levelMap.getDistance(levelMap.getEntrance(), new Position(levelMap.getWidth() - 1, levelMap.getHeight() - 1));
         // Generate Units
-        var unitFactory = new UnitFactory(difficulty, reachability.reachableFloors());
+        var random = new Random();
+        var itemFactory = new ItemFactory();
+        var aggressiveFactory = new AggressiveFactory(difficulty);
+        var idleFactory = new ChestFactory(difficulty);
+        var cowardFactory = new CowardFactory(difficulty);
+        var unitFactory = new CompositeFactory(reachability.reachableFloors(),
+                new FactoryProbability(aggressiveFactory, 3),
+                new FactoryProbability(idleFactory, 1),
+                new FactoryProbability(cowardFactory, 3)
+                );
         for (int i = 0; i < numberOfEnemies(difficulty); i++) {
             var enemy = unitFactory.getUnit();
+
+            var items = random.nextInt(1, 5);
+            for (int j = 0; j < items; j++) {
+                enemy.addItem(itemFactory.getItem());
+            }
+
             state.addUnit(enemy);
         }
     }

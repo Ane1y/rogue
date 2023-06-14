@@ -11,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class TestUnit {
 
-    private final UnitFactory factory = new UnitFactory(1);
+    private final CompositeFactory factory = new CompositeFactory(1);
 
     private Unit copyUnit(Unit unit) {
         return new Unit(

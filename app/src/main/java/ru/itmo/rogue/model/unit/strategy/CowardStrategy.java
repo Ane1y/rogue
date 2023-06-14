@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CowardStrategy implements Strategy {
+
     @Override
     public @NotNull StateUpdate getAction(UnitView unit, StateView state) {
         Position unitPos = unit.getPosition();

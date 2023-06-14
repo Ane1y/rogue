@@ -1,10 +1,7 @@
 package ru.itmo.rogue.model.state;
 
 import org.jetbrains.annotations.NotNull;
-import ru.itmo.rogue.model.unit.UnitFactory;
-import ru.itmo.rogue.model.unit.Position;
-import ru.itmo.rogue.model.unit.Unit;
-import ru.itmo.rogue.model.unit.UnitView;
+import ru.itmo.rogue.model.unit.*;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -26,7 +23,7 @@ public class State implements StateView {
     }
 
     public State(int previousRoomRecord, int previousLevelRecord) {
-        player = UnitFactory.getPlayerUnit();
+        player = AbstractFactory.getPlayer();
         statistics = new Statistics(previousLevelRecord, previousRoomRecord, 0, false, player);
     }
 

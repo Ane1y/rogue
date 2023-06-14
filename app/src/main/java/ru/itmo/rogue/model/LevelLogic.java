@@ -1,7 +1,8 @@
 package ru.itmo.rogue.model;
 
+import ru.itmo.rogue.model.unit.AbstractFactory;
 import ru.itmo.rogue.model.unit.Movement;
-import ru.itmo.rogue.model.unit.UnitFactory;
+import ru.itmo.rogue.model.unit.CompositeFactory;
 import ru.itmo.rogue.model.state.State;
 import ru.itmo.rogue.model.updates.StateUpdate;
 
@@ -30,7 +31,7 @@ public class LevelLogic {
      */
     public void movePlayer(Movement movement) {
         // Queue players action
-        UnitFactory.getPlayerInputStrategy().setMovement(movement);
+        AbstractFactory.getPlayerStrategy().setMovement(movement);
 
         // Make decisions
         List<StateUpdate> updates = state.getUnits().stream()

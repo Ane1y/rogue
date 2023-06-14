@@ -1,6 +1,5 @@
 package ru.itmo.rogue.model.unit;
 
-import ru.itmo.rogue.model.unit.strategy.AbstractFactory;
 import ru.itmo.rogue.model.unit.strategy.CloneStrategy;
 
 public class SlimeFactory extends AbstractFactory {
