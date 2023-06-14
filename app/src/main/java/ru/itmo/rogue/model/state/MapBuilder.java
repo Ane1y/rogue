@@ -2,14 +2,12 @@ package ru.itmo.rogue.model.state;
 
 import ru.itmo.rogue.model.unit.Movement;
 import ru.itmo.rogue.model.unit.Position;
-import ru.itmo.rogue.model.state.Map;
 
-import java.awt.*;
 import java.io.*;
 import java.util.*;
 import java.util.List;
 
-public class LevelBuilder {
+public class MapBuilder {
     public static final int DEFAULT_WIDTH = 16;
     public static final int DEFAULT_HEIGHT = 12;
     public static final int DEFAULT_COMPLEXITY = 12;
@@ -134,16 +132,15 @@ public class LevelBuilder {
         createCorridors(map, corePoints);
 
         // creating doors out
-        map.setTile(generateDoor(map), Map.MapTile.DOOR_OUT_NORMAL);
-        map.setTile(generateDoor(map), Map.MapTile.DOOR_OUT_HARD);
+        map.setTile(generateDoor(map), MapView.Tile.DOOR_OUT_NORMAL);
+        map.setTile(generateDoor(map), MapView.Tile.DOOR_OUT_HARD);
         if (rand.nextDouble() > PROBABILITY_TREASURE_ROOM) {
-            map.setTile(generateDoor(map), Map.MapTile.DOOR_OUT_TREASURE_ROOM);
+            map.setTile(generateDoor(map), MapView.Tile.DOOR_OUT_TREASURE_ROOM);
         }
         return map;
     }
-    public class Partition {
-
-        private final int minimum = 5;
+    private class Partition {
+        private final int minimumDimension = 5;
         private final int width;
         private final int height;
         private final Position originPos;
@@ -158,7 +155,7 @@ public class LevelBuilder {
             this.width = width;
             this.height = height;
             this.originPos = originPos;
-            if (depth > 0 && width > minimum && height > minimum) {
+            if (depth > 0 && width > minimumDimension && height > minimumDimension) {
                 var axis = (rand.nextInt(0, width + height) > width) ? Axis.HORIZONTAL : Axis.VERTICAL;
                 this.isLeaf = false;
                 depth--;
@@ -204,11 +201,11 @@ public class LevelBuilder {
                 Math.max(corePoint.y() - height, 1));
         for (int x = top.x(); x < bottom.x(); x++) {
             for (int y = bottom.y(); y < top.y(); y++) {
-                map.setTile(new Position(x, y), Map.MapTile.FLOOR);
+                map.setTile(new Position(x, y), MapView.Tile.FLOOR);
             }
         }
         if (isEntrance) {
-            map.setTile(generateEntrance(new Position(top.x() - 1, top.y() / 2)), Map.MapTile.DOOR_IN);
+            map.setTile(generateEntrance(new Position(top.x() - 1, top.y() / 2)), MapView.Tile.DOOR_IN);
         }
     }
     private Position generateEntrance(Position pos) {
@@ -230,12 +227,12 @@ public class LevelBuilder {
                 var path = map.getPossiblePath(map.getEntrance(), corePoints.get(roomIdx));
                 for (var coord : path) {
                     if (map.isNotBorderWall(coord)) {
-                        map.setTile(coord, Map.MapTile.FLOOR);
+                        map.setTile(coord, MapView.Tile.FLOOR);
                     }
                     for (var movement : Movement.defaults) {
                         var newCoord = coord.move(movement);
                         if (map.isNotBorderWall(newCoord)) {
-                            map.setTile(newCoord, Map.MapTile.FLOOR);
+                            map.setTile(newCoord, MapView.Tile.FLOOR);
                         }
                     }
                 }
@@ -253,10 +250,6 @@ public class LevelBuilder {
         var walls = map.getDistance(map.getEntrance(), new Position(width - 1, height - 1)).reachableWalls();
         int randomPos = rand.nextInt(0, walls.size());
         return walls.get(randomPos);
-    }
-    private Position getRandomPosition() {
-        Random rand = new Random();
-        return new Position(rand.nextInt(width), rand.nextInt(height));
     }
 
     /**

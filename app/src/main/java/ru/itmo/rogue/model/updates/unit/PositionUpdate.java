@@ -43,7 +43,7 @@ public class PositionUpdate extends UnitUpdate {
                 return;
             }
 
-            new StashTransferUpdate(enemy, view).apply(state);
+            new StashTransferUpdate(view, enemy).apply(state);
         }
 
         var unit = state.getUnitWithView(view);

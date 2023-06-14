@@ -4,7 +4,6 @@ import ru.itmo.rogue.model.unit.Movement;
 import ru.itmo.rogue.model.unit.Position;
 
 import java.io.Serializable;
-import java.sql.Array;
 import java.util.*;
 
 
@@ -13,18 +12,9 @@ import java.util.*;
  * Instances SHOULD be produced by game.LevelFactory
  * Represents unmoving parts of the level (background for action)
  */
-public class Map implements Serializable {
-    private final Tile[][] map;
+public class Map implements Serializable, MapView {
+    private final MapView.Tile[][] map;
     private Position entrance = new Position();
-
-    /**
-     * Constructs Map that should contain 0 enemies
-     * @param width free space width inside the created map
-     * @param height free space height inside the created map
-     */
-    public Map(int width, int height) {
-        this(width, height, 0);
-    }
 
 
     /**
@@ -33,16 +23,16 @@ public class Map implements Serializable {
      * @param height height of free space
      */
     public Map(int width, int height) {
-        this.map = new Map.MapTile[width + 2][height + 2];
+        this.map = new MapView.Tile[width + 2][height + 2];
         for (var column: map) {
-            Arrays.fill(column, MapTile.WALL);
+            Arrays.fill(column, MapView.Tile.WALL);
         }
 //        Arrays.fill(map[0], MapTile.WALL);
 //        Arrays.fill(map[width + 1], MapTile.WALL);
 
         for (int i = 0; i < width + 2; i++) {
-            map[i][0] = Tile.WALL;
-            map[i][height + 1] = Tile.WALL;
+            map[i][0] = MapView.Tile.WALL;
+            map[i][height + 1] = MapView.Tile.WALL;
         }
 
     }
@@ -50,7 +40,7 @@ public class Map implements Serializable {
     /**
      * Returns tile that is placed on position
      */
-    public Tile getTile(Position pos) {
+    public MapView.Tile getTile(Position pos) {
         assertValidPosition(pos);
         return map[pos.getX()][pos.getY()];
     }
@@ -58,7 +48,7 @@ public class Map implements Serializable {
     /**
      * Sets tile on position `position` to tile
      */
-    public void setTile(Position pos, Tile tile) {
+    public void setTile(Position pos, MapView.Tile tile) {
         assertValidPosition(pos);
         map[pos.getX()][pos.getY()] = tile;
         if (MapView.isEntrance(tile)) {
@@ -89,7 +79,7 @@ public class Map implements Serializable {
 
 
 
-    public boolean positionIsInbound(Position pos) {
+    public boolean isPositionInbound(Position pos) {
         return ((pos.getY() >= 0) && (pos.getY() < getHeight()) &&
                 (pos.getX() >= 0) && (pos.getX() < getWidth()));
     }
@@ -140,7 +130,7 @@ public class Map implements Serializable {
      * @return amount of steps that should be made to reach `to` from `from`, returns -1 if `to` is unreachable
      * @throws IllegalArgumentException if one of provided positions is out of bounds
      */
-    public int getDistance(Position from, Position to) {
+    public MapSearchResult getDistance(Position from, Position to) {
         if (!isPositionInbound(from) || !isPositionInbound(to)) {
             throw new IllegalArgumentException("Given coordinate is out of bound");
         }
@@ -163,7 +153,7 @@ public class Map implements Serializable {
             for (var movement : Movement.defaults) {
                 var newPos = curPos.move(movement);
 
-                if (positionIsInbound(newPos) && !visited.containsKey(newPos)) {
+                if (isPositionInbound(newPos) && !visited.containsKey(newPos)) {
                     if (isFloor(newPos)) {
                         visited.put(newPos, curPos);
                         queue.add(newPos);
@@ -181,12 +171,12 @@ public class Map implements Serializable {
             path.add(curPos);
         }
 
-        return new ReachableObjects(path, new ArrayList<>(visited.keySet()), reachableWalls);
+        return new MapSearchResult(path, new ArrayList<>(visited.keySet()), reachableWalls);
 
     }
 
     public List<Position> getPossiblePath(Position from, Position to) {
-        if (!positionIsInbound(from) || !positionIsInbound(to)) {
+        if (!isPositionInbound(from) || !isPositionInbound(to)) {
             throw new IllegalArgumentException("Given coordinate is out of bound");
         }
 
@@ -206,7 +196,7 @@ public class Map implements Serializable {
             for (var movement : Movement.defaults) {
                 var newPos = curPos.move(movement);
 
-                if (positionIsInbound(newPos) && !visited.containsKey(newPos)) {
+                if (isPositionInbound(newPos) && !visited.containsKey(newPos)) {
                         visited.put(newPos,curPos);
                         queue.add(newPos);
                 }
@@ -240,6 +230,4 @@ public class Map implements Serializable {
         assert pos.getX() >= 0 && pos.getX() < getWidth();
         assert pos.getY() >= 0 && pos.getY() < getHeight();
     }
-
-    public record ReachableObjects(List<Position> path, List<Position> reachableFloors, List<Position> reachableWalls) {}
 }

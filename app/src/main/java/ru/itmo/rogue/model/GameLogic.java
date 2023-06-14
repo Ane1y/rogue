@@ -1,6 +1,7 @@
 package ru.itmo.rogue.model;
 
 import ru.itmo.rogue.model.state.MapBuilder;
+import ru.itmo.rogue.model.unit.Position;
 import ru.itmo.rogue.model.unit.UnitFactory;
 import ru.itmo.rogue.model.state.State;
 
@@ -14,7 +15,7 @@ public class GameLogic {
 
     public GameLogic(State state) {
         this.state = state;
-        generateNewMap(0);
+        generateNewMap(1);
     }
 
     /**
@@ -37,8 +38,9 @@ public class GameLogic {
 
         generateNewMap(difficulty);
     }
-
-        var levelBuilder = new LevelBuilder()
+    
+    public void generateNewMap(int difficulty) {
+        var levelBuilder = new MapBuilder()
                 .width(87)
                 .height(32)
                 .complexity(difficulty);

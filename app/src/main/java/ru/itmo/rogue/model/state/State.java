@@ -71,7 +71,7 @@ public class State implements StateView {
     /**
      * @return current Map
      */
-    public Map getMap() {
+    public MapView getMap() {
         return levelMap;
     }
 

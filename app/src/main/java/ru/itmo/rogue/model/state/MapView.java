@@ -67,26 +67,20 @@ public interface MapView {
     int getWidth();
 
     /**
-     * @return number of enemies that should be placed on the map
-     */
-    public int getInitialEnemyNumber();
-
-    /**
      * Computes walking distance between two points
      * (Point can be floor or reachable door or wall)
      */
-    int getDistance(Position from, Position to);
+    MapSearchResult getDistance(Position from, Position to);
 
     /**
      * @return true if tile on position `position` represents floor,
      */
-    public boolean isFloor(Position pos);
+    boolean isFloor(Position pos);
 
     /**
      * @return true if tile on position `position` represents exit door,
      */
-    public boolean isExit(Position pos);
-
+    boolean isExit(Position pos);
 
     /**
      * @return true if tile on position `position` represents entrance,
@@ -95,6 +89,8 @@ public interface MapView {
     /**
      * @return true if tile on position `position` represents wall,
      */
-    public boolean isWall(Position pos);
+    boolean isWall(Position pos);
+
+    boolean isPositionInbound(Position position);
 
 }
