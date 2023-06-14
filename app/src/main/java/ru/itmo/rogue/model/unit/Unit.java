@@ -5,6 +5,7 @@ import ru.itmo.rogue.model.items.Item;
 import ru.itmo.rogue.model.state.State;
 import ru.itmo.rogue.model.state.StateView;
 import ru.itmo.rogue.model.unit.strategy.Strategy;
+import ru.itmo.rogue.model.updates.NoUpdate;
 import ru.itmo.rogue.model.updates.StateUpdate;
 
 import java.util.ArrayList;
@@ -63,6 +64,9 @@ public class Unit implements UnitView {
 
     @Override
     public StateUpdate getAction(StateView state) {
+        if (isDead() || this.strategy == null) {
+            return new NoUpdate();
+        }
         this.strategy = strategy.nextStrategy(this);
         return strategy.getAction(this, state);
     }
@@ -81,6 +85,7 @@ public class Unit implements UnitView {
      */
     public void changeHealth(int change) {
         health = (-change >= health) ? 0 : health + change;
+        health = Math.min(maxHealth, health);
     }
 
     public void changeStrength(int change) {

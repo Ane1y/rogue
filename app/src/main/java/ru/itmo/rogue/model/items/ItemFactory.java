@@ -28,8 +28,7 @@ public class ItemFactory {
             new ItemVariant(BombStone.class, 3), 2,
             new ItemVariant(HealthStone.class, 1), 5,
             new ItemVariant(HealthStone.class, 2), 10,
-            new ItemVariant(StrengthStone.class, 1), 2,
-            new ItemVariant(StrengthStone.class, 2), 1,
+            new ItemVariant(StrengthStone.class, 1), 1,
             new ItemVariant(ConfusionSpell.class, 3), 3,
             new ItemVariant(ConfusionSpell.class, 5), 2
     );
