@@ -1,7 +1,9 @@
-package ru.itmo.rogue.model.unit.strategy;
+package ru.itmo.rogue.model.unit;
 
+import ru.itmo.rogue.model.items.ItemFactory;
 import ru.itmo.rogue.model.unit.Position;
 import ru.itmo.rogue.model.unit.Unit;
+import ru.itmo.rogue.model.unit.strategy.PlayerInputStrategy;
 
 import java.util.List;
 import java.util.Random;
@@ -44,6 +46,25 @@ public abstract class AbstractFactory {
 
     public void setPossiblePositions(List<Position> possiblePositions) {
         currentPositions = possiblePositions;
+    }
+
+    // Player generation
+
+    private static final PlayerInputStrategy playerStrategy = new PlayerInputStrategy();
+    private static final Unit player;
+
+    static {
+        player = new Unit(
+                3, 1, 0, 1, new Position(), playerStrategy, '@', '?');
+        player.addItem(ItemFactory.getPoison());
+    }
+
+    public static Unit getPlayer() {
+        return player;
+    }
+
+    public static PlayerInputStrategy getPlayerStrategy() {
+        return playerStrategy;
     }
 
 }

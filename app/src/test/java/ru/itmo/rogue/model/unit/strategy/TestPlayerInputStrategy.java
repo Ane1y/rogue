@@ -1,7 +1,7 @@
 package ru.itmo.rogue.model.unit.strategy;
 
 import org.junit.jupiter.api.Test;
-import ru.itmo.rogue.model.unit.UnitFactory;
+import ru.itmo.rogue.model.unit.CompositeFactory;
 import ru.itmo.rogue.model.unit.Movement;
 import ru.itmo.rogue.model.unit.Position;
 import ru.itmo.rogue.model.state.State;
@@ -14,7 +14,7 @@ public class TestPlayerInputStrategy {
 
     @Test
     void queuedActions() {
-        var player = UnitFactory.getPlayerUnit();
+        var player = CompositeFactory.getPlayerUnit();
         assertEquals(PlayerInputStrategy.class, player.getStrategy().getClass());
         var strategy = (PlayerInputStrategy)player.getStrategy();
 
