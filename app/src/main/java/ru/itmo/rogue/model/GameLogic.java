@@ -38,23 +38,23 @@ public class GameLogic {
         generateNewMap(difficulty);
     }
 
+        var levelBuilder = new LevelBuilder()
+                .width(87)
+                .height(32)
+                .complexity(difficulty);
 
-    /**
-     * Updates game state based on type of door, called by LevelLogic or on initialization
-     */
-    public void generateNewMap(int difficulty) {
-        assert difficulty >= 0;
+        if (difficulty == 0) {
+            levelBuilder.loadFromDisk("./app/src/main/resources/simple.map");
+        }
 
-        var levelBuilder = new MapBuilder();
-        var levelMap = levelBuilder
-                .complexity(difficulty)
-                .build();
+        var levelMap = levelBuilder.build();
 
         state.setMap(levelMap);
 
+        var reachability = levelMap.getDistance(levelMap.getEntrance(), new Position(levelMap.getWidth() - 1, levelMap.getHeight() - 1));
         // Generate Units
-        var unitFactory = new UnitFactory(difficulty);
-        for (int i = 0; i < state.getMap().getInitialEnemyNumber(); i++) {
+        var unitFactory = new UnitFactory(difficulty, reachability.reachableFloors());
+        for (int i = 0; i < numberOfEnemies(difficulty); i++) {
             var enemy = unitFactory.getUnit();
             state.addUnit(enemy);
         }
@@ -65,4 +65,11 @@ public class GameLogic {
     }
 
 
+    private int numberOfEnemies(int complexity) {
+        if (complexity == 0) {
+            return state.getPlayer().getLevel();
+        }
+
+        return 2 + (int) Math.ceil(Math.log(complexity));
+    }
 }

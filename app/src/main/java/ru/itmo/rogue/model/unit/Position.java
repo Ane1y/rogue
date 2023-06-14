@@ -1,6 +1,8 @@
 package ru.itmo.rogue.model.unit;
 
-public record Position (int x, int y) {
+import java.io.Serializable;
+
+public record Position (int x, int y) implements Serializable {
 
     public Position() {
         this(0, 0);
