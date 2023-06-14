@@ -1,15 +1,15 @@
-package ru.itmo.rogue.model.unit;
+package ru.itmo.rogue.model.unit.factory;
 
-import ru.itmo.rogue.model.unit.AbstractFactory;
 import ru.itmo.rogue.model.unit.Position;
 import ru.itmo.rogue.model.unit.Unit;
 import ru.itmo.rogue.model.unit.strategy.AgressiveStrategy;
+import ru.itmo.rogue.model.unit.strategy.Strategy;
 
 import java.util.List;
 
 public class AggressiveFactory extends AbstractFactory {
 
-    private int difficulty;
+    private final int difficulty;
 
     public AggressiveFactory(int difficulty){
         this.difficulty = difficulty;
@@ -22,18 +22,25 @@ public class AggressiveFactory extends AbstractFactory {
     @Override
 
     public Unit getUnit() {
-        return new Unit(getHealth(), getStrength(), UNIT_EXPERIENCE, UNIT_LEVEL, generatePosition(), new AgressiveStrategy(), getAliveChar(), getDeadChar());
-
+        var unit = createUnit();
+        generateItems(1, 3).forEach(unit::addItem);
+        return unit;
     }
-    public char getAliveChar()
-    {
+
+    @Override
+    protected Strategy getStrategy() {
+        return new AgressiveStrategy();
+    }
+
+    protected char getAliveChar() {
         return '*';
     }
-    private int getHealth(){
-        return  2*difficulty;
+
+    protected int getHealth() {
+        return 2 * difficulty;
     }
 
-    private int getStrength(){
-        return  2*difficulty;
+    protected int getStrength() {
+        return 2 * difficulty;
     }
 }
