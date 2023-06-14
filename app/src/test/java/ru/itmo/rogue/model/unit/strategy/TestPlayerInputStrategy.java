@@ -43,7 +43,7 @@ public class TestPlayerInputStrategy {
 
         // Enqueue
         for (var signal : signals) {
-            strategy.queueAction(signal);
+            strategy.setMovement(signal);
         }
 
         // Check

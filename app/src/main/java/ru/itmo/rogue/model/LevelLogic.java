@@ -30,7 +30,7 @@ public class LevelLogic {
      */
     public void movePlayer(Movement movement) {
         // Queue players action
-        UnitFactory.getPlayerInputStrategy().queueAction(movement);
+        UnitFactory.getPlayerInputStrategy().setMovement(movement);
 
         // Make decisions
         List<StateUpdate> updates = state.getUnits().stream()

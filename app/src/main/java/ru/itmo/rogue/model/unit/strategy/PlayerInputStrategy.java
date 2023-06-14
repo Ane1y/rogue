@@ -8,22 +8,18 @@ import ru.itmo.rogue.model.updates.NoUpdate;
 import ru.itmo.rogue.model.updates.StateUpdate;
 import ru.itmo.rogue.model.updates.unit.PositionUpdate;
 
-import java.util.ArrayDeque;
-import java.util.Queue;
-
 public class PlayerInputStrategy implements Strategy {
 
     /**
      * Queues Signal to later perform action
      * @param movement to be queued
      */
-    public void queueAction(Movement movement) {
-        queue.add(movement);
+    public void setMovement(Movement movement) {
+        this.movement = movement;
     }
 
     @Override
     public @NotNull StateUpdate getAction(UnitView unit, StateView state) {
-        var movement = queue.poll();
         if (movement == null) {
             return new NoUpdate();
         }
@@ -31,6 +27,6 @@ public class PlayerInputStrategy implements Strategy {
         return new PositionUpdate(unit, unit.getPosition().move(movement));
     }
 
-    private final Queue<Movement> queue = new ArrayDeque<>();
+    private Movement movement = null;
 
 }
