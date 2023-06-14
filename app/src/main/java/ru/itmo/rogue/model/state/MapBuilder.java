@@ -107,8 +107,6 @@ public class MapBuilder {
         params = new Parameters(4, width, height);
         var map = generateMap();
 
-        saveNewMaps(5);
-
         return map;
     }
 
