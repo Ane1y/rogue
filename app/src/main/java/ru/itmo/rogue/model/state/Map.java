@@ -27,14 +27,6 @@ public class Map implements Serializable, MapView {
         for (var column: map) {
             Arrays.fill(column, MapView.Tile.WALL);
         }
-//        Arrays.fill(map[0], MapTile.WALL);
-//        Arrays.fill(map[width + 1], MapTile.WALL);
-
-        for (int i = 0; i < width + 2; i++) {
-            map[i][0] = MapView.Tile.WALL;
-            map[i][height + 1] = MapView.Tile.WALL;
-        }
-
     }
 
     /**

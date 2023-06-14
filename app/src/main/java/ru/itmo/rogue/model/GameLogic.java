@@ -42,16 +42,18 @@ public class GameLogic {
     }
     
     public void generateNewMap(int difficulty) {
-        var levelBuilder = new MapBuilder()
+        var mapBuilder = new MapBuilder()
                 .width(87)
                 .height(32)
                 .complexity(difficulty);
 
         if (difficulty == 0) {
-            levelBuilder.loadFromDisk("./app/src/main/resources/simple.map");
+            Random rand = new Random();
+            int version = rand.nextInt(10);
+            mapBuilder.loadFromDisk(String.format("./app/src/main/resources/complex%d.map", version));
         }
 
-        var levelMap = levelBuilder.build();
+        var levelMap = mapBuilder.build();
 
         state.setMap(levelMap);
 
