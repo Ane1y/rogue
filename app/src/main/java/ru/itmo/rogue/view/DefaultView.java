@@ -16,6 +16,7 @@ public class DefaultView implements View {
 
     private final LevelView levelView;
     private final InventoryView inventoryView;
+    private final StatisticsView statisticsView;
 
     public DefaultView() throws IOException {
         // LANTERNA INIT
@@ -30,6 +31,7 @@ public class DefaultView implements View {
         // INIT
         levelView = new LevelView(lanternaView);
         inventoryView = new InventoryView(lanternaView);
+        statisticsView = new StatisticsView(lanternaView);
 
         lanternaView.drawPlains(focus);
     }
@@ -38,6 +40,7 @@ public class DefaultView implements View {
     public boolean update(StateView state) {
         return levelView.update(state) &&
                 inventoryView.update(state) &&
+                statisticsView.update(state) &&
                 refreshScreen();
     }
 

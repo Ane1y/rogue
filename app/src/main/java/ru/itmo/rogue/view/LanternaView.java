@@ -234,7 +234,7 @@ public class LanternaView {
         }
     }
 
-    private void drawStatistics(Statistics statistics) {
+    protected void drawStatistics(Statistics statistics) {
         if (statistics == null) {
             return;
         }
