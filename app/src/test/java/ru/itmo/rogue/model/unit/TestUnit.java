@@ -93,43 +93,6 @@ public class TestUnit {
     }
 
     @Test
-    void unitMoved() {
-        var unit = factory.getUnit();
-
-        var movement = new Movement(2, 2);
-        var destination = unit.getPosition().move(movement);
-
-        var unitMoved = copyUnit(unit);
-        var movedUpdate1 = unitMoved.move(movement);
-
-        var unitTeleported = copyUnit(unit);
-        var teleportedUpdate = unitTeleported.moveTo(destination);
-
-        assertEquals(unitMoved, unitTeleported);
-
-        // Move back
-        var reversedMovement = new Movement(-2, -2);
-        var movedUpdate2 = unitMoved.move(reversedMovement);
-
-        assertEquals(unit, unitMoved);
-        assertNotEquals(unitMoved, unitTeleported);
-
-        // Check position
-        assertEquals(unit.getPosition().getX(), unit.getHorizontalPos());
-        assertEquals(unit.getPosition().getY(), unit.getVerticalPos());
-        assertEquals(unit.getPosition().move(movement), unitTeleported.getPosition());
-
-        // Check returned updates
-        assertSame(unitMoved, movedUpdate1.getUnit());
-        assertSame(unitMoved, movedUpdate2.getUnit());
-        assertSame(unitTeleported, teleportedUpdate.getUnit());
-
-        assertEquals(unit.getPosition(), movedUpdate1.getOldPosition());
-        assertEquals(unit.getPosition(), teleportedUpdate.getOldPosition());
-        assertEquals(unitTeleported.getPosition(), movedUpdate2.getOldPosition());
-    }
-
-    @Test
     void differentStrategy() throws NoSuchFieldException, IllegalAccessException {
         var unit1 = factory.getUnit();
         var unit2 = copyUnit(unit1);

@@ -4,6 +4,7 @@ package ru.itmo.rogue.model.unit;
 import ru.itmo.rogue.model.items.Item;
 import ru.itmo.rogue.model.state.State;
 import ru.itmo.rogue.model.unit.strategy.Strategy;
+import ru.itmo.rogue.model.updates.StateUpdate;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -59,10 +60,9 @@ public class Unit implements UnitView {
         this.level = 0;
     }
 
-    public Action getAction(State state) {
-        var action = strategy.getAction(this, state);
-        this.strategy = strategy.nextStrategy();
-        return action;
+    public StateUpdate getAction(State state) {
+        this.strategy = strategy.nextStrategy(this);
+        return strategy.getAction(this, state);
     }
 
     public void moveTo(Position pos) {

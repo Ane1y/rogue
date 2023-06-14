@@ -1,8 +1,8 @@
 package ru.itmo.rogue.model.unit.strategy;
 
-import ru.itmo.rogue.model.state.State;
-import ru.itmo.rogue.model.unit.Action;
-import ru.itmo.rogue.model.unit.Unit;
+import ru.itmo.rogue.model.state.StateView;
+import ru.itmo.rogue.model.unit.UnitView;
+import ru.itmo.rogue.model.updates.StateUpdate;
 
 public interface Strategy {
 
@@ -10,16 +10,16 @@ public interface Strategy {
      * Generates an Action for provided unit
      * @param unit unit that will act
      * @param state state of the game
-     * @return Action
+     * @return StateUpdate
      */
-    Action getAction(Unit unit, State state);
+    StateUpdate getAction(UnitView unit, StateView state);
 
     /**
      * Useful when creating mobs with changing behaviour
      *  and creating temporary effects (confusion or speeding up)
      * @return new strategy
      */
-    default Strategy nextStrategy() {
+    default Strategy nextStrategy(UnitView unit) {
         return this;
     }
 }

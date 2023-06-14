@@ -1,9 +1,12 @@
 package ru.itmo.rogue.model.unit.strategy;
 
-import ru.itmo.rogue.model.unit.Action;
+import ru.itmo.rogue.model.state.StateView;
 import ru.itmo.rogue.model.unit.Movement;
 import ru.itmo.rogue.model.unit.Unit;
 import ru.itmo.rogue.model.state.State;
+import ru.itmo.rogue.model.unit.UnitView;
+import ru.itmo.rogue.model.updates.StateUpdate;
+import ru.itmo.rogue.model.updates.unit.PositionUpdate;
 
 import java.util.Random;
 
@@ -23,36 +26,24 @@ public class ConfusionStrategy implements Strategy {
     }
 
     @Override
-    public Action getAction(Unit unit, State state) {
-        duration -= 1;
-
-        var action = underlying.getAction(unit, state);
-        var invert = random.nextBoolean();
-
-        if (invert) {
-            return invertAction(unit, action);
+    public StateUpdate getAction(UnitView unit, StateView state) {
+        if (duration < 1) {
+            return underlying.getAction(unit, state);
         }
 
-        return turnAction(unit, action);
+        duration -= 1;
+
+        int moveIndex = random.nextInt(4);
+        var movement = Movement.defaults.get(moveIndex);
+
+        return new PositionUpdate(unit, unit.getPosition().move(movement));
     }
 
     @Override
-    public Strategy nextStrategy() {
+    public Strategy nextStrategy(UnitView unit) {
         if (duration < 1) {
-            return underlying.nextStrategy();
+            return underlying.nextStrategy(unit);
         }
         return this;
-    }
-
-    private Action turnAction(Unit unit, Action action) {
-        var movement = unit.getPosition().getMovement(action.dest());
-        var rotated = new Movement(-movement.y(), movement.x());
-        return new Action(unit.getPosition().move(rotated));
-    }
-
-    private Action invertAction(Unit unit, Action action) {
-        var movement = unit.getPosition().getMovement(action.dest());
-        var inverted = new Movement(-movement.x(), -movement.y());
-        return new Action(unit.getPosition().move(inverted));
     }
 }

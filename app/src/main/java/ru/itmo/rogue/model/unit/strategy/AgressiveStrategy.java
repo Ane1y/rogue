@@ -1,8 +1,11 @@
 package ru.itmo.rogue.model.unit.strategy;
-import ru.itmo.rogue.model.unit.Action;
+import ru.itmo.rogue.model.state.StateView;
 import ru.itmo.rogue.model.unit.Position;
 import ru.itmo.rogue.model.unit.Unit;
 import ru.itmo.rogue.model.state.State;
+import ru.itmo.rogue.model.unit.UnitView;
+import ru.itmo.rogue.model.updates.StateUpdate;
+import ru.itmo.rogue.model.updates.unit.PositionUpdate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,7 +14,7 @@ public class AgressiveStrategy implements Strategy  {
 
     //Unit always is enemy
     @Override
-    public Action getAction(Unit unit, State state) {
+    public StateUpdate getAction(UnitView unit, StateView state) {
         Position unitPos = unit.getPosition();
         Position playerPos = state.getPlayer().getPosition();
         List<Position> possiblePos = new ArrayList<>();
@@ -26,7 +29,8 @@ public class AgressiveStrategy implements Strategy  {
         for (int i = 0; i < distances.size(); i++) {
             minAt = distances.get(i) < distances.get(minAt) ? i : minAt;
         }
-        return new Action(possiblePos.get(minAt));
+
+        return new PositionUpdate(unit, possiblePos.get(minAt));
 
     }
 }
