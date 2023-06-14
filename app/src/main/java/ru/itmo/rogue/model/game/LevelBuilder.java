@@ -19,6 +19,7 @@ public class LevelBuilder {
     public static final int MAX_ROOM_WIDTH = 100;
     public static final int MAX_ROOM_HEIGHT = 20;
 
+    public static final double PROBABILITY_TREASURE_ROOM = 0.8;
     private String filename;
     private int width = DEFAULT_WIDTH;
     private int height = DEFAULT_HEIGHT;
@@ -135,7 +136,7 @@ public class LevelBuilder {
         // creating doors out
         map.setTile(generateDoor(map), Map.MapTile.DOOR_OUT_NORMAL);
         map.setTile(generateDoor(map), Map.MapTile.DOOR_OUT_HARD);
-        if (rand.nextDouble() > 0.8) {
+        if (rand.nextDouble() > PROBABILITY_TREASURE_ROOM) {
             map.setTile(generateDoor(map), Map.MapTile.DOOR_OUT_TREASURE_ROOM);
         }
         return map;
