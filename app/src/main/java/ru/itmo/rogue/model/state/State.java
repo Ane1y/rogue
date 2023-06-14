@@ -87,6 +87,21 @@ public class State implements StateView {
     }
 
     /**
+     * @return true if doors are open (all enemies are dead)
+     */
+    public boolean doorsOpen() {
+        return units.stream().allMatch(unit -> unit == player || unit.isDead());
+    }
+
+    /**
+     * @return true if doors are closed (1 or more enemies are alive)
+     */
+    public boolean doorsClosed() {
+        return !doorsOpen();
+    }
+
+
+    /**
      * Sets running flag as False, game should stop after it
      */
     public void stop() {

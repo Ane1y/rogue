@@ -25,7 +25,11 @@ public class PositionUpdate extends UnitUpdate {
 
     @Override
     public void apply(State state) {
-        if (state.getMap().isWall(position)) { // Wall
+
+        var map = state.getMap();
+        boolean isWall = map.isWall(position);
+        boolean isDoor = map.isExit(position);
+        if (isWall || (isDoor && state.doorsClosed())) { // Wall or closed door
             return;
         }
 

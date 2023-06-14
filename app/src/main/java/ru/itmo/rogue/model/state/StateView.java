@@ -23,6 +23,8 @@ public interface StateView {
 
     Statistics getStatistics();
 
+    boolean doorsClosed();
+
     boolean running();
 
     StateView copy();
