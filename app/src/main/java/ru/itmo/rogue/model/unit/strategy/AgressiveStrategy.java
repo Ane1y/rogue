@@ -1,8 +1,7 @@
 package ru.itmo.rogue.model.unit.strategy;
+import org.jetbrains.annotations.NotNull;
 import ru.itmo.rogue.model.state.StateView;
 import ru.itmo.rogue.model.unit.Position;
-import ru.itmo.rogue.model.unit.Unit;
-import ru.itmo.rogue.model.state.State;
 import ru.itmo.rogue.model.unit.UnitView;
 import ru.itmo.rogue.model.updates.StateUpdate;
 import ru.itmo.rogue.model.updates.unit.PositionUpdate;
@@ -14,7 +13,7 @@ public class AgressiveStrategy implements Strategy  {
 
     //Unit always is enemy
     @Override
-    public StateUpdate getAction(UnitView unit, StateView state) {
+    public @NotNull StateUpdate getAction(UnitView unit, StateView state) {
         Position unitPos = unit.getPosition();
         Position playerPos = state.getPlayer().getPosition();
         List<Position> possiblePos = new ArrayList<>();

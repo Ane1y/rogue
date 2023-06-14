@@ -1,9 +1,8 @@
 package ru.itmo.rogue.model.unit.strategy;
 
+import org.jetbrains.annotations.NotNull;
 import ru.itmo.rogue.model.state.StateView;
 import ru.itmo.rogue.model.unit.Movement;
-import ru.itmo.rogue.model.unit.Unit;
-import ru.itmo.rogue.model.state.State;
 import ru.itmo.rogue.model.unit.UnitView;
 import ru.itmo.rogue.model.updates.StateUpdate;
 import ru.itmo.rogue.model.updates.unit.PositionUpdate;
@@ -26,7 +25,7 @@ public class ConfusionStrategy implements Strategy {
     }
 
     @Override
-    public StateUpdate getAction(UnitView unit, StateView state) {
+    public @NotNull StateUpdate getAction(UnitView unit, StateView state) {
         if (duration < 1) {
             return underlying.getAction(unit, state);
         }
@@ -40,7 +39,7 @@ public class ConfusionStrategy implements Strategy {
     }
 
     @Override
-    public Strategy nextStrategy(UnitView unit) {
+    public @NotNull Strategy nextStrategy(UnitView unit) {
         if (duration < 1) {
             return underlying.nextStrategy(unit);
         }

@@ -1,5 +1,6 @@
 package ru.itmo.rogue.model.unit.strategy;
 
+import org.jetbrains.annotations.NotNull;
 import ru.itmo.rogue.model.state.StateView;
 import ru.itmo.rogue.model.unit.Movement;
 import ru.itmo.rogue.model.unit.UnitView;
@@ -21,7 +22,7 @@ public class PlayerInputStrategy implements Strategy {
     }
 
     @Override
-    public StateUpdate getAction(UnitView unit, StateView state) {
+    public @NotNull StateUpdate getAction(UnitView unit, StateView state) {
         var movement = queue.poll();
         if (movement == null) {
             return new NoUpdate();

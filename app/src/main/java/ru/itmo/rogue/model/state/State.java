@@ -100,7 +100,6 @@ public class State implements StateView {
         return !doorsOpen();
     }
 
-
     /**
      * Sets running flag as False, game should stop after it
      */
@@ -145,7 +144,9 @@ public class State implements StateView {
 
     @Override
     public State copy() {
-        var unitList = units.stream().map(Unit::copy).collect(Collectors.toList());
+        var unitList = units.stream()
+                .map(Unit::copy)
+                .collect(Collectors.toList());
         return new State(player.copy(), unitList, levelMap, statistics, running);
     }
 }
