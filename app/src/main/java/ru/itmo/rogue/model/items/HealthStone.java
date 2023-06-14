@@ -1,7 +1,11 @@
 package ru.itmo.rogue.model.items;
 
-import ru.itmo.rogue.model.unit.Unit;
-import ru.itmo.rogue.model.state.State;
+import ru.itmo.rogue.model.state.StateView;
+import ru.itmo.rogue.model.unit.UnitView;
+import ru.itmo.rogue.model.updates.StateUpdate;
+import ru.itmo.rogue.model.updates.unit.HealthUpdate;
+
+import java.util.List;
 
 public class HealthStone implements Item {
     private final String name = "Healing Potion";
@@ -15,13 +19,13 @@ public class HealthStone implements Item {
     }
 
     @Override
-    public Delta apply(Unit unit, State state) {
-        return new Delta(unit.changeHealth(change));
+    public StateUpdate apply(UnitView unit, StateView state) {
+        return new HealthUpdate(unit, change);
     }
 
     @Override
     public String getName() {
-        return name;
+        return name + " " + change;
     }
 
 }

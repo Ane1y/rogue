@@ -11,6 +11,8 @@ import java.util.List;
 import java.util.Objects;
 
 public class Unit implements UnitView {
+    public static int MAX_STASH_SIZE = 31;
+
     protected int maxHealth;
     protected int health;
     protected int strength;
@@ -99,6 +101,30 @@ public class Unit implements UnitView {
         strength += levelUpStrengthBonus();
     }
 
+    public void addItem(Item item) {
+        if (stash.size() >= MAX_STASH_SIZE) {
+            return;
+        }
+
+        if (stash.isEmpty()) {
+            stash.add(item);
+        } else {
+            stash.add(stash.size() - 1, item);
+        }
+    }
+
+    public void removeItem(Item item) {
+        stash.remove(item);
+    }
+
+    public void removeItem(int itemIndex) {
+        stash.remove(itemIndex);
+    }
+
+    public void removeAllItems() {
+        stash.clear();
+    }
+
     public void setAliveChar(char aliveChar) {
         this.aliveChar = aliveChar;
     }
@@ -113,10 +139,6 @@ public class Unit implements UnitView {
 
     public List<Item> getStash() {
         return Collections.unmodifiableList(stash);
-    }
-
-    public List<Item> getMutableStash() {
-        return stash;
     }
 
     public int getMaxHealth() {

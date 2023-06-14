@@ -1,7 +1,9 @@
 package ru.itmo.rogue.model.items;
 
+import ru.itmo.rogue.model.state.StateView;
 import ru.itmo.rogue.model.unit.Unit;
 import ru.itmo.rogue.model.state.State;
+import ru.itmo.rogue.model.unit.UnitView;
 import ru.itmo.rogue.model.updates.StateUpdate;
 
 import java.util.List;
@@ -14,7 +16,7 @@ public interface Item {
      * @param state state
      * @return delta that reflects changes to the state made by the item
      */
-    List<StateUpdate> apply(Unit unit, State state);
+    StateUpdate apply(UnitView unit, StateView state);
 
     /**
      * @return name of the item

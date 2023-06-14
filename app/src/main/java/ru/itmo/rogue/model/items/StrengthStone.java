@@ -1,7 +1,11 @@
 package ru.itmo.rogue.model.items;
 
+import ru.itmo.rogue.model.state.StateView;
 import ru.itmo.rogue.model.unit.Unit;
 import ru.itmo.rogue.model.state.State;
+import ru.itmo.rogue.model.unit.UnitView;
+import ru.itmo.rogue.model.updates.StateUpdate;
+import ru.itmo.rogue.model.updates.unit.StrengthUpdate;
 
 public class StrengthStone implements Item {
     private final String name = "Strength Potion";
@@ -16,13 +20,13 @@ public class StrengthStone implements Item {
     }
 
     @Override
-    public Delta apply(Unit unit, State state) {
-        return new Delta(unit.changeStrength(change));
+    public StateUpdate apply(UnitView unit, StateView state) {
+        return new StrengthUpdate(unit, change);
     }
 
 
     @Override
     public String getName() {
-        return name;
+        return name + " " + change;
     }
 }
