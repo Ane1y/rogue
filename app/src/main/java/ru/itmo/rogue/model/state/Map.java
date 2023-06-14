@@ -195,7 +195,7 @@ public class Map implements MapView {
     }
 
 
-    private boolean isPositionInbound(Position pos) {
+    public boolean isPositionInbound(Position pos) {
         return ((pos.getY() >= 0) && (pos.getY() < getHeight()) &&
                 (pos.getX() >= 0) && (pos.getX() < getWidth()));
     }

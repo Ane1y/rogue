@@ -14,7 +14,7 @@ public class StrategyUpdate extends UnitUpdate {
         this.strategy = strategy;
     }
     @Override
-    public void apply(State state) {
+    public void userApply(State state) {
         state.getUnitWithView(view).setStrategy(strategy);
     }
 }

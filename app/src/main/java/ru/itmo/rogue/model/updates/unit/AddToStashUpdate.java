@@ -17,7 +17,7 @@ public class AddToStashUpdate extends UnitUpdate {
     }
 
     @Override
-    public void apply(State state) {
+    public void userApply(State state) {
         var stash = state.getUnitWithView(view).getStash();
         var size = stash.size();
         if (size == 0) {

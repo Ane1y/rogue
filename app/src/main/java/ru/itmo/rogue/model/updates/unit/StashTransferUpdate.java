@@ -1,23 +1,22 @@
-package ru.itmo.rogue.model.updates;
+package ru.itmo.rogue.model.updates.unit;
 
 import ru.itmo.rogue.model.state.State;
 import ru.itmo.rogue.model.unit.UnitView;
 import ru.itmo.rogue.model.updates.StateUpdate;
+import ru.itmo.rogue.model.updates.UnitUpdate;
 
-public class StashTransferUpdate implements StateUpdate {
-
+public class StashTransferUpdate extends UnitUpdate {
     private final UnitView sourceView;
-    private final UnitView destinationView;
 
-    public StashTransferUpdate(UnitView source, UnitView destination) {
+    public StashTransferUpdate(UnitView destination, UnitView source) {
+        super(destination);
         this.sourceView = source;
-        this.destinationView = destination;
     }
 
     @Override
-    public void apply(State state) {
+    public void userApply(State state) {
         var source = state.getUnitWithView(sourceView);
-        var destination = state.getUnitWithView(destinationView);
+        var destination = state.getUnitWithView(view);
 
         source.getStash().forEach(destination::addItem);
         source.removeAllItems();

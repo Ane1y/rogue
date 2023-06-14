@@ -10,7 +10,7 @@ public class StashClearUpdate extends UnitUpdate {
     }
 
     @Override
-    public void apply(State state) {
+    public void userApply(State state) {
         state.getUnitWithView(view).getStash().clear();
     }
 }

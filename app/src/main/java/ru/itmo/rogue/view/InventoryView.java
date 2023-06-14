@@ -59,7 +59,7 @@ public class InventoryView {
         return lastState.getPlayer().getStash();
     }
 
-    public void focusUp() {
+    public void focusDown() {
         if (focusedItem >= getStash().size() - 1) {
             return;
         }
@@ -76,7 +76,7 @@ public class InventoryView {
         lanternaView.drawInventory(updates);
     }
 
-    public void focusDown() {
+    public void focusUp() {
         int previousFocusedItem = focusedItem;
         if (focusedItem <= 0) {
             return;

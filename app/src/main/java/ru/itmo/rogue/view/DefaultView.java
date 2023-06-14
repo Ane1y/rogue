@@ -62,13 +62,13 @@ public class DefaultView implements View {
         return focus;
     }
 
-    public void itemFocusDown() {
-        inventoryView.focusDown();
+    public void itemFocusUp() {
+        inventoryView.focusUp();
         refreshScreen();
     }
 
-    public void itemFocusUp() {
-        inventoryView.focusUp();
+    public void itemFocusDown() {
+        inventoryView.focusDown();
         refreshScreen();
     }
 

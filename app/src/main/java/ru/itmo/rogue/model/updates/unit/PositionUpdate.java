@@ -24,7 +24,10 @@ public class PositionUpdate extends UnitUpdate {
     }
 
     @Override
-    public void apply(State state) {
+    public void userApply(State state) {
+        if (!state.getMap().isPositionInbound(position)) {
+            return;
+        }
 
         var map = state.getMap();
         boolean isWall = map.isWall(position);
