@@ -1,6 +1,7 @@
 package ru.itmo.rogue.model.unit.strategy;
 import org.jetbrains.annotations.NotNull;
 import ru.itmo.rogue.model.state.StateView;
+import ru.itmo.rogue.model.unit.Movement;
 import ru.itmo.rogue.model.unit.Position;
 import ru.itmo.rogue.model.unit.UnitView;
 import ru.itmo.rogue.model.updates.StateUpdate;
@@ -16,20 +17,21 @@ public class AgressiveStrategy implements Strategy  {
     public @NotNull StateUpdate getAction(UnitView unit, StateView state) {
         Position unitPos = unit.getPosition();
         Position playerPos = state.getPlayer().getPosition();
-        List<Position> possiblePos = new ArrayList<>();
-        possiblePos.add(new Position(unitPos.getX() + 1, unitPos.getY()));
-        possiblePos.add(new Position(unitPos.getX() - 1, unitPos.getY()));
-        possiblePos.add(new Position(unitPos.getX(), unitPos.getY() + 1));
-        possiblePos.add(new Position(unitPos.getX(), unitPos.getY() - 1));
+        var positions = Movement.defaults.stream()
+                .map(unitPos::move)
+                .filter(position -> state.getMap().isFloor(position))
+                .toList();
 
-        List<Double> distances = possiblePos.stream().map(p -> p.distance(playerPos)).toList();
+        List<Double> distances = positions.stream()
+                .map(p -> p.distance(playerPos))
+                .toList();
+
         int minAt = 0;
-
         for (int i = 0; i < distances.size(); i++) {
             minAt = distances.get(i) < distances.get(minAt) ? i : minAt;
         }
 
-        return new PositionUpdate(unit, possiblePos.get(minAt));
+        return new PositionUpdate(unit, positions.get(minAt));
 
     }
 }

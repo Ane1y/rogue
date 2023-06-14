@@ -1,9 +1,6 @@
 package ru.itmo.rogue.model.unit;
 
-import ru.itmo.rogue.model.unit.AbstractFactory;
-import ru.itmo.rogue.model.unit.Position;
-import ru.itmo.rogue.model.unit.Unit;
-import ru.itmo.rogue.model.unit.strategy.AgressiveStrategy;
+import ru.itmo.rogue.model.unit.strategy.ChangeableAggressiveStrategy;
 
 import java.util.List;
 
@@ -22,7 +19,14 @@ public class AggressiveFactory extends AbstractFactory {
     @Override
 
     public Unit getUnit() {
-        return new Unit(getHealth(), getStrength(), UNIT_EXPERIENCE, UNIT_LEVEL, generatePosition(), new AgressiveStrategy(), getAliveChar(), getDeadChar());
+        return new Unit(getHealth(),
+                getStrength(),
+                UNIT_EXPERIENCE,
+                UNIT_LEVEL,
+                generatePosition(),
+                new ChangeableAggressiveStrategy(),
+                getAliveChar(),
+                getDeadChar());
 
     }
     public char getAliveChar()

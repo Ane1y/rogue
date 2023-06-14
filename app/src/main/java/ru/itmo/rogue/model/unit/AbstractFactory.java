@@ -31,7 +31,7 @@ public abstract class AbstractFactory {
         return 'x';
     }
 
-    protected Position generatePosition(){
+    protected Position generatePosition() {
         if(currentPositions == null){
             return new Position();
         }
@@ -55,7 +55,7 @@ public abstract class AbstractFactory {
 
     static {
         player = new Unit(
-                3, 1, 0, 1, new Position(), playerStrategy, '@', '?');
+                4, 1, 0, 1, new Position(), playerStrategy, '@', '?');
         player.addItem(ItemFactory.getPoison());
     }
 

@@ -1,27 +1,16 @@
-package ru.itmo.rogue.model.game.unit.strategies;
+package ru.itmo.rogue.model.unit.strategy;
 
-import ru.itmo.rogue.model.game.unit.Action;
-import ru.itmo.rogue.model.game.unit.Strategy;
-import ru.itmo.rogue.model.game.unit.Unit;
-import ru.itmo.rogue.model.state.State;
+import org.jetbrains.annotations.NotNull;
+import ru.itmo.rogue.model.unit.UnitView;
 
-public class ChangeableAggressiveStrategy implements Strategy {
-    private final int MINIMAL_HEALTH = 2;
-    private  Strategy currentStrategy = new AgressiveStrategy();
-    @Override
-    public Action getAction(Unit unit, State state){
-        return currentStrategy.getAction(unit, state);
-    }
-
+public class ChangeableAggressiveStrategy extends AgressiveStrategy {
+    private final static int MIN_HEALTH = 2;
 
     @Override
-    public Strategy nextStrategy(Unit unit) {
+    public @NotNull Strategy nextStrategy(UnitView unit) {
         int unitHealth = unit.getHealth();
-        if (unitHealth <= MINIMAL_HEALTH) {
-            currentStrategy = new CowardStrategy();
-        }
-        else {
-            currentStrategy = new AgressiveStrategy();
+        if (unitHealth < MIN_HEALTH) {
+            return new ChangeableCowardStrategy();
         }
         return this;
     }
