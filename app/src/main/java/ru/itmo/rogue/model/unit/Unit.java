@@ -207,6 +207,7 @@ public class Unit implements UnitView {
                 strategy,
                 aliveChar,
                 deadChar);
+        copy.health = health;
         copy.stash = List.copyOf(stash);
         return copy;
     }
