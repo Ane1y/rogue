@@ -4,6 +4,7 @@ import com.googlecode.lanterna.*;
 import com.googlecode.lanterna.screen.Screen;
 import com.googlecode.lanterna.screen.VirtualScreen;
 import org.jetbrains.annotations.NotNull;
+import ru.itmo.rogue.model.state.InventoryUpdate;
 import ru.itmo.rogue.model.unit.Position;
 import ru.itmo.rogue.model.unit.Unit;
 import ru.itmo.rogue.model.state.*;
@@ -27,7 +28,7 @@ public class LanternaView {
     private final VirtualScreen screen;
     private final TerminalSize referenceSize;
     private TerminalSize lastTerminalSize;
-    private Map background;
+    private MapView background;
 
     /**
      * @param screen virtual screen which will be used for the visuals
@@ -48,45 +49,45 @@ public class LanternaView {
      * @return the positive or negative result of the update process
      */
     // TODO: New delta
-    public boolean update(Delta delta) {
-        screen.doResizeIfNecessary(); // Actualize size data
-        var terminalSize = screen.getTerminalSize();
-        var updateType = terminalSize.equals(lastTerminalSize) ? Screen.RefreshType.DELTA : Screen.RefreshType.COMPLETE;
-        lastTerminalSize = terminalSize;
-
-        if (delta.getFocus() != null) {
-            // for the resizable fields --- pass terminalSize as argument
-            drawPlains(delta);
-        }
-
-        if (delta.getMap() != null) {
-            clearPlayground(screen.getMinimumSize());
-            drawMap(delta.getMap());
-        }
-
-        if (delta.getUnitChanges() != null && !delta.getUnitChanges().isEmpty()) {
-            var unitChanges = delta.getUnitChanges();
-            for (var change : unitChanges) {
-                drawUnitChanges(change);
-            }
-        }
-
-        if (delta.getInventoryChanges() != null) {
-            drawInventory(delta.getInventoryChanges());
-        }
-
-        drawStatistics(delta.getStatistics());
-
-        // Refresh after everything
-        try {
-            screen.refresh(updateType);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
-        System.out.println("Display updated!");
-        return true;
-    }
+//    public boolean update(UnitsDelta delta) {
+//        screen.doResizeIfNecessary(); // Actualize size data
+//        var terminalSize = screen.getTerminalSize();
+//        var updateType = terminalSize.equals(lastTerminalSize) ? Screen.RefreshType.DELTA : Screen.RefreshType.COMPLETE;
+//        lastTerminalSize = terminalSize;
+//
+//        if (delta.getFocus() != null) {
+//            // for the resizable fields --- pass terminalSize as argument
+//            drawPlains(delta);
+//        }
+//
+//        if (delta.getMap() != null) {
+//            clearPlayground(screen.getMinimumSize());
+//            drawMap(delta.getMap());
+//        }
+//
+//        if (delta.getUnitChanges() != null && !delta.getUnitChanges().isEmpty()) {
+//            var unitChanges = delta.getUnitChanges();
+//            for (var change : unitChanges) {
+//                drawUnitChanges(change);
+//            }
+//        }
+//
+//        if (delta.getInventoryChanges() != null) {
+//            drawInventory(delta.getInventoryChanges());
+//        }
+//
+//        drawStatistics(delta.getStatistics());
+//
+//        // Refresh after everything
+//        try {
+//            screen.refresh(updateType);
+//        } catch (IOException e) {
+//            throw new RuntimeException(e);
+//        }
+//
+//        System.out.println("Display updated!");
+//        return true;
+//    }
 
     private TerminalPosition getPlaygroundPosition() {
         return new TerminalPosition(LEFT_MARGIN, TOP_MARGIN);
@@ -163,13 +164,13 @@ public class LanternaView {
         return shiftPos(getStatisticsPosition());
     }
 
-    public void drawPlains(@NotNull View.Focus focus) {
+    protected void drawPlains(@NotNull Focus focus) {
         // draw playground
-        var playBorders = focus.equals(View.Focus.LEVEL) ? doubled : simple;
+        var playBorders = focus.equals(Focus.LEVEL) ? doubled : simple;
         drawSquare(getPlaygroundPosition(), getPlaygroundSize(), playBorders);
 
         // draw inventory
-        var invBorders = focus.equals(View.Focus.LEVEL) ? simple : doubled;
+        var invBorders = focus.equals(Focus.LEVEL) ? simple : doubled;
         drawSquare(getInventoryPosition(), getInventorySize(), invBorders);
 
         // draw statistics
@@ -188,7 +189,9 @@ public class LanternaView {
         }
     }
 
-    private void drawMap(Map curMap) {
+    protected void drawMap(MapView curMap) {
+        clearPlayground(referenceSize);
+
         background = curMap;
 
         var width = curMap.getWidth();
@@ -207,7 +210,12 @@ public class LanternaView {
         }
     }
 
-    private void drawUnitChanges(UnitUpdate unitUpd) {
+
+    protected void drawUnitDelta(UnitsDelta delta) {
+        // TODO: Implement
+    }
+
+    private void drawUnitChange(UnitUpdate unitUpd) {
         Unit unit = unitUpd.getUnit();
         var newPos = unit.getPosition();
         var screenCoordinates = getScreenIndex(newPos);
@@ -241,7 +249,7 @@ public class LanternaView {
         return name + new String(spaces);
     }
 
-    private void drawInventory(List<InventoryUpdate> inventoryUpdates) {
+    protected void drawInventory(List<InventoryUpdate> inventoryUpdates) {
         var graphics = screen.newTextGraphics();
         for (var update : inventoryUpdates) {
             if (update.index() == -1) {

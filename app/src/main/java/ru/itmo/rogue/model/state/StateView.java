@@ -1,5 +1,6 @@
 package ru.itmo.rogue.model.state;
 
+import org.jetbrains.annotations.NotNull;
 import ru.itmo.rogue.model.unit.Position;
 import ru.itmo.rogue.model.unit.UnitView;
 
@@ -9,6 +10,7 @@ public interface StateView {
 
     UnitView getPlayer();
 
+    @NotNull
     List<UnitView> getUnits();
 
     default UnitView getUnitWithPosition(Position position) {

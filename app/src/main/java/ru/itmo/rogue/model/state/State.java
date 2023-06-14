@@ -1,5 +1,6 @@
 package ru.itmo.rogue.model.state;
 
+import org.jetbrains.annotations.NotNull;
 import ru.itmo.rogue.model.unit.UnitFactory;
 import ru.itmo.rogue.model.unit.Position;
 import ru.itmo.rogue.model.unit.Unit;
@@ -48,7 +49,7 @@ public class State implements StateView {
     /**
      * @return Immutable list of all units (including player)
      */
-    public List<UnitView> getUnits(){
+    public @NotNull List<UnitView> getUnits(){
         return Collections.unmodifiableList(units);
     }
 
