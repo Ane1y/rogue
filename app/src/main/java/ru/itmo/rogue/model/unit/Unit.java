@@ -2,7 +2,6 @@ package ru.itmo.rogue.model.unit;
 
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import ru.itmo.rogue.model.items.Item;
 import ru.itmo.rogue.model.state.StateView;
 import ru.itmo.rogue.model.unit.strategy.Strategy;
@@ -31,7 +30,7 @@ public class Unit implements UnitView {
     }
 
     private int levelUpStrengthBonus() {
-        return 2; // TODO: Maybe not constant
+        return 2;
     }
 
     private int levelUpHealthBonus() {
@@ -39,6 +38,7 @@ public class Unit implements UnitView {
     }
 
     private char aliveChar;
+
     private char deadChar;
 
 

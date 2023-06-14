@@ -10,8 +10,6 @@ import java.util.List;
 public class MapBuilder {
     public static final int DEFAULT_WIDTH = 16;
     public static final int DEFAULT_HEIGHT = 12;
-    public static final int DEFAULT_COMPLEXITY = 12;
-    public static final int DEFAULT_EXIT_COUNT = 12;
     public static final int MIN_ROOM_WIDTH = 3;
     public static final int MIN_ROOM_HEIGHT = 3;
     public static final int MAX_ROOM_WIDTH = 100;
@@ -21,9 +19,6 @@ public class MapBuilder {
     private String filename;
     private int width = DEFAULT_WIDTH;
     private int height = DEFAULT_HEIGHT;
-    private int complexity = DEFAULT_COMPLEXITY;
-    private int exits = DEFAULT_EXIT_COUNT;
-    private EntrySide entrySide = EntrySide.WEST;
 
     private Parameters params;
     private final Random rand = new Random();
@@ -58,42 +53,6 @@ public class MapBuilder {
     }
 
     /**
-     * Changes complexity of generated map, by default, see: DEFAULT_COMPLEXITY
-     * @param c complexity of generated map, must be not negative
-     */
-    public MapBuilder complexity(int c) {
-        assert c > 0;
-        this.complexity = c;
-        return this;
-    }
-
-    /**
-     * Changes side on which entrance is placed, by default is WEST
-     * @param side side of the entrance
-     */
-    public MapBuilder entrySide(EntrySide side) {
-        this.entrySide = side;
-        return this;
-    }
-
-    /**
-     * Sets amount of exists from the room
-     * @param count amount of doors, must be in a range [1; 3]
-     */
-    public MapBuilder exists(int count) {
-        assert count <= 3 && count > 0;
-        this.exits = count;
-        return this;
-    }
-
-    /**
-     * Options for entrance approximate position
-     */
-    public enum EntrySide {
-        NORTH, SOUTH, WEST, EAST
-    }
-
-    /**
      * Generates map with set parameters
      * @return Map object
      */
@@ -101,13 +60,10 @@ public class MapBuilder {
         if (filename != null) {
             return buildFromDisk();
         }
-        assert exits > 0;
-        assert complexity >= 0;
 
         params = new Parameters(4, width, height);
-        var map = generateMap();
 
-        return map;
+        return generateMap();
     }
 
     private Map buildFromDisk() {

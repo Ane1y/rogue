@@ -4,6 +4,7 @@ import ru.itmo.rogue.model.items.ItemFactory;
 import ru.itmo.rogue.model.state.MapBuilder;
 import ru.itmo.rogue.model.unit.*;
 import ru.itmo.rogue.model.state.State;
+import ru.itmo.rogue.model.unit.factory.*;
 
 import java.util.Random;
 
@@ -15,9 +16,11 @@ public class GameLogic {
 
     private final State state;
 
+    private Random random = new Random();
+
     public GameLogic(State state) {
         this.state = state;
-        generateNewMap(1);
+        generateNewMap(1, Factories.treasury());
     }
 
     /**
@@ -27,60 +30,32 @@ public class GameLogic {
         var playerLevel = state.getPlayer().getLevel();
         var playerPosition = state.getPlayer().getPosition();
 
-        int difficulty = switch (state.getMap().getTile(playerPosition)) {
-            case DOOR_OUT_HARD -> hardDifficulty(playerLevel);
-            case DOOR_OUT_NORMAL -> playerLevel;
-            case DOOR_OUT_TREASURE_ROOM -> 0;
-            default -> -1;
+        switch (state.getMap().getTile(playerPosition)) {
+            case DOOR_OUT_HARD -> generateNewMap(playerLevel, Factories.hardRoom(playerLevel));
+            case DOOR_OUT_NORMAL -> generateNewMap(playerLevel, Factories.defaultRoom(playerLevel));
+            case DOOR_OUT_TREASURE_ROOM -> generateNewMap(0, Factories.treasury());
         };
-
-        if (difficulty == -1) {
-            return;
-        }
-
-        generateNewMap(difficulty);
     }
     
-    public void generateNewMap(int difficulty) {
-        var mapBuilder = new MapBuilder()
-                .width(87)
-                .height(32)
-                .complexity(difficulty);
+    public void generateNewMap(int difficulty, UnitFactory unitFactory) {
+        MapBuilder mapBuilder = new MapBuilder();
 
         if (difficulty == 0) {
-            Random rand = new Random();
-            int version = rand.nextInt(10);
-            mapBuilder.loadFromDisk(String.format("./app/src/main/resources/complex%d.map", version));
+            mapBuilder.loadFromDisk(
+                    String.format("./app/src/main/resources/complex%d.map",
+                    random.nextInt(10)));
+        } else {
+            mapBuilder.width(87).height(32);
         }
 
         var levelMap = mapBuilder.build();
-
         state.setMap(levelMap);
 
         var reachability = levelMap.getDistance(levelMap.getEntrance(), new Position(levelMap.getWidth() - 1, levelMap.getHeight() - 1));
-        // Generate Units
-        var random = new Random();
-        var itemFactory = new ItemFactory();
-        var aggressiveFactory = new AggressiveFactory(difficulty);
-        var idleFactory = new ChestFactory(difficulty);
-        var cowardFactory = new CowardFactory(difficulty);
-        var slimeFactory = new SlimeFactory();
+        unitFactory.setPositions(reachability.reachableFloors());
 
-        var unitFactory = new CompositeFactory(reachability.reachableFloors(),
-                new FactoryProbability(aggressiveFactory, 3),
-                new FactoryProbability(idleFactory, 1),
-                new FactoryProbability(cowardFactory, 3),
-                new FactoryProbability(slimeFactory, 2)
-                );
         for (int i = 0; i < numberOfEnemies(difficulty); i++) {
-            var enemy = unitFactory.getUnit();
-
-            var items = random.nextInt(1, 5);
-            for (int j = 0; j < items; j++) {
-                enemy.addItem(itemFactory.getItem());
-            }
-
-            state.addUnit(enemy);
+            state.addUnit(unitFactory.getUnit());
         }
     }
 

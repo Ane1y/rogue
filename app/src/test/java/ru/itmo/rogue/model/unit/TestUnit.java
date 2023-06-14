@@ -1,6 +1,7 @@
 package ru.itmo.rogue.model.unit;
 
 import org.junit.jupiter.api.Test;
+import ru.itmo.rogue.model.unit.factory.CompositeFactory;
 import ru.itmo.rogue.model.unit.strategy.CowardStrategy;
 import ru.itmo.rogue.model.unit.strategy.IdleStrategy;
 import ru.itmo.rogue.model.unit.strategy.Strategy;

@@ -1,8 +1,7 @@
 package ru.itmo.rogue.model;
 
-import ru.itmo.rogue.model.unit.AbstractFactory;
+import ru.itmo.rogue.model.unit.factory.AbstractFactory;
 import ru.itmo.rogue.model.unit.Movement;
-import ru.itmo.rogue.model.unit.CompositeFactory;
 import ru.itmo.rogue.model.state.State;
 import ru.itmo.rogue.model.updates.StateUpdate;
 

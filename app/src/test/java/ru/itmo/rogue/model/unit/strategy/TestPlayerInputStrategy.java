@@ -1,7 +1,7 @@
 package ru.itmo.rogue.model.unit.strategy;
 
 import org.junit.jupiter.api.Test;
-import ru.itmo.rogue.model.unit.CompositeFactory;
+import ru.itmo.rogue.model.unit.factory.CompositeFactory;
 import ru.itmo.rogue.model.unit.Movement;
 import ru.itmo.rogue.model.unit.Position;
 import ru.itmo.rogue.model.state.State;

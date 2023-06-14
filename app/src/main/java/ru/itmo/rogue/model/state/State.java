@@ -2,6 +2,7 @@ package ru.itmo.rogue.model.state;
 
 import org.jetbrains.annotations.NotNull;
 import ru.itmo.rogue.model.unit.*;
+import ru.itmo.rogue.model.unit.factory.AbstractFactory;
 
 import java.util.ArrayList;
 import java.util.Collections;
