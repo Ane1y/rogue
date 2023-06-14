@@ -21,6 +21,8 @@ public interface StateView {
 
     MapView getMap();
 
+    boolean running();
+
     StateView copy();
 
 }

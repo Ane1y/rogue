@@ -32,11 +32,11 @@ public class PositionUpdate extends UnitUpdate {
         var enemy = state.getUnitWithPosition(position);
         if (enemy != null && enemy != view) { // Fight
             if (!enemy.isDead()) {
-                new AttackUpdate(view, enemy);
+                new AttackUpdate(view, enemy).apply(state);
                 return;
             }
 
-            new StashTransferUpdate(view, enemy).apply(state);
+            new StashTransferUpdate(enemy, view).apply(state);
         }
 
         var unit = state.getUnitWithView(view);

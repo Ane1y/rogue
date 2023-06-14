@@ -65,7 +65,9 @@ public class UnitFactory {
     }
 
     private static Unit newPlayerUnit() {
-        return new Unit(DEFAULT_PLAYER_HEALTH, DEFAULT_PLAYER_STRENGTH, 0, 1, new Position(), PLAYER_INPUT_STRATEGY, ALIVE_PLAYER, DEAD_PLAYER);
+        var unit = new Unit(DEFAULT_PLAYER_HEALTH, DEFAULT_PLAYER_STRENGTH, 0, 1, new Position(), PLAYER_INPUT_STRATEGY, ALIVE_PLAYER, DEAD_PLAYER);
+        unit.addItem(ItemFactory.getPoison());
+        return unit;
     }
 
     public static PlayerInputStrategy getPlayerInputStrategy() {
@@ -94,7 +96,7 @@ public class UnitFactory {
         ItemFactory factory = new ItemFactory();
         int items = random.nextInt(6);
         for (int i = 0; i < items; i++) {
-            unit.getStash().add(factory.getItem());
+            unit.addItem(factory.getItem());
         }
 
         return unit;

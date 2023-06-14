@@ -16,22 +16,20 @@ import java.io.IOException;
 
 public class App {
 
-    private final Controller controller;
-    private final Model model;
-    private final View view;
-    private final Screen screen;
+    private final KeyboardController controller;
+    private final GameModel model;
+    private final DefaultView view;
 
     App() throws IOException {
-        screen = virtualScreen;
         view = new DefaultView();
         model = new GameModel(view);
-        controller = new KeyboardController(model, screen);
+        controller = new KeyboardController(model, view);
     }
 
     void loop() {
         controller.loop();
         try {
-            screen.stopScreen();
+            view.getScreen().stopScreen();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

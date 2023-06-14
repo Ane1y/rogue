@@ -19,7 +19,7 @@ public class InventoryView {
         this.lanternaView = lanternaView;
     }
 
-    boolean update(StateView state) {
+    public boolean update(StateView state) {
         List<InventoryUpdate> updates = new ArrayList<>();
         var stash = state.getPlayer().getStash();
         if (lastState == null && stash.size() > 0) {
@@ -40,6 +40,11 @@ public class InventoryView {
                 updates.add(new InventoryUpdate(idx, stash.get(idx).getName(), idx == focusedItem));
                 idx++;
             }
+
+            while (idx < oldStash.size()) {
+                updates.add(InventoryUpdate.erase(idx));
+                idx++;
+            }
         }
 
         lanternaView.drawInventory(updates);
@@ -54,7 +59,7 @@ public class InventoryView {
         return lastState.getPlayer().getStash();
     }
 
-    void focusUp() {
+    public void focusUp() {
         if (focusedItem >= getStash().size() - 1) {
             return;
         }
@@ -71,7 +76,7 @@ public class InventoryView {
         lanternaView.drawInventory(updates);
     }
 
-    void focusDown() {
+    public void focusDown() {
         int previousFocusedItem = focusedItem;
         if (focusedItem <= 0) {
             return;
@@ -85,6 +90,10 @@ public class InventoryView {
         updates.add(InventoryUpdate.focus(focusedItem, getStash()));
 
         lanternaView.drawInventory(updates);
+    }
+
+    public int getFocusedItem() {
+        return focusedItem;
     }
 
 

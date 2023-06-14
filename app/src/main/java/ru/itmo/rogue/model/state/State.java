@@ -121,7 +121,11 @@ public class State implements StateView {
     }
 
     public void removeDeadEmptyUnits() {
+        var toDelete = units.stream()
+                .filter(unit -> unit.isDead() && unit.getStash().size() == 0)
+                .toList();
 
+        units.removeAll(toDelete);
     }
 
     @Override

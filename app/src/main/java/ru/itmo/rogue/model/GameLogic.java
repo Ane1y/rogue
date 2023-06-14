@@ -1,7 +1,5 @@
 package ru.itmo.rogue.model;
 
-import com.sun.source.tree.BreakTree;
-import ru.itmo.rogue.control.Signal;
 import ru.itmo.rogue.model.state.MapBuilder;
 import ru.itmo.rogue.model.unit.UnitFactory;
 import ru.itmo.rogue.model.state.State;

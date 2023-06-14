@@ -1,6 +1,5 @@
 package ru.itmo.rogue.model;
 
-import ru.itmo.rogue.control.Signal;
 import ru.itmo.rogue.model.state.State;
 import ru.itmo.rogue.model.state.StateView;
 import ru.itmo.rogue.model.unit.Movement;
@@ -39,6 +38,9 @@ public class GameModel implements Model {
 
     @Override
     public void usePlayerItem(int itemIndex) {
+        if (itemIndex < 0) {
+            return;
+        }
         levelLogic.usePlayerItem(itemIndex);
         view.update(state.copy());
     }
