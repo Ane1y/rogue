@@ -4,15 +4,32 @@ import ru.itmo.rogue.model.state.State;
 import ru.itmo.rogue.model.unit.UnitView;
 import ru.itmo.rogue.model.updates.UnitUpdate;
 
+
+/**
+ * This interaction applies attack of one unit on the other.
+ * If attacking unit is dead before the moment of the update's application,
+ *      it won't be applied
+ * Attack damage can be specified
+ * As the result of the attack defending unit loses health (unless negative damage is specified)
+ * If defending unit dies (health drops below 1) as the result of the attack,
+ *      attacking unit will receive experience bonus
+ */
 public class AttackUpdate extends UnitUpdate {
     private final UnitView defenderView;
 
     private final int damage;
 
+    /**
+     * Creates AttackUpdate, this constructor assumes attacker's strength as attack damage
+     */
     public AttackUpdate(UnitView attacker, UnitView defender) {
         this(attacker, defender, attacker.getStrength());
     }
 
+
+    /**
+     * Creates AttackUpdate
+     */
     public AttackUpdate(UnitView attacker, UnitView defender, int damage) {
         super(attacker);
         this.defenderView = defender;

@@ -11,6 +11,10 @@ import ru.itmo.rogue.model.updates.unit.PositionUpdate;
 import java.util.ArrayList;
 import java.util.List;
 
+
+/**
+ * Analogous to the AggressiveStrategy but runs from the player
+ */
 public class CowardStrategy implements Strategy {
 
     @Override

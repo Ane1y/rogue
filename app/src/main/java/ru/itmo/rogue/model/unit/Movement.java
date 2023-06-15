@@ -4,8 +4,16 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * Class to describe relative position ot movement
+ * @param x horizontal movement
+ * @param y vertical movement (-1 is movement upward)
+ */
 public record Movement(int x, int y) {
 
+    /**
+     * Default movement (no movement)
+     */
     public Movement() {
         this(0, 0);
     }
@@ -18,10 +26,16 @@ public record Movement(int x, int y) {
         return y;
     }
 
+    /**
+     * Straight Line's length of the movement
+     */
     public double getStraightLength() {
         return Math.sqrt(x * x + y * y);
     }
 
+    /**
+     * Walking distance of the movement
+     */
     public int getLength() {
         return x + y;
     }

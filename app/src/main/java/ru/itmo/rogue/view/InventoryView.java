@@ -8,6 +8,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * Part of View that focuses on inventory display
+ * Because of time limitations it still delegates actual drawing to the LanternaView class
+ */
 public class InventoryView {
 
     private final LanternaView lanternaView;

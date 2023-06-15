@@ -5,6 +5,9 @@ import ru.itmo.rogue.model.unit.UnitView;
 import ru.itmo.rogue.model.updates.NoUpdate;
 import ru.itmo.rogue.model.updates.StateUpdate;
 
+/**
+ * Generates NoUpdates, strategy for not moving objects (chests) and dead units
+ */
 public class IdleStrategy implements Strategy {
     @Override
     public @NotNull StateUpdate getAction(UnitView unit, StateView state) {

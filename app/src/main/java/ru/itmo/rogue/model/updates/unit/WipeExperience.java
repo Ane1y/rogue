@@ -4,6 +4,9 @@ import ru.itmo.rogue.model.state.State;
 import ru.itmo.rogue.model.unit.UnitView;
 import ru.itmo.rogue.model.updates.UnitUpdate;
 
+/**
+ * Completely erases unit's experience
+ */
 public class WipeExperience extends UnitUpdate {
     protected WipeExperience(UnitView view) {
         super(view);

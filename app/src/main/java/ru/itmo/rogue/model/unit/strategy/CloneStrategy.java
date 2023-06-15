@@ -10,6 +10,10 @@ import ru.itmo.rogue.model.updates.StateUpdate;
 
 import java.util.Random;
 
+
+/**
+ * Cloning strategy, only creates clones does not attack
+ */
 public class CloneStrategy implements Strategy {
 
     private final Random random = new Random();

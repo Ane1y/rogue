@@ -8,6 +8,9 @@ import ru.itmo.rogue.model.state.StateView;
 
 import java.io.IOException;
 
+/**
+ * View, initializes lanterna screen, manages focus, creates subviews and delegates corresponding functions to them
+ */
 public class DefaultView implements View {
 
     private final VirtualScreen screen;
@@ -18,9 +21,12 @@ public class DefaultView implements View {
     private final InventoryView inventoryView;
     private final StatisticsView statisticsView;
 
+    /**
+     * Initializes lanterna screen, can throw
+     * @throws IOException lanterna exception
+     */
     public DefaultView() throws IOException {
         // LANTERNA INIT
-        // TODO: Move Screen initialization fully to LanternaView
         DefaultTerminalFactory terminalFactory = new DefaultTerminalFactory();
         terminalFactory.setInitialTerminalSize(new TerminalSize(130, 40));
         var terminalScreen = terminalFactory.createScreen();
