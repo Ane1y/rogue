@@ -1,0 +1,163 @@
+digraph "Rouge" {
+
+splines  = ortho;
+fontname = "Inconsolata";
+
+node [colorscheme = ylgnbu4];
+edge [colorscheme = dark28, dir = both];
+
+AbstractFactory              [shape = record, label = "{ AbstractFactory |  }"];
+AddToStashUpdate             [shape = record, label = "{ AddToStashUpdate |  }"];
+AggressiveFactory            [shape = record, label = "{ AggressiveFactory |  }"];
+AgressiveStrategy            [shape = record, label = "{ AgressiveStrategy |  }"];
+App                          [shape = record, label = "{ App |  }"];
+AttackUpdate                 [shape = record, label = "{ AttackUpdate |  }"];
+BombStone                    [shape = record, label = "{ BombStone |  }"];
+ChangeableAggressiveStrategy [shape = record, label = "{ ChangeableAggressiveStrategy |  }"];
+ChangeableCowardStrategy     [shape = record, label = "{ ChangeableCowardStrategy |  }"];
+ChestFactory                 [shape = record, label = "{ ChestFactory |  }"];
+CloneStrategy                [shape = record, label = "{ CloneStrategy |  }"];
+CloneUnit                    [shape = record, label = "{ CloneUnit |  }"];
+CompositeFactory             [shape = record, label = "{ CompositeFactory |  }"];
+CompositeUpdate              [shape = record, label = "{ CompositeUpdate |  }"];
+ConfusionSpell               [shape = record, label = "{ ConfusionSpell |  }"];
+ConfusionStrategy            [shape = record, label = "{ ConfusionStrategy |  }"];
+Controller                   [shape = record, label = "{ \<\<interface\>\>\nController |  }"];
+CowardFactory                [shape = record, label = "{ CowardFactory |  }"];
+CowardStrategy               [shape = record, label = "{ CowardStrategy |  }"];
+DefaultView                  [shape = record, label = "{ DefaultView |  }"];
+ExperienceUpdate             [shape = record, label = "{ ExperienceUpdate |  }"];
+Factories                    [shape = record, label = "{ Factories |  }"];
+FactoryProbability           [shape = record, label = "{ \<\<record\>\>\nFactoryProbability |  }"];
+Focus                        [shape = record, label = "{ \<\<enumeration\>\>\nFocus |  }"];
+GameLogic                    [shape = record, label = "{ GameLogic |  }"];
+GameModel                    [shape = record, label = "{ GameModel |  }"];
+HealthStone                  [shape = record, label = "{ HealthStone |  }"];
+HealthUpdate                 [shape = record, label = "{ HealthUpdate |  }"];
+IdleStrategy                 [shape = record, label = "{ IdleStrategy |  }"];
+InventoryUpdate              [shape = record, label = "{ \<\<record\>\>\nInventoryUpdate |  }"];
+InventoryView                [shape = record, label = "{ InventoryView |  }"];
+Item                         [shape = record, label = "{ \<\<interface\>\>\nItem |  }"];
+ItemFactory                  [shape = record, label = "{ ItemFactory |  }"];
+KeyboardController           [shape = record, label = "{ KeyboardController |  }"];
+LanternaView                 [shape = record, label = "{ LanternaView |  }"];
+LevelLogic                   [shape = record, label = "{ LevelLogic |  }"];
+LevelView                    [shape = record, label = "{ LevelView |  }"];
+Map                          [shape = record, label = "{ Map |  }"];
+MapBuilder                   [shape = record, label = "{ MapBuilder |  }"];
+MapSearchResult              [shape = record, label = "{ \<\<record\>\>\nMapSearchResult |  }"];
+MapView                      [shape = record, label = "{ \<\<interface\>\>\nMapView |  }"];
+Model                        [shape = record, label = "{ \<\<interface\>\>\nModel |  }"];
+Movement                     [shape = record, label = "{ \<\<record\>\>\nMovement |  }"];
+NoUpdate                     [shape = record, label = "{ NoUpdate |  }"];
+PlayerInputStrategy          [shape = record, label = "{ PlayerInputStrategy |  }"];
+PoisonStone                  [shape = record, label = "{ PoisonStone |  }"];
+Position                     [shape = record, label = "{ \<\<record\>\>\nPosition |  }"];
+PositionUpdate               [shape = record, label = "{ PositionUpdate |  }"];
+SlimeFactory                 [shape = record, label = "{ SlimeFactory |  }"];
+StashClearUpdate             [shape = record, label = "{ StashClearUpdate |  }"];
+StashTransferUpdate          [shape = record, label = "{ StashTransferUpdate |  }"];
+State                        [shape = record, label = "{ State |  }"];
+StateUpdate                  [shape = record, label = "{ \<\<interface\>\>\nStateUpdate |  }"];
+StateView                    [shape = record, label = "{ \<\<interface\>\>\nStateView |  }"];
+Statistics                   [shape = record, label = "{ \<\<record\>\>\nStatistics |  }"];
+StatisticsView               [shape = record, label = "{ StatisticsView |  }"];
+Strategy                     [shape = record, label = "{ \<\<interface\>\>\nStrategy |  }"];
+StrategyUpdate               [shape = record, label = "{ StrategyUpdate |  }"];
+StrengthStone                [shape = record, label = "{ StrengthStone |  }"];
+StrengthUpdate               [shape = record, label = "{ StrengthUpdate |  }"];
+Unit                         [shape = record, label = "{ Unit |  }"];
+UnitFactory                  [shape = record, label = "{ \<\<interface\>\>\nUnitFactory |  }"];
+UnitUpdate                   [shape = record, label = "{ UnitUpdate |  }"];
+UnitView                     [shape = record, label = "{ \<\<interface\>\>\nUnitView |  }"];
+UnitsDelta                   [shape = record, label = "{ \<\<record\>\>\nUnitsDelta |  }"];
+"Updatable<T>"               [shape = record, label = "{ \<\<interface\>\>\nUpdatable\<T\> |  }"];
+View                         [shape = record, label = "{ \<\<interface\>\>\nView |  }"];
+WipeExperience               [shape = record, label = "{ WipeExperience |  }"];
+
+AbstractFactory              -> UnitFactory                  [color = "#008200", style = dashed, arrowtail = none    , arrowhead = normal  , taillabel = "", label = "", headlabel = ""];
+AddToStashUpdate             -> UnitUpdate                   [color = "#000082", style = solid , arrowtail = none    , arrowhead = normal  , taillabel = "", label = "", headlabel = ""];
+AggressiveFactory            -> AbstractFactory              [color = "#000082", style = solid , arrowtail = none    , arrowhead = normal  , taillabel = "", label = "", headlabel = ""];
+AgressiveStrategy            -> Strategy                     [color = "#008200", style = dashed, arrowtail = none    , arrowhead = normal  , taillabel = "", label = "", headlabel = ""];
+AttackUpdate                 -> UnitUpdate                   [color = "#000082", style = solid , arrowtail = none    , arrowhead = normal  , taillabel = "", label = "", headlabel = ""];
+BombStone                    -> Item                         [color = "#008200", style = dashed, arrowtail = none    , arrowhead = normal  , taillabel = "", label = "", headlabel = ""];
+ChangeableAggressiveStrategy -> AgressiveStrategy            [color = "#000082", style = solid , arrowtail = none    , arrowhead = normal  , taillabel = "", label = "", headlabel = ""];
+ChangeableCowardStrategy     -> CowardStrategy               [color = "#000082", style = solid , arrowtail = none    , arrowhead = normal  , taillabel = "", label = "", headlabel = ""];
+ChestFactory                 -> AbstractFactory              [color = "#000082", style = solid , arrowtail = none    , arrowhead = normal  , taillabel = "", label = "", headlabel = ""];
+CloneStrategy                -> Strategy                     [color = "#008200", style = dashed, arrowtail = none    , arrowhead = normal  , taillabel = "", label = "", headlabel = ""];
+CloneUnit                    -> UnitUpdate                   [color = "#000082", style = solid , arrowtail = none    , arrowhead = normal  , taillabel = "", label = "", headlabel = ""];
+CompositeFactory             -> AbstractFactory              [color = "#000082", style = solid , arrowtail = none    , arrowhead = normal  , taillabel = "", label = "", headlabel = ""];
+CompositeUpdate              -> StateUpdate                  [color = "#008200", style = dashed, arrowtail = none    , arrowhead = normal  , taillabel = "", label = "", headlabel = ""];
+ConfusionSpell               -> Item                         [color = "#008200", style = dashed, arrowtail = none    , arrowhead = normal  , taillabel = "", label = "", headlabel = ""];
+ConfusionStrategy            -> Strategy                     [color = "#008200", style = dashed, arrowtail = none    , arrowhead = normal  , taillabel = "", label = "", headlabel = ""];
+CowardFactory                -> AbstractFactory              [color = "#000082", style = solid , arrowtail = none    , arrowhead = normal  , taillabel = "", label = "", headlabel = ""];
+CowardStrategy               -> Strategy                     [color = "#008200", style = dashed, arrowtail = none    , arrowhead = normal  , taillabel = "", label = "", headlabel = ""];
+DefaultView                  -> View                         [color = "#008200", style = dashed, arrowtail = none    , arrowhead = normal  , taillabel = "", label = "", headlabel = ""];
+ExperienceUpdate             -> UnitUpdate                   [color = "#000082", style = solid , arrowtail = none    , arrowhead = normal  , taillabel = "", label = "", headlabel = ""];
+GameModel                    -> Model                        [color = "#008200", style = dashed, arrowtail = none    , arrowhead = normal  , taillabel = "", label = "", headlabel = ""];
+HealthStone                  -> Item                         [color = "#008200", style = dashed, arrowtail = none    , arrowhead = normal  , taillabel = "", label = "", headlabel = ""];
+HealthUpdate                 -> UnitUpdate                   [color = "#000082", style = solid , arrowtail = none    , arrowhead = normal  , taillabel = "", label = "", headlabel = ""];
+IdleStrategy                 -> Strategy                     [color = "#008200", style = dashed, arrowtail = none    , arrowhead = normal  , taillabel = "", label = "", headlabel = ""];
+KeyboardController           -> Controller                   [color = "#008200", style = dashed, arrowtail = none    , arrowhead = normal  , taillabel = "", label = "", headlabel = ""];
+Map                          -> MapView                      [color = "#008200", style = dashed, arrowtail = none    , arrowhead = normal  , taillabel = "", label = "", headlabel = ""];
+NoUpdate                     -> StateUpdate                  [color = "#008200", style = dashed, arrowtail = none    , arrowhead = normal  , taillabel = "", label = "", headlabel = ""];
+PlayerInputStrategy          -> Strategy                     [color = "#008200", style = dashed, arrowtail = none    , arrowhead = normal  , taillabel = "", label = "", headlabel = ""];
+PoisonStone                  -> Item                         [color = "#008200", style = dashed, arrowtail = none    , arrowhead = normal  , taillabel = "", label = "", headlabel = ""];
+PositionUpdate               -> UnitUpdate                   [color = "#000082", style = solid , arrowtail = none    , arrowhead = normal  , taillabel = "", label = "", headlabel = ""];
+SlimeFactory                 -> AbstractFactory              [color = "#000082", style = solid , arrowtail = none    , arrowhead = normal  , taillabel = "", label = "", headlabel = ""];
+StashClearUpdate             -> UnitUpdate                   [color = "#000082", style = solid , arrowtail = none    , arrowhead = normal  , taillabel = "", label = "", headlabel = ""];
+StashTransferUpdate          -> UnitUpdate                   [color = "#000082", style = solid , arrowtail = none    , arrowhead = normal  , taillabel = "", label = "", headlabel = ""];
+State                        -> StateView                    [color = "#008200", style = dashed, arrowtail = none    , arrowhead = normal  , taillabel = "", label = "", headlabel = ""];
+StrategyUpdate               -> UnitUpdate                   [color = "#000082", style = solid , arrowtail = none    , arrowhead = normal  , taillabel = "", label = "", headlabel = ""];
+StrengthStone                -> Item                         [color = "#008200", style = dashed, arrowtail = none    , arrowhead = normal  , taillabel = "", label = "", headlabel = ""];
+StrengthUpdate               -> UnitUpdate                   [color = "#000082", style = solid , arrowtail = none    , arrowhead = normal  , taillabel = "", label = "", headlabel = ""];
+Unit                         -> UnitView                     [color = "#008200", style = dashed, arrowtail = none    , arrowhead = normal  , taillabel = "", label = "", headlabel = ""];
+UnitUpdate                   -> StateUpdate                  [color = "#008200", style = dashed, arrowtail = none    , arrowhead = normal  , taillabel = "", label = "", headlabel = ""];
+View                         -> "Updatable<T>"               [color = "#008200", style = solid , arrowtail = none    , arrowhead = normal  , taillabel = "", label = "", headlabel = ""];
+WipeExperience               -> UnitUpdate                   [color = "#000082", style = solid , arrowtail = none    , arrowhead = normal  , taillabel = "", label = "", headlabel = ""];
+
+// Unit relations
+Strategy -> Unit  [arrowhead = none, arrowtail = none]
+Unit -> State     [arrowhead = none, arrowtail = none]
+UnitFactory -> Unit [arrowhead = none, arrowtail = none, style = dashed]
+Movement -> Unit [arrowhead = none, arrowtail = none]
+Position -> Unit [arrowhead = none, arrowtail = none]
+
+// App relations
+GameModel -> App [arrowhead = none, arrowtail = none]
+DefaultView -> App [arrowhead = none, arrowtail = none]
+KeyboardController -> App [arrowhead = none, arrowtail = none]
+
+// GameModel relations
+GameLogic -> GameModel [arrowhead = none, arrowtail = none]
+LevelLogic -> GameModel [arrowhead = none, arrowtail = none]
+MapBuilder -> GameLogic [arrowhead = none, arrowtail = none, style = dashed]
+
+// State relations
+StateView -> View [arrowhead = none, arrowtail = none, style = dashed]
+StateUpdate -> State [arrowhead = none, arrowtail = none, style = dashed]
+Map -> State [arrowhead = none, arrowtail = none]
+Statistics -> State [arrowhead = none, arrowtail = none]
+MapSearchResult -> Map [arrowhead = none, arrowtail = none, style = dashed]
+
+// Item realtions
+Item -> Unit [arrowhead = none, arrowtail = none]
+ItemFactory -> Item [arrowhead = none, arrowtail = none, style = dashed]
+
+// Factories
+Factories -> UnitFactory [arrowhead = none, arrowtail = none, style = dashed]
+FactoryProbability -> CompositeFactory [arrowhead = none, arrowtail = none]
+
+// View relations
+Focus -> View [arrowhead = none, arrowtail = none]
+InventoryView -> View [arrowhead = none, arrowtail = none]
+LevelView -> View [arrowhead = none, arrowtail = none]
+StatisticsView -> View [arrowhead = none, arrowtail = none]
+Statistics -> StatisticsView [arrowhead = none, arrowtail = none]
+InventoryUpdate -> InventoryView [arrowhead = none, arrowtail = none]
+UnitsDelta -> LevelView [arrowhead = none, arrowtail = none]
+State -> DefaultView [arrowhead = none, arrowtail = none, style = dashed]
+
+InventoryUpdate -> LanternaView [arrowhead = none, arrowtail = none, style = dashed]
+UnitsDelta -> LanternaView [arrowhead = none, arrowtail = none, style = dashed]
+}
