@@ -37,10 +37,10 @@ public class AggressiveFactory extends AbstractFactory {
     }
 
     protected int getHealth() {
-        return 2 * difficulty;
+        return (int) (difficulty * 1.5);
     }
 
     protected int getStrength() {
-        return 2 * difficulty;
+        return difficulty;
     }
 }

@@ -7,10 +7,12 @@ import ru.itmo.rogue.model.updates.UnitUpdate;
 
 public class CloneUnit extends UnitUpdate {
     private Position position;
+    private boolean copyInventory;
 
-    public CloneUnit(UnitView toSpawn, Position position) {
+    public CloneUnit(UnitView toSpawn, Position position, boolean copyInventory) {
         super(toSpawn);
         this.position = position;
+        this.copyInventory = copyInventory;
     }
 
     @Override
@@ -25,6 +27,11 @@ public class CloneUnit extends UnitUpdate {
 
         var unit = state.getUnitWithView(view).copy();
         unit.moveTo(position);
+
+        if (!copyInventory) {
+            unit.removeAllItems();
+        }
+
         state.addUnit(unit);
     }
 }

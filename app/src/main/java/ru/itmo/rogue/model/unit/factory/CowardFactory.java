@@ -34,7 +34,7 @@ public class CowardFactory extends AbstractFactory {
         return difficulty * 2;
     }
     protected int getStrength(){
-        return difficulty * 2;
+        return 1;
     }
 
     @Override

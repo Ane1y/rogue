@@ -8,7 +8,7 @@ public class SlimeFactory extends AbstractFactory {
     @Override
     public Unit getUnit() {
         var unit = createUnit();
-        generateItems(0, 1).forEach(unit::addItem);
+        generateItems(1, 1).forEach(unit::addItem);
         return unit;
     }
 
@@ -19,7 +19,7 @@ public class SlimeFactory extends AbstractFactory {
 
     @Override
     protected int getExperience() {
-        return 1;
+        return 0;
     }
 
     @Override
@@ -29,6 +29,6 @@ public class SlimeFactory extends AbstractFactory {
 
     @Override
     protected char getDeadChar() {
-        return '_';
+        return 'v';
     }
 }

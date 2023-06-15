@@ -8,7 +8,7 @@ public abstract class Factories {
     public static UnitFactory defaultRoom(int difficulty) {
         return new CompositeFactory() {{
             put(new AggressiveFactory(difficulty), 3);
-            put(new CowardFactory(difficulty), 3);
+            put(new CowardFactory(difficulty), 2);
             put(new SlimeFactory(), 1);
         }};
     }

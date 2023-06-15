@@ -97,7 +97,7 @@ public abstract class AbstractFactory implements UnitFactory {
     private static final Unit player;
 
     static {
-        player = new Unit(3, 1, 0, 1, new Position(), playerStrategy, '@', '?');
+        player = new Unit(4, 1, 0, 1, new Position(), playerStrategy, '@', '?');
         player.addItem(ItemFactory.getPoison());
     }
 

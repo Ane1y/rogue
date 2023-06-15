@@ -15,13 +15,13 @@ public class CloneStrategy implements Strategy {
     private final Random random = new Random();
     @Override
     public @NotNull StateUpdate getAction(UnitView unit, StateView state) {
-        if (random.nextInt(4) < 1) { // Has 50/50 probability to spawn clone
+        if (random.nextInt(10) > 1) { // Has 50/50 probability to spawn clone
             return new NoUpdate();
         }
 
         int movementIndex = random.nextInt(4);
         var movement = Movement.defaults.get(movementIndex);
         var position = unit.getPosition().move(movement);
-        return new CloneUnit(unit, position);
+        return new CloneUnit(unit, position, true);
     }
 }
