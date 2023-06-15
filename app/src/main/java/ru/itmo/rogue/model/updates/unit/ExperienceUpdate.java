@@ -4,6 +4,9 @@ import ru.itmo.rogue.model.state.State;
 import ru.itmo.rogue.model.unit.UnitView;
 import ru.itmo.rogue.model.updates.UnitUpdate;
 
+/**
+ * Changes unit's experience by some value
+ */
 public class ExperienceUpdate extends UnitUpdate {
 
     private final int delta;

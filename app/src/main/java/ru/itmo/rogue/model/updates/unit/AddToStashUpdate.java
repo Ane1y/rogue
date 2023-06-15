@@ -5,6 +5,9 @@ import ru.itmo.rogue.model.state.State;
 import ru.itmo.rogue.model.unit.UnitView;
 import ru.itmo.rogue.model.updates.UnitUpdate;
 
+/**
+ * This update adds Item to unit's stash
+ */
 public class AddToStashUpdate extends UnitUpdate {
 
     private final Item item;

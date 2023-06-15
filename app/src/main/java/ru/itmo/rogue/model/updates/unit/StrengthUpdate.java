@@ -5,6 +5,10 @@ import ru.itmo.rogue.model.unit.Unit;
 import ru.itmo.rogue.model.unit.UnitView;
 import ru.itmo.rogue.model.updates.UnitUpdate;
 
+
+/**
+ * Changes strength value of the unit by some delta
+ */
 public class StrengthUpdate  extends UnitUpdate {
 
     private final int delta;

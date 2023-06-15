@@ -10,12 +10,16 @@ import ru.itmo.rogue.model.updates.StateUpdate;
 
 import java.util.Random;
 
+
+/**
+ * Cloning strategy, only creates clones does not attack
+ */
 public class CloneStrategy implements Strategy {
 
     private final Random random = new Random();
     @Override
     public @NotNull StateUpdate getAction(UnitView unit, StateView state) {
-        if (random.nextInt(4) < 1) { // Has 50/50 probability to spawn clone
+        if (random.nextInt(4) < 1) { // Has 75/25 probability to spawn clone
             return new NoUpdate();
         }
 

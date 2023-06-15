@@ -5,6 +5,11 @@ import ru.itmo.rogue.model.unit.UnitView;
 import ru.itmo.rogue.model.updates.StateUpdate;
 import ru.itmo.rogue.model.updates.UnitUpdate;
 
+
+/**
+ * Takes items in stash of one unit and transfers them to the other unit
+ * If `destination` unit is dead before the application, transfer won't happen
+ */
 public class StashTransferUpdate extends UnitUpdate {
     private final UnitView sourceView;
 

@@ -9,6 +9,11 @@ import ru.itmo.rogue.model.updates.unit.PositionUpdate;
 import java.util.ArrayList;
 import java.util.List;
 
+
+/**
+ * Strategy of the aggressive unit,
+ * blindly follows player though wall and doesn't take them into consideration
+ */
 public class AgressiveStrategy implements Strategy  {
 
     //Unit always is enemy

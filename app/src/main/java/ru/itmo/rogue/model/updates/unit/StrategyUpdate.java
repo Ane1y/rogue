@@ -5,6 +5,9 @@ import ru.itmo.rogue.model.unit.UnitView;
 import ru.itmo.rogue.model.unit.strategy.Strategy;
 import ru.itmo.rogue.model.updates.UnitUpdate;
 
+/**
+ * Updates strategy of some unit
+ */
 public class StrategyUpdate extends UnitUpdate {
     private final Strategy strategy;
 

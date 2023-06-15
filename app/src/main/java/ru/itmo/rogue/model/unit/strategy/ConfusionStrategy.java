@@ -10,14 +10,13 @@ import ru.itmo.rogue.model.updates.unit.PositionUpdate;
 import java.util.Random;
 
 /**
- * Strategy that randomly inverts or turns units decisions
+ * Generates random movement and suppresses actions of underlying strategy
  */
 public class ConfusionStrategy implements Strategy {
 
     private final Strategy underlying;
     private int duration;
     private final Random random = new Random();
-
 
     public ConfusionStrategy(Strategy strategy, int duration) {
         this.underlying = strategy;

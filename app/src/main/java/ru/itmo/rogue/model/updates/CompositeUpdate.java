@@ -5,6 +5,9 @@ import ru.itmo.rogue.model.state.State;
 import java.util.*;
 import java.util.stream.Collector;
 
+/**
+ * Update that composed of multiple updates.
+ */
 public class CompositeUpdate implements StateUpdate {
     private final List<StateUpdate> updates;
 
@@ -21,6 +24,10 @@ public class CompositeUpdate implements StateUpdate {
         updates.forEach(update -> update.apply(state));
     }
 
+    /**
+     * Collector for creating a CompositeUpdate object from stream of StateUpdates
+     * @return Collector
+     */
     public static Collector<StateUpdate, ?, CompositeUpdate> collector() {
         return Collector.of(
                 ArrayList<StateUpdate>::new,

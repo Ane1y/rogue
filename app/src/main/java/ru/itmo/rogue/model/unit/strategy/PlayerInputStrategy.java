@@ -8,10 +8,14 @@ import ru.itmo.rogue.model.updates.NoUpdate;
 import ru.itmo.rogue.model.updates.StateUpdate;
 import ru.itmo.rogue.model.updates.unit.PositionUpdate;
 
+/**
+ * Strategy that requires update from outside
+ * Repeats queued movement until new update
+ */
 public class PlayerInputStrategy implements Strategy {
 
     /**
-     * Queues Signal to later perform action
+     * Queues movement to later supply as player's action
      * @param movement to be queued
      */
     public void setMovement(Movement movement) {

@@ -13,6 +13,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
+
+/**
+ * Unit stores all information that defines any Unit's identity and behaviour
+ */
 public class Unit implements UnitView {
     public static int MAX_STASH_SIZE = 31;
 

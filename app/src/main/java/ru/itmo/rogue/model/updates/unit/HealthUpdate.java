@@ -4,6 +4,9 @@ import ru.itmo.rogue.model.state.State;
 import ru.itmo.rogue.model.unit.UnitView;
 import ru.itmo.rogue.model.updates.UnitUpdate;
 
+/**
+ * Changes unit's health by some value
+ */
 public class HealthUpdate extends UnitUpdate {
 
     private final int delta;

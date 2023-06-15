@@ -7,6 +7,10 @@ import ru.itmo.rogue.model.unit.UnitView;
 
 import java.util.List;
 
+/**
+ * Part of View that focuses on level display
+ * Because of time limitations it still delegates actual drawing to the LanternaView class
+ */
 public class LevelView {
     private StateView lastState;
     private final LanternaView lanternaView;
