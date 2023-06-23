@@ -1,0 +1,51 @@
+@startuml
+'https://plantuml.com/state-diagram
+
+[*] --> ExpectUserInput
+
+state ExpectUserInput as "Controller: Wait for User Input" {
+    [*] -> Await
+    Await --> ExhaustEvents
+    ExhaustEvents -> ExhaustEvents
+    ExhaustEvents --> Interpret
+    Interpret -> [*]
+
+    state Await as "Await User Event" : Wait for at least one event\nin the queue
+    state ExhaustEvents as "Exhaust event queue" : Removes all accumulated events\nand returns only one
+}
+
+ExpectUserInput --> Model_MakeTurn : Pressed arrow key [Level is in focus]
+ExpectUserInput --> Model_UseItem : Pressed ENTER [Inventory is in focus]
+ExpectUserInput --> UpdateView : Pressed Arrows [Inventory is in focus] / Update inventory View
+ExpectUserInput --> UpdateView : Pressed ESC / Toggle Focus
+
+Model_MakeTurn -> UpdateView : Finished Update
+Model_UseItem  -> UpdateView : Finished Update
+
+UpdateView -> ExpectUserInput : Return Control
+
+state Model_MakeTurn as "Model: Process Turn" {
+    [*] --> UpdateUserStrategy
+    UpdateUserStrategy --> CollectUnitActions
+    CollectUnitActions -> CollectUnitActions
+    CollectUnitActions --> ApplyUnitActions
+    ApplyUnitActions -> ApplyUnitActions
+    ApplyUnitActions --> [*]
+
+    state CollectUnitActions as "Collect Unit Actions" : Poll units' strategies
+    state ApplyUnitActions as "Apply Unit Actions" : Update state of the model\nby applying units' actions
+}
+
+state Model_UseItem as "Model: Use Item" : Applies item effect to the state
+
+state UpdateView as "View: Update" {
+    [*] -> Diff
+    Diff -> Display
+    Display -> [*]
+
+    state Diff as "Calculate Difference"
+    state Display as "Display Difference"
+}
+
+
+@enduml
