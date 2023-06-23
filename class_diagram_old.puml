@@ -1,0 +1,164 @@
+@startuml
+
+class App {
+   - {static} Controller controller
+   - {static} Model model
+   - {static} View view
+
+   + {static} void main()
+}
+
+interface Controller {
+   + void loop()
+}
+
+interface Model {
+   + update()
+}
+
+class GameModel {}
+
+interface View {
+   + update()
+}
+
+class KeyboardController {}
+
+enum Signal {
+   UP
+   DOWN
+   LEFT
+   RIGHT
+   BACK
+   SELECT
+}
+
+class LanternaView {}
+
+class GameLogic {
+   - State state
+   - UnitFactory unitFactory
+   - ItemFactory itemFactory
+   - LevelBuilder levelBuilder
+}
+
+class InventoryLogic {
+   - State state
+}
+
+class LevelLogic {
+   - State state
+   - Judge judge
+}
+
+interface Judge {
+   + UnitUpdate actionResult(Unit, Action, State)
+}
+
+class JustJudge {
+
+}
+
+Judge <|-- JustJudge
+
+class UnitFactory {}
+class ItemFactory {}
+class LevelBuilder {}
+
+class State {
+   + Focus focus
+   + Unit player
+   + List<Unit> enemies
+   + Map map
+}
+
+class Map {
+
+}
+
+class Unit {
+   # int health
+   # int strength
+   # List<Item> stash
+   # Position position
+   # UnitStrategy strategy
+}
+
+class UnitStrategy {
+   ~Action getAction(Unit unit, State state)
+}
+
+interface Item {}
+
+Enum Focus {
+   GAME
+   LEVEL
+   INVENTORY
+}
+
+Enum MapTile {
+   FLOOR
+   WALL
+   DOOR_IN
+   DOOR_OUT
+}
+
+class Delta {
+   - List<UnitUpdate> unitChanges
+   - List<InventoryChange> inventoryChanges
+   + UnitUpdate uChange
+   + InventoryChange iChange
+   + UnitHealthChange uhChange
+
+   + add(UnitChange change)
+   + add(InventoryChange change)
+}
+
+class UnitUpdate {
+   + Unit getUnit()
+}
+
+class UnitPositionUpadte {
+   + Position getOldPosition()
+}
+
+Delta o-- UnitUpdate
+UnitUpdate <|-- UnitPositionUpadte
+
+App o-- Controller
+App o-- Model
+App o-- View
+
+Controller <|-- KeyboardController
+
+View <|-- LanternaView
+
+Model <|-- GameModel
+
+GameModel o-- GameLogic
+GameModel o-- LevelLogic
+GameModel o-- InventoryLogic
+
+GameLogic o-- State
+GameLogic o-- UnitFactory
+GameLogic o-- ItemFactory
+GameLogic o-- LevelBuilder
+
+LevelLogic o-- State
+LevelLogic o-- Judge
+
+InventoryLogic o-- State
+
+State o-- Unit
+State +-- Focus
+State *-- Map
+Map +-- MapTile
+
+Unit o-- Item
+Unit o-- UnitStrategy
+
+GameModel -- Delta
+LanternaView -- Delta
+KeyboardController -- Signal
+GameModel -- Signal
+@enduml
