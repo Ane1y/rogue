@@ -1,0 +1,100 @@
+digraph "Rouge" {
+
+    splines  = ortho;
+    fontname = "Inconsolata";
+
+    node [colorscheme = ylgnbu4];
+    edge [colorscheme = dark28, dir = both];
+
+    AbstractFactory              [shape = record, label = "{ AbstractFactory |  }"];
+    App                          [shape = record, label = "{ App |  }"];
+    DefaultView                  [shape = record, label = "{ DefaultView |  }"];
+    GameLogic                    [shape = record, label = "{ GameLogic |  }"];
+    GameModel                    [shape = record, label = "{ GameModel |  }"];
+    InventoryView                [shape = record, label = "{ InventoryView |  }"];
+    Item                         [shape = record, label = "{ \<\<interface\>\>\nItem |  }"];
+    ItemFactory                  [shape = record, label = "{ ItemFactory |  }"];
+    KeyboardController           [shape = record, label = "{ KeyboardController |  }"];
+    LanternaView                 [shape = record, label = "{ LanternaView |  }"];
+    LevelLogic                   [shape = record, label = "{ LevelLogic |  }"];
+    LevelView                    [shape = record, label = "{ LevelView |  }"];
+    Map                          [shape = record, label = "{ Map |  }"];
+    MapBuilder                   [shape = record, label = "{ MapBuilder |  }"];
+    MapView                      [shape = record, label = "{ \<\<interface\>\>\nMapView |  }"];
+    Model                        [shape = record, label = "{ \<\<interface\>\>\nModel |  }"];
+    Movement                     [shape = record, label = "{ \<\<record\>\>\nMovement |  }"];
+    NoUpdate                     [shape = record, label = "{ NoUpdate |  }"];
+    PlayerInputStrategy          [shape = record, label = "{ PlayerInputStrategy |  }"];
+    Position                     [shape = record, label = "{ \<\<record\>\>\nPosition |  }"];
+    State                        [shape = record, label = "{ State |  }"];
+    StateUpdate                  [shape = record, label = "{ \<\<interface\>\>\nStateUpdate |  }"];
+    StateView                    [shape = record, label = "{ \<\<interface\>\>\nStateView |  }"];
+    StatisticsView               [shape = record, label = "{ StatisticsView |  }"];
+    Strategy                     [shape = record, label = "{ \<\<interface\>\>\nStrategy |  }"];
+    Unit                         [shape = record, label = "{ Unit |  }"];
+    UnitFactory                  [shape = record, label = "{ \<\<interface\>\>\nUnitFactory |  }"];
+    UnitUpdate                   [shape = record, label = "{ UnitUpdate |  }"];
+    UnitView                     [shape = record, label = "{ \<\<interface\>\>\nUnitView |  }"];
+    View                         [shape = record, label = "{ \<\<interface\>\>\nView |  }"];
+
+    AbstractFactory              -> UnitFactory                  [color = "#008200", style = dashed, arrowtail = none    , arrowhead = normal  , taillabel = "", label = "", headlabel = ""];
+    DefaultView                  -> View                         [color = "#008200", style = dashed, arrowtail = none    , arrowhead = normal  , taillabel = "", label = "", headlabel = ""];
+    GameModel                    -> Model                        [color = "#008200", style = dashed, arrowtail = none    , arrowhead = normal  , taillabel = "", label = "", headlabel = ""];
+    Map                          -> MapView                      [color = "#008200", style = dashed, arrowtail = none    , arrowhead = normal  , taillabel = "", label = "", headlabel = ""];
+    NoUpdate                     -> StateUpdate                  [color = "#008200", style = dashed, arrowtail = none    , arrowhead = normal  , taillabel = "", label = "", headlabel = ""];
+    PlayerInputStrategy          -> Strategy                     [color = "#008200", style = dashed, arrowtail = none    , arrowhead = normal  , taillabel = "", label = "", headlabel = ""];
+    State                        -> StateView                    [color = "#008200", style = dashed, arrowtail = none    , arrowhead = normal  , taillabel = "", label = "", headlabel = ""];
+    Unit                         -> UnitView                     [color = "#008200", style = dashed, arrowtail = none    , arrowhead = normal  , taillabel = "", label = "", headlabel = ""];
+    UnitUpdate                   -> StateUpdate                  [color = "#008200", style = dashed, arrowtail = none    , arrowhead = normal  , taillabel = "", label = "", headlabel = ""];
+
+    State -> LevelLogic [arrowhead = odiamond, arrowtail = none]
+    State -> GameLogic  [arrowhead = odiamond, arrowtail = none]
+
+    // Unit relations
+Strategy -> Unit  [arrowhead = diamond, arrowtail = none]
+    Unit -> State     [arrowhead = odiamond, arrowtail = none]
+    UnitFactory -> Unit [arrowhead = vee, arrowtail = none, style = dashed]
+    Movement -> Unit [arrowhead = odiamond, arrowtail = none]
+    Position -> Unit [arrowhead = odiamond, arrowtail = none]
+    Strategy -> StateUpdate [arrowhead = vee, arrowtail = none]
+
+    // App relations
+GameModel -> App [arrowhead = diamond, arrowtail = none]
+    DefaultView -> App [arrowhead = diamond, arrowtail = none]
+    KeyboardController -> App [arrowhead = diamond, arrowtail = none]
+
+    // GameModel relations
+GameLogic -> GameModel [arrowhead = diamond, arrowtail = none]
+    LevelLogic -> GameModel [arrowhead = diamond, arrowtail = none]
+    MapBuilder -> GameLogic [arrowhead = vee, arrowtail = none, style = dashed]
+    MapBuilder -> Map [arrowhead = vee, arrowtail = none, style = dashed]
+
+    // State relations
+StateUpdate -> State [arrowhead = vee, arrowtail = none, style = dashed]
+    Map -> State [arrowhead = diamond, arrowtail = none]
+    MapView -> StateView [arrowhead = vee, arrowtail = none, style = dashed]
+
+    // Item realtions
+Item -> Unit [arrowhead = vee, arrowtail = none]
+    ItemFactory -> Item [arrowhead = vee, arrowtail = none, style = dashed]
+
+    // View relations
+InventoryView -> DefaultView [arrowhead = diamond, arrowtail = none]
+    LevelView -> DefaultView [arrowhead = diamond, arrowtail = none]
+    StatisticsView -> DefaultView [arrowhead = diamond, arrowtail = none]
+    StateView -> DefaultView [arrowhead = none, arrowtail = vee, style = dashed]
+
+    LanternaView -> InventoryView  [arrowhead = odiamond, arrowtail = none]
+    LanternaView -> LevelView  [arrowhead = odiamond, arrowtail = none]
+    LanternaView -> StatisticsView  [arrowhead = odiamond, arrowtail = none]
+
+    // UnitView
+UnitView -> Strategy  [arrowhead = none, arrowtail = none, style = dashed]
+    UnitView -> UnitUpdate [arrowhead = none, arrowtail = none, style = dashed]
+
+    // Top level
+KeyboardController -> Model  [arrowhead = none, arrowtail = none, style = dashed]
+    GameModel -> View  [arrowhead = none, arrowtail = none, style = dashed]
+
+
+}
